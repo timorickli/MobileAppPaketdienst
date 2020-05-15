@@ -1,8 +1,10 @@
 package net.ictcampus.paketdienst;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -13,6 +15,8 @@ import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.util.jar.Manifest;
 
 public class MapActivity extends Activity implements OnMapReadyCallback {
 
@@ -25,13 +29,20 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         MapFragment mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.google_map);
         mapFragment.getMapAsync(this);
+
     }
 
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
         LatLng position = new LatLng( -33.867, 151.206);
-        googleMap.setMyLocationEnabled(true);
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            googleMap.setMyLocationEnabled(true);
+        } else {
+            // Show rationale and request permission.
+        }
+
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(position, 13));
 
         googleMap.addMarker(new MarkerOptions()
