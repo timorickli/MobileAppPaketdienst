@@ -15,15 +15,17 @@
         android:id="@+id/imageButton"
         android:layout_width="90sp"
         android:layout_height="90sp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/icon_setting"
+        android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/map"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.97"
-        android:contentDescription="@string/app_name"/>
+        app:layout_constraintVertical_bias="0.97" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
