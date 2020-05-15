@@ -6,10 +6,12 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
+    <fragment
+        class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:id="@+id/google_map"
+        android:layout_height="match_parent"/>
+
 
     <ImageButton
         android:id="@+id/imageButton"
