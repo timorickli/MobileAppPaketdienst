@@ -18,7 +18,7 @@ public class InventoryActivity extends AppCompatActivity {
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getApplicationContext(), MapActivity.class);
+                Intent intent= new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
             }
         });
