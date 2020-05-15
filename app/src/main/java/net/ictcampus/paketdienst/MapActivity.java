@@ -4,8 +4,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageButton;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -29,7 +32,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         MapFragment mapFragment= (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.google_map);
         mapFragment.getMapAsync(this);
-
+        ImageButton ib = findViewById(R.id.imageButton);
+        ib.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent= new Intent(getApplicationContext(), MenuActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
 

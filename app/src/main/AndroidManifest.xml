@@ -19,6 +19,7 @@
 
         <activity android:name=".ArActivity"></activity>
         <activity android:name=".InventoryActivity" />
+        <activity android:name=".MenuActivity" />
         <activity android:name=".SettingActivity" />
         <activity android:name=".MapActivity" />
         <activity android:name=".MainActivity">
