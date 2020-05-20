@@ -1,46 +1,37 @@
 package net.ictcampus.paketdienst;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.Context;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Switch;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
-import com.google.android.gms.maps.UiSettings;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-import java.util.Locale;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.jar.Manifest;
 
-public class MapActivity extends Activity implements OnMapReadyCallback {
+public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap map;
-
+    private ArrayList<Marker> markers= new ArrayList<Marker>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -70,7 +61,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
         map.setBuildingsEnabled(false);
         map.getUiSettings().setIndoorLevelPickerEnabled(false);
         map.getUiSettings().setMapToolbarEnabled(false);
-
+        map.setOnMarkerClickListener(this);
         if(map != null){
             CameraPosition cameraPosition= new CameraPosition.Builder()
                     .target(new LatLng(getLocation().getLatitude(), getLocation().getLongitude())).zoom(17.0f).build();
@@ -79,6 +70,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback {
             map.moveCamera(cameraUpdate);
             createPakets();
         }
+
     }
 
     @SuppressLint("MissingPermission")
@@ -139,15 +131,16 @@ public void createPakets() {
 public void createIconPakets(int nummber, double randomLati, double randomLong){
         final int height= 100;
         final int width= 100;
+
         switch (nummber){
             case 1:
                 BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.paket_einzeln) ;
                 Bitmap b = bitmapdraw.getBitmap();
                 Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
-                map.addMarker(new MarkerOptions()
+                markers.add(map.addMarker(new MarkerOptions()
                         .position(new LatLng(randomLati, randomLong))
                         .icon(BitmapDescriptorFactory.fromBitmap(marker))
-                );
+                ));
                 break;
             case 2:
                 BitmapDrawable bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.paket_stapel) ;
@@ -156,7 +149,6 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
                 map.addMarker(new MarkerOptions()
                         .position(new LatLng(randomLati, randomLong))
                         .icon(BitmapDescriptorFactory.fromBitmap(marker1))
-
                 );
                 break;
             default:
@@ -177,5 +169,37 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
     }
     public void createMailBox(){
 
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        Location locationPerson= getLocation();
+        LatLng locatinMarker= marker.getPosition();
+        Log.d("Marker", "Marker geklickt");
+        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0001 || locationPerson.getLatitude()-locatinMarker.latitude<= -0.0001 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0001 ||locationPerson.getLongitude()-locatinMarker.longitude<= -0.0001){
+            destroyPakets();
+            createMailBox();
+            Log.d("Marker", "Marker ist in der nähe");
+        }
+        else {
+            Log.d("Marker", "Marker ist nicht in der nähe");
+            }
+        return true;
+    }
+    private void showDialog() {
+        AlertDialog.Builder alertBuilder= new AlertDialog.Builder(getParent());
+        alertBuilder.setTitle(R.string.alert_dialogTitle).setMessage(R.string.alert_dialogMessage);
+        alertBuilder.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                createMailBox();
+            }
+        });
+        alertBuilder.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+            }
+        });
     }
 }

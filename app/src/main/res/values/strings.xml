@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Paketdienst</string>
+    <string name="alert_dialogTitle">Achtung!</string>
+    <string name="alert_dialogMessage">Du befindest dich nicht in der Nähe des Paketes</string>
+    <string name="alert_dialogUeberspringen">Überspringen</string>
+    <string name="alert_dialogAbbrechen">Abbrechen</string>
 </resources>
