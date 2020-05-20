@@ -48,6 +48,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             public void onClick(View v) {
                 Intent intent= new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
             }
         });
     }
@@ -64,7 +65,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         map.setOnMarkerClickListener(this);
         if(map != null){
             CameraPosition cameraPosition= new CameraPosition.Builder()
-                    .target(new LatLng(getLocation().getLatitude(), getLocation().getLongitude())).zoom(17.0f).build();
+                    .target(new LatLng(getLocation().getLatitude(),getLocation().getLongitude())).zoom(17.0f).build();
             CameraUpdate cameraUpdate= CameraUpdateFactory
                     .newCameraPosition(cameraPosition);
             map.moveCamera(cameraUpdate);
@@ -173,6 +174,7 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
 
     @Override
     public boolean onMarkerClick(Marker marker) {
+
         Location locationPerson= getLocation();
         LatLng locatinMarker= marker.getPosition();
         Log.d("Marker", "Marker geklickt");
@@ -184,6 +186,8 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         else {
             Log.d("Marker", "Marker ist nicht in der nähe");
             }
+        Intent intent= new Intent(getApplicationContext(), ArActivity.class);
+        startActivity(intent);
         return true;
     }
     private void showDialog() {

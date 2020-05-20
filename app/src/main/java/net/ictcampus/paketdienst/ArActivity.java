@@ -88,7 +88,7 @@ public class ArActivity extends AppCompatActivity {
                             Toast.makeText(this, "Unable to show ",Toast.LENGTH_SHORT).show();
                             return null;
                         }
-                        );
+                );
     }
 
     private void createModel(AnchorNode anchorNode) {

@@ -33,6 +33,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imageButton:
                 intent= new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
                 break;
             case R.id.spielanleitung:
                 break;
@@ -41,10 +42,12 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.inventory:
                 intent= new Intent(getApplicationContext(), InventoryActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
                 break;
             case R.id.settings:
                 intent= new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
+                overridePendingTransition(0, 0);
                 break;
         }
     }
