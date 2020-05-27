@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".MapActivity">
 
-    <com.google.android.gms.maps.MapView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/test"/>
-
     <fragment
         class="com.google.android.gms.maps.MapFragment"
         android:layout_width="match_parent"

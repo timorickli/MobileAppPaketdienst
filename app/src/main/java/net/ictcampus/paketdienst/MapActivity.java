@@ -168,7 +168,7 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
 
     }
     public void createMailBox(){
-
+        Log.d("Warning", "Skiped");
     }
 
     @Override
@@ -176,30 +176,41 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         Location locationPerson= getLocation();
         LatLng locatinMarker= marker.getPosition();
         Log.d("Marker", "Marker geklickt");
-        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0001 || locationPerson.getLatitude()-locatinMarker.latitude<= -0.0001 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0001 ||locationPerson.getLongitude()-locatinMarker.longitude<= -0.0001){
-            destroyPakets();
-            createMailBox();
-            Log.d("Marker", "Marker ist in der nähe");
+        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0002 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0002 ) {
+            if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0002 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0002) {
+                Log.d("Marker", "Marker ist in der nähe");
+
+            }
+            else {
+                Log.d("Marker", "Marker ist nicht in der nähe 1");
+                showDialog();
+            }
+
         }
         else {
             Log.d("Marker", "Marker ist nicht in der nähe");
+            showDialog();
             }
         return true;
     }
     private void showDialog() {
-        AlertDialog.Builder alertBuilder= new AlertDialog.Builder(getParent());
-        alertBuilder.setTitle(R.string.alert_dialogTitle).setMessage(R.string.alert_dialogMessage);
-        alertBuilder.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
+        AlertDialog.Builder showWarning= new AlertDialog.Builder(MapActivity.this);
+        showWarning.setTitle(R.string.alert_dialogTitle);
+        showWarning.setMessage(R.string.alert_dialogMessage);
+
+        showWarning.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 createMailBox();
             }
         });
-        alertBuilder.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
+        showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                dialog.cancel();
             }
         });
+        AlertDialog alert11 = showWarning.create();
+        alert11.show();
     }
 }
