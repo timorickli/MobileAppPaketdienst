@@ -193,8 +193,6 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
             Log.d("Marker", "Marker ist nicht in der nähe");
             showDialog();
             }
-        Intent intent= new Intent(getApplicationContext(), ArActivity.class);
-        startActivity(intent);
         return true;
     }
     private void showDialog() {
@@ -205,6 +203,8 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         showWarning.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Intent intent= new Intent(getApplicationContext(), ArActivity.class);
+                startActivity(intent);
                 createMailBox();
             }
         });
@@ -217,5 +217,4 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         AlertDialog alert11 = showWarning.create();
         alert11.show();
     }
-    //
 }
