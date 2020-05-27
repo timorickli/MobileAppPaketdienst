@@ -181,7 +181,8 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0002 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0002 ) {
             if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0002 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0002) {
                 Log.d("Marker", "Marker ist in der nähe");
-
+                Intent intent= new Intent(getApplicationContext(), ArActivity.class);
+                startActivity(intent);
             }
             else {
                 Log.d("Marker", "Marker ist nicht in der nähe 1");
