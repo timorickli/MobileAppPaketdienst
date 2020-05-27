@@ -178,8 +178,8 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         Location locationPerson= getLocation();
         LatLng locatinMarker= marker.getPosition();
         Log.d("Marker", "Marker geklickt");
-        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0005 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0005 ) {
-            if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0005 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0005) {
+        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0004 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0004) {
+            if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0004 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0004) {
                 Log.d("Marker", "Marker ist in der nähe");
                 Intent intent= new Intent(getApplicationContext(), ArActivity.class);
                 startActivity(intent);
