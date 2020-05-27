@@ -2,8 +2,11 @@ package net.ictcampus.paketdienst;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.MotionEvent;
 import android.widget.Toast;
 
@@ -25,6 +28,7 @@ public class ArActivity extends AppCompatActivity {
     private ArFragment arFragment;
     private ModelRenderable mailboxRenderable;
     boolean placed = false;
+    private int tokens;
 
 
     @Override
@@ -45,6 +49,9 @@ public class ArActivity extends AppCompatActivity {
                 createModel(anchorNode);
             }
         });*/
+
+        SharedPreferences tokensFile = this.getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        tokens = tokensFile.getInt("TOKENS", 0);
     }
 
     private void onUpdateFrame(FrameTime frameTime) {
@@ -61,11 +68,8 @@ public class ArActivity extends AppCompatActivity {
             AnchorNode anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arFragment.getArSceneView().getScene());
             createModel(anchorNode);
-
             placed = true;
-
         }
-
     }
 
 
@@ -90,6 +94,12 @@ public class ArActivity extends AppCompatActivity {
         mailbox.setOnTapListener(new Node.OnTapListener() {
             @Override
             public void onTap(HitTestResult hitTestResult, MotionEvent motionEvent) {
+                tokens = tokens + 10;
+                SharedPreferences tokenFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor= tokenFile.edit();
+                editor.putInt("TOKENS", tokens)
+                        .apply();
+
                 Intent intent= new Intent(getApplicationContext(), MapActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
