@@ -4,4 +4,17 @@
     <string name="alert_dialogMessage">Du befindest dich nicht in der Nähe des Paketes</string>
     <string name="alert_dialogUeberspringen">Überspringen</string>
     <string name="alert_dialogAbbrechen">Abbrechen</string>
+    <string name="settingTitle">Settings</string>
+    <string name="settingDarkmode">Darkmode</string>
+    <string name="settingMap">Karte</string>
+    <string name="settingOnOff">An/Aus</string>
+    <string name="settingSound">Sound</string>
+    <string name="settingSoundEffects">SoundEffects aktiviert/deaktiviert</string>
+    <string name="settingMusic">Musik aktiviert/deaktiviert</string>
+    <string-array name="settingMapBack">
+        <item>Standart</item>
+        <item>Dark</item>
+        <item>Retro</item>
+        <item>Fancy</item>
+    </string-array>
 </resources>
