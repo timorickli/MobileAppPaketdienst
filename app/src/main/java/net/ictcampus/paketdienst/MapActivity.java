@@ -158,11 +158,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 randomLati = getLocation().getLatitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
 
+        }
+        latLng= new LatLng(randomLati, randomLong);
+        return latLng;
     }
-    latLng= new LatLng(randomLati, randomLong);
-    return latLng;
-}
-public void createIconPakets(){
+    public void createIconPakets(){
         status= true;
         for(int x= 0; x < 3;x++) {
             switch (x) {
@@ -200,7 +200,7 @@ public void createIconPakets(){
         }
         setTag();
 
-}
+    }
     private void addMarkers(){
         for (int y= 0; y< markerOptions.size();y++){
             markers.add(map.addMarker(markerOptions.get(y)));
@@ -212,18 +212,18 @@ public void createIconPakets(){
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(y)));
         }
     }
-private void setTag(){
-    int tag= 0;
-    Marker marker;
-    for(int i= 0; i<markers.size(); i++){
-        tag+=3;
-        marker= markers.get(i);
-        marker.setTag(tag);
+    private void setTag(){
+        int tag= 0;
+        Marker marker;
+        for(int i= 0; i<markers.size(); i++){
+            tag+=3;
+            marker= markers.get(i);
+            marker.setTag(tag);
+        }
     }
-}
     public void destroyPakets(){
         for (Marker marker:markers
-             ) {
+        ) {
             marker.remove();
         }
         markers.clear();
@@ -280,7 +280,7 @@ private void setTag(){
         else {
             Log.d("Marker", "Marker ist nicht in der nähe");
             showDialog(marker);
-            }
+        }
         return true;
     }
     private void showDialog(Marker marker) {

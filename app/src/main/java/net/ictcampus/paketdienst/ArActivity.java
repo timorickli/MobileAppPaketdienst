@@ -34,12 +34,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private Node mailbox, singlePackage, multiPackage, wagonPackage;
     private Node activeNode;
     private int id;
-    private Intent intent= new Intent(getApplicationContext(), MapActivity.class);
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
+        intent = new Intent(getApplicationContext(), MapActivity.class);
         Button btnBack = findViewById(R.id.back);
         id = getIntent().getIntExtra("id",0);
 
@@ -80,11 +81,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             anchorNode.setParent(arFragment.getArSceneView().getScene());
             switch (id){
                 case 2:
-                    activeRenderable = multiPackageRenderable;
+                    activeRenderable = singlePackageRenderable;
                     break;
                 case 3:
-                    activeRenderable = wagonPackageRenderable;
+                    activeRenderable = multiPackageRenderable;
                     break;
+                case 4:
+                    activeRenderable = wagonPackageRenderable;
                 default:
                     activeRenderable = mailboxRenderable;
                     break;
@@ -97,9 +100,22 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
     private void setupModel() {
         switch (id){
-            case 1:
-
             case 2:
+                multiPackage = new Node();
+                activeNode = singlePackage;
+
+                ModelRenderable.builder()
+                        .setSource(this, R.raw.mailbox)
+                        .build().thenAccept(renderable -> singlePackageRenderable = renderable)
+                        .exceptionally(
+                                throwable -> {
+                                    Toast.makeText(this, "Unable to show ",Toast.LENGTH_SHORT).show();
+                                    return null;
+                                }
+                        );
+                break;
+
+            case 3:
                 multiPackage = new Node();
                 activeNode = multiPackage;
 
@@ -114,7 +130,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                         );
                 break;
 
-            case 3:
+            case 4:
                 wagonPackage = new Node();
                 activeNode = wagonPackage;
 
@@ -171,7 +187,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                         .apply();
                 editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)-1)
                         .apply();
-                intent.putExtra("success", 1);
+                intent.putExtra("status", true);
+
             }else{
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
             }
@@ -184,21 +201,24 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+1)
                     .apply();
+            intent.putExtra("status", true);
         }
         else if (hitNode.getRenderable() == multiPackageRenderable){
-            Toast.makeText(ArActivity.this, "Du hast das Paket abgegeben", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+3)
                     .apply();
+            intent.putExtra("status", true);
         }else if (hitNode.getRenderable() == wagonPackageRenderable){
-            Toast.makeText(ArActivity.this, "Du hast das Paket abgegeben", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+7)
                     .apply();
+            intent.putExtra("status", true);
         }
     }
 }

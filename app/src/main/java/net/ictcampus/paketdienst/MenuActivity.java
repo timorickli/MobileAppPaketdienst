@@ -33,6 +33,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.imageButton:
                 intent= new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
+                intent.putExtra("status", getIntent().getBooleanExtra("status", false));
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 break;
