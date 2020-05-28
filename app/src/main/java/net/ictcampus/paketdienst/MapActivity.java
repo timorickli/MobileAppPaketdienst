@@ -10,9 +10,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+
+import androidx.annotation.NonNull;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -25,13 +29,21 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
-
+public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener , Serializable {
+    private Bundle extra= new Bundle();
     private GoogleMap map;
-    private ArrayList<Marker> markers= new ArrayList<Marker>();
+    private static ArrayList<MarkerOptions> markerOptions= new ArrayList<MarkerOptions>();
+    private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
+    private static ArrayList<Marker> markers= new ArrayList<Marker>();
+    private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
+    private boolean status= true;
+    private boolean success;
+    final int height= 100;
+    final int width= 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,17 +58,28 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getApplicationContext(), MenuActivity.class);
+                Intent intent = new Intent(MapActivity.this, MenuActivity.class);
+                intent.putExtra("location", markerOptions);
+                if (markerOptionsMailBox != null) {
+                    intent.putExtra("locationMailBox", markerOptionsMailBox);
+                }
+                intent.putExtra("status", status);
                 startActivity(intent);
-                overridePendingTransition(0, 0);
             }
         });
+        if (getIntent().getParcelableArrayListExtra("location") != null) {
+            markerOptions = getIntent().getParcelableArrayListExtra("location");
+        }
+        if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
+            markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
+        }
+        if (getIntent().getParcelableArrayListExtra("status") != null) {
+
+        }
+        success = getIntent().getBooleanExtra("success", false);
     }
-
-
     @Override
     public void onMapReady(GoogleMap googleMap) {
-
         map = googleMap;
         map.setMyLocationEnabled(true);
         map.setBuildingsEnabled(false);
@@ -69,9 +92,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             CameraUpdate cameraUpdate= CameraUpdateFactory
                     .newCameraPosition(cameraPosition);
             map.moveCamera(cameraUpdate);
-            createPakets();
         }
+        if(status == true) {
+            if (markerOptions.size() == 0) {
+                createIconPakets();
+            }
+            if (markerOptions.size() > 1) {
+                addMarkers();
+            }
+        }
+        else if(status== false){
+            addMarkersMailBox();
 
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -100,13 +133,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
         return location;
     }
-public void createPakets() {
-    double randomLong;
-    double randomLati;
-    final double multi = 0.0001;
-    Random random = new Random();
 
-    for (int y = 1; y < 4; y++) {
+    public LatLng createLocaiton() {
+        LatLng latLng;
+        double randomLong;
+        double randomLati;
+        final double multi = 0.0001;
+        Random random = new Random();
         int operatorLong = random.nextInt((2 - 1) + 1) + 1;
         int operatorLati = random.nextInt((2 - 1) + 1) + 1;
         switch (operatorLong) {
@@ -124,79 +157,133 @@ public void createPakets() {
             default:
                 randomLati = getLocation().getLatitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
-        }
-        createIconPakets(y, randomLati, randomLong);
 
     }
+    latLng= new LatLng(randomLati, randomLong);
+    return latLng;
 }
-public void createIconPakets(int nummber, double randomLati, double randomLong){
-        final int height= 100;
-        final int width= 100;
-
-        switch (nummber){
-            case 1:
-                BitmapDrawable bitmapdraw = (BitmapDrawable)getResources().getDrawable(R.drawable.paket_einzeln) ;
-                Bitmap b = bitmapdraw.getBitmap();
-                Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
-                markers.add(map.addMarker(new MarkerOptions()
-                        .position(new LatLng(randomLati, randomLong))
-                        .icon(BitmapDescriptorFactory.fromBitmap(marker))
-                ));
-                break;
-            case 2:
-                BitmapDrawable bitmapdraw1 = (BitmapDrawable)getResources().getDrawable(R.drawable.paket_stapel) ;
-                Bitmap b1 = bitmapdraw1.getBitmap();
-                Bitmap marker1 = Bitmap.createScaledBitmap(b1, width, height, false);
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(randomLati, randomLong))
-                        .icon(BitmapDescriptorFactory.fromBitmap(marker1))
-                );
-                break;
-            default:
-                BitmapDrawable bitmapdraw2 = (BitmapDrawable)getResources().getDrawable(R.drawable.paket_laster) ;
-                Bitmap b2 = bitmapdraw2.getBitmap();
-                Bitmap marker2 = Bitmap.createScaledBitmap(b2, width, height, false);
-                map.addMarker(new MarkerOptions()
-                        .position(new LatLng(randomLati, randomLong))
-                        .icon(BitmapDescriptorFactory.fromBitmap(marker2))
-                );
-
+public void createIconPakets(){
+        status= true;
+        for(int x= 0; x < 3;x++) {
+            switch (x) {
+                case 0:
+                    BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_einzeln);
+                    Bitmap b = bitmapdraw.getBitmap();
+                    Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
+                    markerOptions.add(new MarkerOptions()
+                            .position(createLocaiton())
+                            .icon(BitmapDescriptorFactory.fromBitmap(marker)
+                            ));
+                    markers.add(map.addMarker(markerOptions.get(0)));
+                    break;
+                case 1:
+                    BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_stapel);
+                    Bitmap b1 = bitmapdraw1.getBitmap();
+                    Bitmap marker1 = Bitmap.createScaledBitmap(b1, width, height, false);
+                    markerOptions.add(new MarkerOptions()
+                            .position(createLocaiton())
+                            .icon(BitmapDescriptorFactory.fromBitmap(marker1))
+                    );
+                    markers.add(map.addMarker(markerOptions.get(1)));
+                    break;
+                case 2:
+                    BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_laster);
+                    Bitmap b2 = bitmapdraw2.getBitmap();
+                    Bitmap marker2 = Bitmap.createScaledBitmap(b2, width, height, false);
+                    markerOptions.add(new MarkerOptions()
+                            .position(createLocaiton())
+                            .icon(BitmapDescriptorFactory.fromBitmap(marker2))
+                    );
+                    markers.add(map.addMarker(markerOptions.get(2)));
+                    break;
+            }
         }
+        setTag();
+
 }
-
-
+    private void addMarkers(){
+        for (int y= 0; y< markerOptions.size();y++){
+            markers.add(map.addMarker(markerOptions.get(y)));
+        }
+        setTag();
+    }
+    private void addMarkersMailBox(){
+        for (int y= 0; y< markerOptionsMailBox.size();y++){
+            markersMailBox.add(map.addMarker(markerOptionsMailBox.get(y)));
+        }
+    }
+private void setTag(){
+    int tag= 0;
+    Marker marker;
+    for(int i= 0; i<markers.size(); i++){
+        tag+=3;
+        marker= markers.get(i);
+        marker.setTag(tag);
+    }
+}
     public void destroyPakets(){
-
+        for (Marker marker:markers
+             ) {
+            marker.remove();
+        }
+        markers.clear();
     }
-    public void createMailBox(){
-        Log.d("Warning", "Skiped");
+    public void createMailBox(int tag){
+        status= false;
+        destroyPakets();
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_laster);
+        Bitmap b2 = bitmapdraw2.getBitmap();
+        Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
+        for(int i= 0; i<= tag; i++){
+            markerOptionsMailBox.add(new MarkerOptions()
+                    .position(createLocaiton())
+                    .icon(BitmapDescriptorFactory.fromBitmap(marker))
+            );
+            markersMailBox.add(map.addMarker(markerOptionsMailBox.get(i)));
+        }
+        Log.d("MailBox", "Creating");
     }
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
+        int tag;
         Location locationPerson= getLocation();
         LatLng locatinMarker= marker.getPosition();
         Log.d("Marker", "Marker geklickt");
         if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0004 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0004) {
             if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0004 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0004) {
                 Log.d("Marker", "Marker ist in der nähe");
-                Intent intent= new Intent(getApplicationContext(), ArActivity.class);
+                Intent intent= new Intent(MapActivity.this, ArActivity.class);
+                switch (Integer.parseInt(marker.getTag().toString())){
+                    case 3:
+                        intent.putExtra("id", 2);
+                        break;
+                    case 6:
+                        intent.putExtra("id", 3);
+                        break;
+                    case 9:
+                        intent.putExtra("id", 4);
+                        break;
+                    default:
+                        intent.putExtra("id", 1);
+                        break;
+                }
                 startActivity(intent);
+
             }
             else {
                 Log.d("Marker", "Marker ist nicht in der nähe 1");
-                showDialog();
+                showDialog(marker);
             }
 
         }
         else {
             Log.d("Marker", "Marker ist nicht in der nähe");
-            showDialog();
+            showDialog(marker);
             }
         return true;
     }
-    private void showDialog() {
+    private void showDialog(Marker marker) {
         AlertDialog.Builder showWarning= new AlertDialog.Builder(MapActivity.this);
         showWarning.setTitle(R.string.alert_dialogTitle);
         showWarning.setMessage(R.string.alert_dialogMessage);
@@ -204,9 +291,22 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         showWarning.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Intent intent= new Intent(getApplicationContext(), ArActivity.class);
+                Intent intent= new Intent(MapActivity.this, ArActivity.class);
+                switch (Integer.parseInt(marker.getTag().toString())){
+                    case 3:
+                        intent.putExtra("id", 2);
+                        break;
+                    case 6:
+                        intent.putExtra("id", 3);
+                        break;
+                    case 9:
+                        intent.putExtra("id", 4);
+                        break;
+                    default:
+                        intent.putExtra("id", 1);
+                        break;
+                }
                 startActivity(intent);
-                createMailBox();
             }
         });
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
@@ -218,4 +318,6 @@ public void createIconPakets(int nummber, double randomLati, double randomLong){
         AlertDialog alert11 = showWarning.create();
         alert11.show();
     }
+
+
 }
