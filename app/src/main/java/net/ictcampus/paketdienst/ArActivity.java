@@ -202,7 +202,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             }
         }
         else if (hitNode.getRenderable() == singlePackageRenderable){
-            Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArActivity.this, "Du hast ein einzelnes Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
@@ -211,7 +211,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
         }
         else if (hitNode.getRenderable() == multiPackageRenderable){
-            Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
@@ -220,7 +220,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
         }
         else if (hitNode.getRenderable() == wagonPackageRenderable){
-            Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
+            Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
