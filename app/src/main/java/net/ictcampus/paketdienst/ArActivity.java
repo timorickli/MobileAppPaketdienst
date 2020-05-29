@@ -66,9 +66,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getIntent().getParcelableArrayListExtra("locationMailBox")!=null){
-                    intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
-                }
                 if (getIntent().getParcelableArrayListExtra("location")!=null){
                     intent.putExtra("location",getIntent().getParcelableArrayListExtra("location"));
                 }
@@ -180,7 +177,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         node.setOnTapListener(this);
     }
 
-    @Override
     public void onTap(HitTestResult hitTestResult, MotionEvent motionEvent) {
         Node hitNode = hitTestResult.getNode();
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
@@ -198,9 +194,11 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)-1)
                         .apply();
                 intent.putExtra("status", true);
+                intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
 
             }else{
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
+                intent.putExtra("location",getIntent().getParcelableArrayListExtra("location"));
             }
         }
         else if (hitNode.getRenderable() == singlePackageRenderable){
@@ -210,6 +208,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+1)
                     .apply();
+            intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
         }
         else if (hitNode.getRenderable() == multiPackageRenderable){
             Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
@@ -218,6 +217,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+3)
                     .apply();
+            intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
         }
         else if (hitNode.getRenderable() == wagonPackageRenderable){
             Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
@@ -226,7 +226,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+7)
                     .apply();
+            intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
         }
+        startActivity(intent);
+        overridePendingTransition(0, 0);
     }
 }
 

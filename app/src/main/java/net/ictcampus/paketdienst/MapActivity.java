@@ -13,8 +13,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
+
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -45,7 +44,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markers= new ArrayList<Marker>();
     private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
-    private boolean status= true;
     final int height= 100;
     final int width= 100;
     @Override
@@ -70,7 +68,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 if (markerOptionsMailBox != null) {
                     intent.putExtra("locationMailBox", markerOptionsMailBox);
                 }
-                intent.putExtra("status", status);
                 startActivity(intent);
             }
         });
@@ -91,6 +88,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     .newCameraPosition(new CameraPosition.Builder()
                             .target(new LatLng(getLocation().getLatitude(),getLocation().getLongitude())).zoom(17.0f).build()));
         }
+
         if(inventoryFile.getInt("PACKAGES", 0)>0){
             if(markerOptionsMailBox.size()==0){
                 createMailBox();
@@ -145,7 +143,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         return location;
     }
 
-    public LatLng createLocaiton() {
+    public LatLng createLocation() {
         LatLng latLng;
         double randomLong;
         double randomLati;
@@ -174,7 +172,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         return latLng;
     }
     public void createIconPakets(){
-        status= true;
         for(int x= 0; x < 3;x++) {
             switch (x) {
                 case 0:
@@ -182,7 +179,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     Bitmap b = bitmapdraw.getBitmap();
                     Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocaiton())
+                            .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker)
                             ));
                     markers.add(map.addMarker(markerOptions.get(0)));
@@ -192,7 +189,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     Bitmap b1 = bitmapdraw1.getBitmap();
                     Bitmap marker1 = Bitmap.createScaledBitmap(b1, width, height, false);
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocaiton())
+                            .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker1))
                     );
                     markers.add(map.addMarker(markerOptions.get(1)));
@@ -202,7 +199,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     Bitmap b2 = bitmapdraw2.getBitmap();
                     Bitmap marker2 = Bitmap.createScaledBitmap(b2, width, height, false);
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocaiton())
+                            .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker2))
                     );
                     markers.add(map.addMarker(markerOptions.get(2)));
@@ -213,12 +210,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
     }
     private void addMarkers(){
-        for (MarkerOptions markerOption:markerOptions
-             ) {
+        markers.clear();
+        for (MarkerOptions markerOption:markerOptions) {
             markers.add(map.addMarker(markerOption));
         }
         setTag();
     }
+
     private void addMarkersMailBox(){
         for (int y= 0; y< markerOptionsMailBox.size();y++){
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(y)));
@@ -234,21 +232,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
     }
 
-    public void destroyPakets(){
-        for (Marker marker:markers
-        ) {
-            marker.remove();
-        }
-        markers.clear();
-    }
     public void createMailBox(){
-        destroyPakets();
         BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
         for(int i=0; i< inventoryFile.getInt("PACKAGES", 0); i++){
             markerOptionsMailBox.add(new MarkerOptions()
-                    .position(createLocaiton())
+                    .position(createLocation())
                     .icon(BitmapDescriptorFactory.fromBitmap(marker))
             );
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(i)));
