@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Back"
+        android:text="@string/back"
         app:layout_constraintEnd_toStartOf="@+id/sceneform_ux_fragment"
         app:layout_constraintHorizontal_bias="0.791"
         app:layout_constraintStart_toEndOf="@+id/sceneform_ux_fragment"

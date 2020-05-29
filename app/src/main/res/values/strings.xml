@@ -24,4 +24,6 @@
     <string name="menuSpielanleitung">How to play</string>
     <string name="menuSettings">Settings</string>
     <string name="menuShop">Shop</string>
+    <string name="back">Back</string>
+    <string name="inventoryTokens">Tokens:</string>
 </resources>

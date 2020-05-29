@@ -25,4 +25,6 @@
     <string name="menuSpielanleitung">Spielanleitung</string>
     <string name="menuSettings">Einstellungen</string>
     <string name="menuShop">Shop</string>
+    <string name="inventoryTokens">Münzen:</string>
+    <string name="back">Zurück</string>
 </resources>

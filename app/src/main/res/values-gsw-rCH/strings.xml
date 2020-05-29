@@ -25,4 +25,6 @@
     <string name="menuSpielanleitung">Spiualeitig</string>
     <string name="menuSettings">Istellige</string>
     <string name="menuShop">Lädeli</string>
+    <string name="inventoryTokens">Batzeli:</string>
+    <string name="back">Zrügg</string>
 </resources>

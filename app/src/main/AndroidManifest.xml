@@ -23,14 +23,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity android:name=".ShopActivity"></activity>
-
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB6CNsbypIxYyMyJNaNeFniVOHtUVC2fFk" />
-
         <activity android:name=".ArActivity" />
         <activity android:name=".InventoryActivity" />
         <activity android:name=".MenuActivity" />
