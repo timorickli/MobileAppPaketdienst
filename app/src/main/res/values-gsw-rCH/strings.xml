@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Päklidienscht</string>
+    <string name="alert_dialogTitle">Achtung!</string>
+    <string name="alert_dialogMessage">Du bisch nid ir nöchi vomne Päckli</string>
+    <string name="alert_dialogUeberspringen">Überspringe</string>
+    <string name="alert_dialogAbbrechen">Abbräche</string>
+    <string name="settingTitle">Istellige</string>
+    <string name="settingDarkmode">Dunkumodus</string>
+    <string name="settingMap">Charte</string>
+    <string name="settingOnOff">Us/Ih</string>
+    <string name="settingSound">Kläng</string>
+    <string name="settingSoundEffects">KlängEffekt Us/Ih</string>
+    <string name="settingMusic">Musig Us/Ih</string>
+    <string-array name="settingMapBack">
+        <item>Standart</item>
+        <item>Dunkel</item>
+        <item>Retro</item>
+        <item>Speziell</item>
+    </string-array>
+    <string name="shopImage">Biud</string>
+    <string name="shopTitle">Lädeli</string>
+    <string name="menuTitle">Menü</string>
+    <string name="menuInventar">Inventar</string>
+    <string name="menuSpielanleitung">Spiualeitig</string>
+    <string name="menuSettings">Istellige</string>
+    <string name="menuShop">Lädeli</string>
+</resources>
