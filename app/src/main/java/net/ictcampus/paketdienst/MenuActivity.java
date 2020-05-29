@@ -19,6 +19,8 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         TextView shop = findViewById(R.id.shop);
         TextView inventory = findViewById(R.id.inventory);
         TextView settings = findViewById(R.id.settings);
+
+        //ClickListeners for all subs
         ib.setOnClickListener(this);
         spielanleitung.setOnClickListener(this);
         inventory.setOnClickListener(this);
@@ -26,6 +28,10 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         settings.setOnClickListener(this);
     }
 
+    /**
+     * ClickListener to decide which TextView got clicked
+     * @param v Clicked view
+     */
     @Override
     public void onClick(View v) {
         Intent intent;
