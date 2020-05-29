@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
@@ -28,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -107,6 +109,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             if (markerOptions.size() > 0) {
                 addMarkers();
             }
+        }
+        try{
+            boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro_style));
+        }
+        catch (Resources.NotFoundException e){
+            Log.e("Map", "Map style not found");
         }
     }
 
@@ -248,6 +256,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         Log.d("MailBox", "Creating");
     }
     private void startArMarker(Marker marker) {
+        LatLng pos,posMarker;
+        int markerOptSize;
+        MarkerOptions markerOpt;
         Log.d("Marker", "Marker ist in der nähe");
         Intent intent = new Intent(getApplicationContext(), ArActivity.class);
         if (markers.contains(marker)) {
@@ -268,15 +279,18 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             intent.putExtra("location", markerOptions);
             startActivity(intent);
         } else if (markersMailBox.contains(marker)) {
-            ArrayList<MarkerOptions> markerOptionsMailBoxTemp = new ArrayList<MarkerOptions>();
-            markerOptionsMailBoxTemp = markerOptionsMailBox;
-            for (MarkerOptions markerOpt : markerOptionsMailBoxTemp) {
-                if (markerOpt.getPosition().equals(marker.getPosition())) {
-                    markerOptionsMailBox.remove(marker);
+            markerOptSize= markerOptionsMailBox.size();
+            ArrayList<MarkerOptions> mailBoxSend= new ArrayList<MarkerOptions>();
+            for(int i = 0;i<markerOptSize;i++){
+                markerOpt= markerOptionsMailBox.get(i);
+                pos= markerOpt.getPosition();
+                posMarker= marker.getPosition();
+                if(!posMarker.equals(pos)){
+                    mailBoxSend.add(markerOpt);
                 }
             }
             intent.putExtra("id", 1);
-            intent.putExtra("locationMailBox", markerOptionsMailBox);
+            intent.putExtra("locationMailBox", mailBoxSend);
             startActivity(intent);
         }
     }
