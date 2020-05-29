@@ -3,8 +3,10 @@ package net.ictcampus.paketdienst;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
@@ -34,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener , Serializable {
+    private SharedPreferences inventoryFile;
     private Bundle extra= new Bundle();
     private GoogleMap map;
     private static ArrayList<MarkerOptions> markerOptions= new ArrayList<MarkerOptions>();
@@ -41,8 +44,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     private static ArrayList<Marker> markers= new ArrayList<Marker>();
     private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
     private boolean status= true;
-    private boolean success;
-    private int tag;
     final int height= 100;
     final int width= 100;
     @Override
@@ -56,6 +57,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         //Location Manager
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
+        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,12 +75,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         if (getIntent().getParcelableArrayListExtra("location") != null) {
             markerOptions = getIntent().getParcelableArrayListExtra("location");
         }
-        if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
-            markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
-        }
-        tag= getIntent().getIntExtra("tag",0);
-        status= getIntent().getBooleanExtra("status", false);
-        success = getIntent().getBooleanExtra("success", false);
     }
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -93,19 +89,22 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     .newCameraPosition(new CameraPosition.Builder()
                             .target(new LatLng(getLocation().getLatitude(),getLocation().getLongitude())).zoom(17.0f).build()));
         }
-        if(success){
+        if(inventoryFile.getInt("PACKAGES", 0)>0){
             if(markerOptionsMailBox.size()==0){
-                createMailBox(tag);
+                createMailBox();
             }
-            if(markerOptionsMailBox.size()>1){
+            if(markerOptionsMailBox.size() >0){
+                if (getIntent().getParcelableArrayListExtra("locationMailBox") != null){
+                    markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
+                }
                 addMarkersMailBox();
             }
         }
-        else if(!success) {
+        else if(inventoryFile.getInt("PACKAGES", 0)==0) {
             if (markerOptions.size() == 0) {
                 createIconPakets();
             }
-            if (markerOptions.size() > 1) {
+            if (markerOptions.size() > 0) {
                 addMarkers();
             }
         }
@@ -217,6 +216,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(y)));
         }
     }
+
     private void setTag(){
         int tag= 0;
         for (Marker marker:markers
@@ -225,6 +225,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             marker.setTag(tag);
         }
     }
+
     public void destroyPakets(){
         for (Marker marker:markers
         ) {
@@ -232,13 +233,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
         markers.clear();
     }
-    public void createMailBox(int tag){
-        status= false;
+    public void createMailBox(){
         destroyPakets();
-        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_laster);
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
-        for(int i= 0; i< tag; i++){
+        for(int i=0; i< inventoryFile.getInt("PACKAGES", 0); i++){
             markerOptionsMailBox.add(new MarkerOptions()
                     .position(createLocaiton())
                     .icon(BitmapDescriptorFactory.fromBitmap(marker))
@@ -247,10 +247,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
         Log.d("MailBox", "Creating");
     }
-    private void startArMarker(Marker marker){
+    private void startArMarker(Marker marker) {
         Log.d("Marker", "Marker ist in der nähe");
         Intent intent = new Intent(getApplicationContext(), ArActivity.class);
-        if(markers.contains(marker)) {
+        if (markers.contains(marker)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
                     intent.putExtra("id", 3);
@@ -265,24 +265,23 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     intent.putExtra("id", 1);
                     break;
             }
-            intent.putExtra("location",markerOptions);
+            intent.putExtra("location", markerOptions);
             startActivity(intent);
-        }
-        else {
-            ArrayList<MarkerOptions> markerOptionsMailBoxTemp= new ArrayList<MarkerOptions>();
-            markerOptionsMailBoxTemp= markerOptionsMailBox;
-            for (MarkerOptions markerOpt:markerOptionsMailBoxTemp
-            ) {if(markerOpt.getPosition()==marker.getPosition()) {
-                markerOptionsMailBox.remove(markerOpt);
+        } else if (markersMailBox.contains(marker)) {
+            ArrayList<MarkerOptions> markerOptionsMailBoxTemp = new ArrayList<MarkerOptions>();
+            markerOptionsMailBoxTemp = markerOptionsMailBox;
+            for (MarkerOptions markerOpt : markerOptionsMailBoxTemp) {
+                if (markerOpt.getPosition().equals(marker.getPosition())) {
+                    markerOptionsMailBox.remove(marker);
+                }
             }
-            }
-            intent.putExtra("actuellSuccess", success);
-            markersMailBox.remove(marker);
             intent.putExtra("id", 1);
-            intent.putExtra("locationMailBox",markerOptionsMailBox);
+            intent.putExtra("locationMailBox", markerOptionsMailBox);
             startActivity(intent);
         }
     }
+
+
     @Override
     public boolean onMarkerClick(Marker marker) {
         int tag;

@@ -39,7 +39,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private int id;
     private Intent intent;
     private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
-    private boolean success= false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,29 +66,12 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         btnBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(success) {
-                    markerOptionsMailBox= getIntent().getParcelableArrayListExtra("locationMailBox");
-                    if (markerOptionsMailBox != null) {
-                        intent.putExtra("locationMailBox",markerOptionsMailBox);
-                        if(markerOptionsMailBox.size()==0){
-                            intent.putExtra("success", false);
-                        }
-                        else {
-                            intent.putExtra("success", true);
-                        }
-                    }
-
+                if (getIntent().getParcelableArrayListExtra("locationMailBox")!=null){
+                    intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
                 }
-                else {
-                    if (getIntent().getParcelableArrayListExtra("location") != null) {
-                        intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
-                    }
-                    if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
-                        intent.putExtra("locationMailBox",getIntent().getParcelableArrayListExtra("locationMailBox"));
-                    }
-
+                if (getIntent().getParcelableArrayListExtra("location")!=null){
+                    intent.putExtra("location",getIntent().getParcelableArrayListExtra("location"));
                 }
-                intent.putExtra("success", success);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             }
@@ -220,11 +202,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             }else{
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
             }
-            success= true;
         }
         else if (hitNode.getRenderable() == singlePackageRenderable){
-            success= true;
-            intent.putExtra("tag", 3);
             Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
@@ -233,18 +212,14 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                     .apply();
         }
         else if (hitNode.getRenderable() == multiPackageRenderable){
-            success= true;
-            intent.putExtra("tag", 6);
-
             Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
             editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0)+3)
                     .apply();
-        }else if (hitNode.getRenderable() == wagonPackageRenderable){
-            success= true;
-            intent.putExtra("tag", 9);
+        }
+        else if (hitNode.getRenderable() == wagonPackageRenderable){
             Toast.makeText(ArActivity.this, "Du hast das Paket aufgesammelt", Toast.LENGTH_SHORT).show();
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
