@@ -38,14 +38,15 @@ import java.util.Random;
 
 public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener , Serializable {
     private SharedPreferences inventoryFile;
-    private Bundle extra= new Bundle();
+    private Bundle extra = new Bundle();
     private GoogleMap map;
     private static ArrayList<MarkerOptions> markerOptions= new ArrayList<MarkerOptions>();
     private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markers= new ArrayList<Marker>();
     private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
-    final int height= 100;
-    final int width= 100;
+    private final int height= 100;
+    private final int width= 100;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

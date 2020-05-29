@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import net.ictcampus.paketdienst.R;
-
 public class ShopActivity extends AppCompatActivity {
 
     @Override

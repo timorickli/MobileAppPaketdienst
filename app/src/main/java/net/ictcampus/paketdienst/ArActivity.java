@@ -11,7 +11,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
@@ -26,19 +25,14 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
-import java.util.ArrayList;
-
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
-
     private ArFragment arFragment;
     private ModelRenderable mailboxRenderable, singlePackageRenderable, multiPackageRenderable, wagonPackageRenderable, activeRenderable;
-    boolean placed = false;
-    private int tokens;
+    private boolean placed = false;
     private Node mailbox, singlePackage, multiPackage, wagonPackage;
     private Node activeNode;
     private int id;
     private Intent intent;
-    private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

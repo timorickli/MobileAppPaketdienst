@@ -30,30 +30,37 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * ClickListener to decide which TextView got clicked
+     *
      * @param v Clicked view
      */
     @Override
     public void onClick(View v) {
         Intent intent;
-        switch (v.getId()){
+
+        //Switch case to decide, which TextView was clicked
+        switch (v.getId()) {
             case R.id.imageButton:
-                intent= new Intent(getApplicationContext(), MapActivity.class);
+                intent = new Intent(getApplicationContext(), MapActivity.class);
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
                 intent.putExtra("status", getIntent().getBooleanExtra("status", false));
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 break;
+
             case R.id.spielanleitung:
                 break;
+
             case R.id.shop:
                 break;
+
             case R.id.inventory:
-                intent= new Intent(getApplicationContext(), InventoryActivity.class);
+                intent = new Intent(getApplicationContext(), InventoryActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 break;
+
             case R.id.settings:
-                intent= new Intent(getApplicationContext(), SettingActivity.class);
+                intent = new Intent(getApplicationContext(), SettingActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
                 break;
