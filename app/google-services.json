@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "654855179048",
+    "firebase_url": "https://paketdienst.firebaseio.com",
+    "project_id": "paketdienst",
+    "storage_bucket": "paketdienst.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:654855179048:android:e13951af7d7f892e5e9e1d",
+        "android_client_info": {
+          "package_name": "net.ictcampus.paketdienst"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "654855179048-5vv2jo8tvhj5qc49m6ltu31t4hpivlnb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB90pnq0MJmYjCtyYwgGQGA9LBu8B_rHFM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "654855179048-5vv2jo8tvhj5qc49m6ltu31t4hpivlnb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
