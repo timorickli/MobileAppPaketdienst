@@ -10,13 +10,13 @@
         android:id="@+id/itemPic3"
         android:layout_width="122dp"
         android:layout_height="124dp"
-        android:layout_marginTop="112dp"
+        android:layout_marginTop="20dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_stapel"
         app:layout_constraintEnd_toStartOf="@+id/itemPic4"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemPic1" />
+        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
         android:textColor="#000"
@@ -53,7 +53,7 @@
         android:id="@+id/itemPic1"
         android:layout_width="122dp"
         android:layout_height="124dp"
-        android:layout_marginTop="36dp"
+        android:layout_marginTop="28dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_stapel"
         app:layout_constraintEnd_toStartOf="@+id/itemPic2"
@@ -82,51 +82,6 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/itemPic3"
         app:layout_constraintTop_toTopOf="@+id/itemPic3" />
-
-    <ImageButton
-        android:id="@+id/imageButton5"
-        android:layout_width="122dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/shopImage"
-        android:src="@android:drawable/progress_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/itemText1"
-        app:layout_constraintTop_toBottomOf="@+id/itemText1" />
-
-    <ImageButton
-        android:id="@+id/imageButton8"
-        android:layout_width="122dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/shopImage"
-        android:src="@android:drawable/progress_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/itemText1"
-        app:layout_constraintTop_toBottomOf="@+id/itemText1" />
-
-    <ImageButton
-        android:id="@+id/imageButton10"
-        android:layout_width="122dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/shopImage"
-        android:src="@android:drawable/progress_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/itemText3"
-        app:layout_constraintTop_toBottomOf="@+id/itemText3" />
-
-    <ImageButton
-        android:id="@+id/imageButton11"
-        android:layout_width="122dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/shopImage"
-        android:src="@android:drawable/progress_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/itemText4"
-        app:layout_constraintTop_toBottomOf="@+id/itemText4" />
-
-    <ImageButton
-        android:id="@+id/imageButton9"
-        android:layout_width="122dp"
-        android:layout_height="42dp"
-        android:contentDescription="@string/shopImage"
-        android:src="@android:drawable/progress_horizontal"
-        app:layout_constraintStart_toStartOf="@+id/itemText2"
-        app:layout_constraintTop_toBottomOf="@+id/itemText2" />
 
     <TextView
         android:id="@+id/itemText1"
@@ -159,5 +114,37 @@
         android:text="@string/shopImage"
         app:layout_constraintStart_toStartOf="@+id/itemPic2"
         app:layout_constraintTop_toBottomOf="@+id/itemPic2" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="122dp"
+        android:layout_height="44dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/itemText1"
+        app:layout_constraintTop_toBottomOf="@+id/itemText1" />
+
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="122dp"
+        android:layout_height="44dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/itemText3"
+        app:layout_constraintTop_toBottomOf="@+id/itemText3" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="122dp"
+        android:layout_height="44dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/itemText2"
+        app:layout_constraintTop_toBottomOf="@+id/itemText2" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="122dp"
+        android:layout_height="44dp"
+        android:text="Button"
+        app:layout_constraintStart_toStartOf="@+id/itemText4"
+        app:layout_constraintTop_toBottomOf="@+id/itemText4" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

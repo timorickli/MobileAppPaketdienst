@@ -22,7 +22,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ShopActivity"></activity>
+        <activity android:name=".InstructionActivity"></activity>
+        <activity android:name=".ShopActivity" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-1335902313142868~8236062257"/>
@@ -32,6 +34,7 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB6CNsbypIxYyMyJNaNeFniVOHtUVC2fFk" />
+
         <activity android:name=".ArActivity" />
         <activity android:name=".InventoryActivity" />
         <activity android:name=".MenuActivity" />
