@@ -62,3 +62,15 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:+'
     implementation 'androidx.constraintlayout:constraintlayout:+'
 }
+
+
+sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_solo.fbx',
+        'default',
+        'src/main/java/net/ictcampus/paketdienst/models/package_solo.sfa',
+        'src/main/res/raw/package_solo')
+
+
+sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_multi.fbx',
+        'default',
+        'src/main/java/net/ictcampus/paketdienst/models/package_multi.sfa',
+        'src/main/res/raw/package_multi')
