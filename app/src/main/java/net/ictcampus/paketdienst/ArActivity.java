@@ -78,7 +78,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
         //Used to Create Model at a certain Point on the Floor automatically
         if (frame.getCamera().getTrackingState() == TrackingState.TRACKING && !placed) {
-            Pose pos = frame.getCamera().getPose().compose(Pose.makeTranslation(0, 0, -3f));
+            Pose pos = frame.getCamera().getPose().compose(Pose.makeTranslation(1f, 0, -2.5f));
 
             //Anchor Node to fix the Model in place
             Anchor anchor = arFragment.getArSceneView().getSession().createAnchor(pos);
@@ -99,9 +99,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                     activeRenderable = mailboxRenderable;
                     break;
             }
-
-            createModel(anchorNode, activeNode, activeRenderable);
             placed = true;
+            createModel(anchorNode, activeNode, activeRenderable);
         }
     }
 
@@ -117,7 +116,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.mailbox)
+                        .setSource(this, R.raw.package_solo)
                         .build().thenAccept(renderable -> singlePackageRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -133,7 +132,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.mailbox)
+                        .setSource(this, R.raw.package_multi)
                         .build().thenAccept(renderable -> multiPackageRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -186,14 +185,29 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
      */
     private void createModel(AnchorNode anchorNode, Node node, Renderable renderable) {
 
-        //Rotate and shrink model
-        node.setLocalScale(new Vector3(0.4f, 0.4f, 0.4f));
-        node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
+        if (activeNode == mailbox) {
 
-        //Set Anchor, Renderable, TapListener
-        node.setParent(anchorNode);
-        node.setRenderable(renderable);
-        node.setOnTapListener(this);
+            //Rotate and shrink model
+            node.setLocalScale(new Vector3(0.4f, 0.4f, 0.4f));
+            node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
+
+            //Set Anchor, Renderable, TapListener
+            node.setParent(anchorNode);
+            node.setRenderable(renderable);
+            node.setOnTapListener(this);
+        }
+        else{
+
+            //Rotate and shrink model
+            node.setLocalScale(new Vector3(10f, 10f, 10f));
+            node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
+
+            //Set Anchor, Renderable, TapListener
+            node.setParent(anchorNode);
+            node.setRenderable(renderable);
+            node.setOnTapListener(this);
+        }
+
     }
 
     /**
