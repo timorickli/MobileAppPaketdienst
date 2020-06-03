@@ -51,7 +51,9 @@ public class SettingActivity extends AppCompatActivity {
 
         //Music
         if (settingMusic.isChecked()) {
-            settingMusicCheck = true;
+            SharedPreferences.Editor editor = settingFile.edit();
+            editor.putInt("MAPSTYLE", spinner.getSelectedItemPosition());
+            editor.commit();
         } else if (!settingMusic.isChecked()) {
             settingMusicCheck = false;
         }

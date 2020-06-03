@@ -29,7 +29,7 @@
         android:contentDescription="@string/shopImage"
         app:layout_constraintStart_toStartOf="@+id/textView3"
         app:layout_constraintTop_toBottomOf="@+id/textView3"
-        app:srcCompat="@drawable/paket_stapel" />
+        app:srcCompat="@drawable/paket_einzeln" />
 
     <TextView
         android:id="@+id/textView3"

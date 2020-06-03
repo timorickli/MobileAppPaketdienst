@@ -17,9 +17,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
 
 
 import com.google.android.gms.ads.AdListener;
@@ -28,7 +25,6 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -313,10 +309,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         if (markers.contains(marker)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
-                    intent.putExtra("id", 3);
+                    intent.putExtra("id", 2);
                     break;
                 case 6:
-                    intent.putExtra("id", 2);
+                    intent.putExtra("id", 3);
                     break;
                 case 9:
                     intent.putExtra("id", 4);
