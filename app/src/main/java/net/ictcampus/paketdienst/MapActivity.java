@@ -1,5 +1,6 @@
 package net.ictcampus.paketdienst;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -7,11 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
@@ -19,6 +22,8 @@ import android.view.View;
 import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,16 +41,16 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener , Serializable {
+public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
     private SharedPreferences inventoryFile;
     private Bundle extra = new Bundle();
     private GoogleMap map;
-    private static ArrayList<MarkerOptions> markerOptions= new ArrayList<MarkerOptions>();
-    private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
-    private static ArrayList<Marker> markers= new ArrayList<Marker>();
-    private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
-    private final int height= 100;
-    private final int width= 100;
+    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
+    private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
+    private static ArrayList<Marker> markers = new ArrayList<Marker>();
+    private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
+    private final int height = 100;
+    private final int width = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +68,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this, MenuActivity.class);
-                if(markerOptions!=null) {
+                if (markerOptions != null) {
                     intent.putExtra("location", markerOptions);
                 }
                 if (markerOptionsMailBox != null) {
@@ -76,6 +81,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             markerOptions = getIntent().getParcelableArrayListExtra("location");
         }
     }
+
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;

@@ -7,6 +7,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
     buildToolsVersion "29.0.3"
 
     defaultConfig {
@@ -56,3 +57,8 @@ sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/mailbox.fbx',
         'default',
         'src/main/java/net/ictcampus/paketdienst/models/mailbox.sfa',
         'src/main/res/raw/mailbox')
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+}

@@ -223,7 +223,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 hitNode = null;
 
                 //Edit Inventory
-                editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10)
+                editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10*inventoryFile.getInt("MULTIPLIER", 1))
                         .apply();
                 editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1)
                         .apply();
