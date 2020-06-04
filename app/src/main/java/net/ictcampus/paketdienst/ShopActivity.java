@@ -180,8 +180,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 timerRunningItem2 = false;
                 editor.putInt("MULTIPLIER", 1)
                         .apply();
-
-            } else {
+                btnItem2.setText("2000");
+            }
+            else {
                 startTimerItem2();
             }
         }
@@ -194,8 +195,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 timerRunningItem1 = false;
                 editor.putInt("RANGE", 0)
                         .apply();
-
-            } else {
+                btnItem1.setText("1000");
+            }
+            else {
                 startTimerItem1();
             }
         }
