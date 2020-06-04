@@ -23,6 +23,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         TextView shop = findViewById(R.id.shop);
         TextView inventory = findViewById(R.id.inventory);
         TextView settings = findViewById(R.id.settings);
+
         //Dark Mode
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if(settingFile.getBoolean("DARK",false)){
@@ -31,6 +32,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         else {
             whiteMode();
         }
+
         //ClickListeners for all subs
         ib.setOnClickListener(this);
         spielanleitung.setOnClickListener(this);
