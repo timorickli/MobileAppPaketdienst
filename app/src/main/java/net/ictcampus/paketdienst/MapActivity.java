@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
@@ -17,6 +18,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 
 import com.google.android.gms.ads.AdListener;
@@ -91,7 +93,26 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         });
         //Prepare the AD
         prepareAD();
+        //Dark Mode
+        SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if(settingFile.getBoolean("DARK",false)){
+            darkMode();
+        }
+        else {
+            whiteMode();
+        }
     }
+
+    private void whiteMode() {
+        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        imageButton.setImageResource(R.drawable.settingbtn_black);
+    }
+
+    private void darkMode() {
+        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        imageButton.setImageResource(R.drawable.settingbtn_white);
+    }
+
     public void prepareAD(){
         mInterstitialAd= new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.adid));
