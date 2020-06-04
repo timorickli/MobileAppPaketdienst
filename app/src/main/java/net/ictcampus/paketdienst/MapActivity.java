@@ -1,6 +1,5 @@
 package net.ictcampus.paketdienst;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -8,24 +7,24 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
 
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.core.app.ActivityCompat;
 
-import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.InterstitialAd;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.initialization.InitializationStatus;
+import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
@@ -41,17 +40,19 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
-    private SharedPreferences inventoryFile;
-    private Bundle extra = new Bundle();
-    private GoogleMap map;
-    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
-    private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
-    private static ArrayList<Marker> markers = new ArrayList<Marker>();
-    private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
-    private final int height = 100;
-    private final int width = 100;
+import static com.google.ar.sceneform.rendering.HeadlessEngineWrapper.TAG;
 
+public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener , Serializable {
+    private SharedPreferences inventoryFile,settingFile;
+    private Bundle extra= new Bundle();
+    private GoogleMap map;
+    private InterstitialAd mInterstitialAd;
+    private static ArrayList<MarkerOptions> markerOptions= new ArrayList<MarkerOptions>();
+    private static ArrayList<MarkerOptions> markerOptionsMailBox= new ArrayList<MarkerOptions>();
+    private static ArrayList<Marker> markers= new ArrayList<Marker>();
+    private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
+    private final int height= 100;
+    private final int width= 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,15 +61,16 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.google_map);
         mapFragment.getMapAsync(this);
-        //Location Manager
+        //Catch SharedPreferences
+        settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
-        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(MapActivity.this, MenuActivity.class);
-                if (markerOptions != null) {
+                if(markerOptions!=null) {
                     intent.putExtra("location", markerOptions);
                 }
                 if (markerOptionsMailBox != null) {
@@ -80,8 +82,21 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         if (getIntent().getParcelableArrayListExtra("location") != null) {
             markerOptions = getIntent().getParcelableArrayListExtra("location");
         }
+        if (getIntent().getParcelableArrayListExtra("locationMailBox") != null){
+            markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
+        }
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {}
+        });
+        //Prepare the AD
+        prepareAD();
     }
-
+    public void prepareAD(){
+        mInterstitialAd= new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId(getString(R.string.adid));
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -101,9 +116,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 createMailBox();
             }
             if(markerOptionsMailBox.size() >0){
-                if (getIntent().getParcelableArrayListExtra("locationMailBox") != null){
-                    markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
-                }
                 addMarkersMailBox();
             }
         }
@@ -115,12 +127,48 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 addMarkers();
             }
         }
-        try{
-            boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro_style));
-        }
-        catch (Resources.NotFoundException e){
-            Log.e("Map", "Map style not found");
-        }
+        loadMapStyle();
+
+    }
+
+    private void loadMapStyle() {
+        switch (settingFile.getInt("MAPSTYLE", 0)){
+            case 1:
+                try{
+                    boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.dark_style));
+                }
+                catch (Resources.NotFoundException e){
+                    Log.e("Map", "Map style DARK not found");
+                }
+                break;
+            case 2:
+                try{
+                    boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro_style));
+                }
+                catch (Resources.NotFoundException e){
+                    Log.e("Map", "Map style RETRO not found");
+                }
+                break;
+            case 3:
+                try{
+                    boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.fancy_style));
+                }
+                catch (Resources.NotFoundException e){
+                    Log.e("Map", "Map style FANCY not found");
+                }
+                break;
+            default:
+                try{
+                    boolean success= map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.normal_style));
+                }
+                catch (Resources.NotFoundException e){
+                    Log.e("Map", "Map style DEFAULT not found");
+                }
+                break;
+         }
+
+
+
     }
 
     @SuppressLint("MissingPermission")
@@ -261,10 +309,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         if (markers.contains(marker)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
-                    intent.putExtra("id", 3);
+                    intent.putExtra("id", 2);
                     break;
                 case 6:
-                    intent.putExtra("id", 2);
+                    intent.putExtra("id", 3);
                     break;
                 case 9:
                     intent.putExtra("id", 4);
@@ -318,6 +366,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         return true;
     }
     private void showDialog(Marker marker) {
+        mInterstitialAd.setAdListener(new AdListener(){
+            @Override
+            public void onAdClosed() {
+                mInterstitialAd.loadAd(new AdRequest.Builder().build());
+                startArMarker(marker);
+
+            }
+        });
         AlertDialog.Builder showWarning= new AlertDialog.Builder(MapActivity.this);
         showWarning.setTitle(R.string.alert_dialogTitle);
         showWarning.setMessage(R.string.alert_dialogMessage);
@@ -325,7 +381,15 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         showWarning.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                startArMarker(marker);
+                if (mInterstitialAd.isLoaded()) {
+
+                    mInterstitialAd.show();
+
+                } else {
+                    Log.d(TAG, "The interstitial wasn't loaded yet.");
+                    startArMarker(marker);
+                }
+
             }
         });
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
@@ -336,6 +400,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         });
         AlertDialog alert11 = showWarning.create();
         alert11.show();
+
     }
 
 
