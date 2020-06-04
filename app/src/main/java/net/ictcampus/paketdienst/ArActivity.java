@@ -296,4 +296,3 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         overridePendingTransition(0, 0);
     }
 }
-

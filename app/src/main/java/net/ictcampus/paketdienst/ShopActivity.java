@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.Locale;
 
@@ -19,7 +20,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtItem1, txtItem2, txtItem3, txtItem4;
     Button btnItem1, btnItem2, btnItem3, btnItem4;
     ImageButton btnHome;
-    private static final long ITEM_DURATION = 60*30*1000;
+    private static final long ITEM_DURATION = 60 * 30 * 1000;
     private CountDownTimer countDownTimerItem2, countDownTimerItem1;
     private boolean timerRunningItem2, timerRunningItem1;
     private long timeLeftItem2, timeLeftItem1;
@@ -58,10 +59,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
         //Dark Mode
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if(settingFile.getBoolean("DARK",false)){
+        if (settingFile.getBoolean("DARK", false)) {
             darkMode();
-        }
-        else {
+        } else {
             whiteMode();
         }
     }
@@ -69,49 +69,58 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title= (TextView) findViewById(R.id.textView4);
-        TextView text1= (TextView) findViewById(R.id.itemText1);
-        TextView text2= (TextView) findViewById(R.id.itemText3);
-        TextView text3= (TextView) findViewById(R.id.itemText4);
-        TextView text4= (TextView) findViewById(R.id.itemText2);
-        Button btn1= (Button) findViewById(R.id.button);
-        Button btn2= (Button) findViewById(R.id.button2);
-        Button btn3= (Button) findViewById(R.id.button3);
-        Button btn4= (Button) findViewById(R.id.button4);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton2);
+        TextView title = (TextView) findViewById(R.id.textView4);
+        TextView text1 = (TextView) findViewById(R.id.itemText1);
+        TextView text2 = (TextView) findViewById(R.id.itemText3);
+        TextView text3 = (TextView) findViewById(R.id.itemText4);
+        TextView text4 = (TextView) findViewById(R.id.itemText2);
+        Button btn1 = (Button) findViewById(R.id.button);
+        Button btn2 = (Button) findViewById(R.id.button2);
+        Button btn3 = (Button) findViewById(R.id.button3);
+        Button btn4 = (Button) findViewById(R.id.button4);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton2);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         text4.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
-        btn1.setTextColor(Color.BLACK);btn1.setBackgroundColor(Color.GRAY);
-        btn2.setTextColor(Color.BLACK);btn2.setBackgroundColor(Color.GRAY);
-        btn3.setTextColor(Color.BLACK);btn3.setBackgroundColor(Color.GRAY);
-        btn4.setTextColor(Color.BLACK);btn4.setBackgroundColor(Color.GRAY);
+        btn1.setTextColor(Color.BLACK);
+        btn1.setBackgroundColor(Color.GRAY);
+        btn2.setTextColor(Color.BLACK);
+        btn2.setBackgroundColor(Color.GRAY);
+        btn3.setTextColor(Color.BLACK);
+        btn3.setBackgroundColor(Color.GRAY);
+        btn4.setTextColor(Color.BLACK);
+        btn4.setBackgroundColor(Color.GRAY);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
+
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
-        TextView title= (TextView) findViewById(R.id.textView4);
-        TextView text1= (TextView) findViewById(R.id.itemText1);
-        TextView text2= (TextView) findViewById(R.id.itemText3);
-        TextView text3= (TextView) findViewById(R.id.itemText4);
-        TextView text4= (TextView) findViewById(R.id.itemText2);
-        Button btn1= (Button) findViewById(R.id.button);
-        Button btn2= (Button) findViewById(R.id.button2);
-        Button btn3= (Button) findViewById(R.id.button3);
-        Button btn4= (Button) findViewById(R.id.button4);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton2);
+        TextView title = (TextView) findViewById(R.id.textView4);
+        TextView text1 = (TextView) findViewById(R.id.itemText1);
+        TextView text2 = (TextView) findViewById(R.id.itemText3);
+        TextView text3 = (TextView) findViewById(R.id.itemText4);
+        TextView text4 = (TextView) findViewById(R.id.itemText2);
+        Button btn1 = (Button) findViewById(R.id.button);
+        Button btn2 = (Button) findViewById(R.id.button2);
+        Button btn3 = (Button) findViewById(R.id.button3);
+        Button btn4 = (Button) findViewById(R.id.button4);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton2);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
         text4.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);
-        btn1.setTextColor(Color.WHITE);btn1.setBackgroundColor(Color.DKGRAY);
-        btn2.setTextColor(Color.WHITE);btn2.setBackgroundColor(Color.DKGRAY);
-        btn3.setTextColor(Color.WHITE);btn3.setBackgroundColor(Color.DKGRAY);
-        btn4.setTextColor(Color.WHITE);btn4.setBackgroundColor(Color.DKGRAY);
+        btn1.setTextColor(Color.WHITE);
+        btn1.setBackgroundColor(Color.DKGRAY);
+        btn2.setTextColor(Color.WHITE);
+        btn2.setBackgroundColor(Color.DKGRAY);
+        btn3.setTextColor(Color.WHITE);
+        btn3.setBackgroundColor(Color.DKGRAY);
+        btn4.setTextColor(Color.WHITE);
+        btn4.setBackgroundColor(Color.DKGRAY);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
 
@@ -127,38 +136,50 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
             case R.id.button:
-                if (inventoryFile.getInt("TOKENS", 0)>= Integer.parseInt(btnItem1.getText().toString())&&btnItem1.isClickable()){
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem1.getText().toString()) && btnItem1.isClickable()) {
                     editor.putInt("RANGE", 1)
                             .apply();
-                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
+                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem1.getText().toString()))
                             .apply();
                     btnItem1.setClickable(false);
                     startTimerItem1();
+                } else {
+                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button2:
-                if (inventoryFile.getInt("TOKENS", 0)>= Integer.parseInt(btnItem2.getText().toString())&&btnItem2.isClickable()){
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem2.getText().toString()) && btnItem2.isClickable()) {
                     editor.putInt("MULTIPLIER", 2)
                             .apply();
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
                             .apply();
                     btnItem2.setClickable(false);
                     startTimerItem2();
+                } else {
+                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button3:
-                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem2.getText().toString())) {
-                    editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10)
-                            .apply();
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
                             .apply();
+                } else {
+                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
 
             case R.id.button4:
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString())) {
+                    editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10)
+                            .apply();
+                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString()))
+                            .apply();
+                    increaseTime();
+                } else {
+                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
+                }
                 break;
 
             default:
@@ -178,6 +199,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 timeLeftItem1 = millisUntilFinished;
                 updateTimeButton(btnItem1, timeLeftItem1);
             }
+
             @Override
             public void onFinish() {
                 timerRunningItem1 = false;
@@ -194,6 +216,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 timeLeftItem2 = millisUntilFinished;
                 updateTimeButton(btnItem2, timeLeftItem2);
             }
+
             @Override
             public void onFinish() {
                 timerRunningItem2 = false;
@@ -201,6 +224,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }.start();
     }
 
+    @Override
     protected void onStop() {
         super.onStop();
         SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
@@ -223,6 +247,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
+
         SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
@@ -230,6 +255,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         timerRunningItem2 = timers.getBoolean("timerRunningItem2", false);
         timeLeftItem1 = timers.getLong("millisLeftItem1", ITEM_DURATION);
         timerRunningItem1 = timers.getBoolean("timerRunningItem1", false);
+
         if (timerRunningItem2) {
             updateTimeButton(btnItem2, timeLeftItem2);
             endTimeItem2 = timers.getLong("endTimeItem2", 0);
@@ -240,8 +266,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 editor.putInt("MULTIPLIER", 1)
                         .apply();
                 btnItem2.setText("2000");
-            }
-            else {
+            } else {
                 startTimerItem2();
             }
         }
@@ -255,17 +280,34 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 editor.putInt("RANGE", 0)
                         .apply();
                 btnItem1.setText("1000");
-            }
-            else {
+            } else {
                 startTimerItem1();
             }
         }
     }
 
+    /**
+     * Updates the timer displayed on button
+     *
+     * @param button
+     * @param time
+     */
     private void updateTimeButton(Button button, Long time) {
         int minutes = (int) (time / 1000) / 60;
         int seconds = (int) (time / 1000) % 60;
+
+        //String formatter
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         button.setText(timeFormat);
+    }
+
+    /**
+     * Increases time to deliver a package
+     */
+    private void increaseTime() {
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = timers.edit();
+        editor.putLong("endTimeDelivery", timers.getLong("endTimeDelivery", 0) + 60 * 20 * 1000);
+        editor.apply();
     }
 }

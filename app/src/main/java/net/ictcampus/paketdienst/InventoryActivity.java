@@ -14,9 +14,9 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class InventoryActivity extends AppCompatActivity {
-
     private int tokens;
     private int packages;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,10 +32,11 @@ public class InventoryActivity extends AppCompatActivity {
         tokensView.setText(String.valueOf(tokens));
         packagesView.setText(String.valueOf(packages));
 
+        //Clicklistener homebutton
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent= new Intent(getApplicationContext(), MenuActivity.class);
+                Intent intent = new Intent(getApplicationContext(), MenuActivity.class);
                 startActivity(intent);
                 overridePendingTransition(0, 0);
             }
@@ -43,22 +44,24 @@ public class InventoryActivity extends AppCompatActivity {
 
         //Dark Mode
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if(settingFile.getBoolean("DARK",false)){
+        if (settingFile.getBoolean("DARK", false)) {
             darkMode();
-        }
-        else {
+        } else {
             whiteMode();
         }
     }
 
+    /**
+     * Style to white
+     */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title= (TextView) findViewById(R.id.textView2);
-        TextView text1= (TextView) findViewById(R.id.textView3);
-        TextView text2= (TextView) findViewById(R.id.packages);
-        TextView text3= (TextView) findViewById(R.id.tokens);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        TextView title = (TextView) findViewById(R.id.textView2);
+        TextView text1 = (TextView) findViewById(R.id.textView3);
+        TextView text2 = (TextView) findViewById(R.id.packages);
+        TextView text3 = (TextView) findViewById(R.id.tokens);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
@@ -66,14 +69,17 @@ public class InventoryActivity extends AppCompatActivity {
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
 
+    /**
+     * Style to Darkmode
+     */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
-        TextView title= (TextView) findViewById(R.id.textView2);
-        TextView text1= (TextView) findViewById(R.id.textView3);
-        TextView text2= (TextView) findViewById(R.id.packages);
-        TextView text3= (TextView) findViewById(R.id.tokens);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        TextView title = (TextView) findViewById(R.id.textView2);
+        TextView text1 = (TextView) findViewById(R.id.textView3);
+        TextView text2 = (TextView) findViewById(R.id.packages);
+        TextView text3 = (TextView) findViewById(R.id.tokens);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
