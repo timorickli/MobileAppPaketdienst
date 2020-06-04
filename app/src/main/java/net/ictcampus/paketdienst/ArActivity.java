@@ -116,7 +116,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.package_solo)
+                        .setSource(ArActivity.this, R.raw.package_solo)
                         .build().thenAccept(renderable -> singlePackageRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -132,7 +132,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.package_multi)
+                        .setSource(ArActivity.this, R.raw.package_multi_new)
                         .build().thenAccept(renderable -> multiPackageRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -148,7 +148,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.mailbox)
+                        .setSource(ArActivity.this, R.raw.package_car_new)
                         .build().thenAccept(renderable -> wagonPackageRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -164,7 +164,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 //Builder for model
                 ModelRenderable.builder()
-                        .setSource(this, R.raw.mailbox)
+                        .setSource(ArActivity.this, R.raw.mailbox)
                         .build().thenAccept(renderable -> mailboxRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
@@ -198,7 +198,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         }
         else{
 
-            //Rotate and shrink model
+            //Rotate and grow model
             node.setLocalScale(new Vector3(10f, 10f, 10f));
             node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
 
