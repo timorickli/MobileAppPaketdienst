@@ -14,7 +14,7 @@
         android:contentDescription="@string/app_name"
         android:rotation="45"
         android:scaleType="centerCrop"
-        android:src="@drawable/icon_setting"
+        android:src="@drawable/settingbtn_black"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

@@ -21,7 +21,7 @@
         android:layout_height="90sp"
         android:scaleType="centerCrop"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/icon_setting"
+        android:src="@drawable/settingbtn_black"
         android:background="@android:color/transparent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

@@ -60,7 +60,7 @@
         android:background="@android:color/transparent"
         android:contentDescription="@string/app_name"
         android:scaleType="centerCrop"
-        android:src="@drawable/icon_setting"
+        android:src="@drawable/settingbtn_black"
         android:rotation="45"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
