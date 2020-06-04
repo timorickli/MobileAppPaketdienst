@@ -382,10 +382,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
             SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = timers.edit();
-            editor.putLong("millisLeftDelivery", timeLeft);
-            editor.putBoolean("timerRunningDelivery", timerRunning);
-            editor.putLong("endTimeDelivery", endTime);
-            editor.apply();
+            if (markersMailBox.isEmpty()) {
+                editor.remove("millisLeftDelivery");
+                editor.remove("timerRunningDelivery");
+                editor.remove("endTimeDelivery");
+                editor.apply();
+            } else {
+                editor.putLong("millisLeftDelivery", timeLeft);
+                editor.putBoolean("timerRunningDelivery", timerRunning);
+                editor.putLong("endTimeDelivery", endTime);
+                editor.apply();
+            }
 
             intent.putExtra("location", markerOptions);
             startActivity(intent);
