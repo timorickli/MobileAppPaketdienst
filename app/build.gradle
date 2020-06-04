@@ -75,3 +75,13 @@ sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_multi.fb
         'default',
         'src/main/java/net/ictcampus/paketdienst/models/package_multi.sfa',
         'src/main/res/raw/package_multi')
+
+sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_car_new.fbx',
+        'default',
+        'src/main/java/net/ictcampus/paketdienst/models/package_car_new.sfa',
+        'src/main/res/raw/package_car_new')
+
+sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_multi_new.fbx',
+        'default',
+        'src/main/java/net/ictcampus/paketdienst/models/package_multi_new.sfa',
+        'src/main/res/raw/package_multi_new')
