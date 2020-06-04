@@ -18,11 +18,11 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     TextView txtItem1, txtItem2, txtItem3, txtItem4;
     Button btnItem1, btnItem2, btnItem3, btnItem4;
     ImageButton btnHome;
-    private static final long START_TIME_IN_MILLIS = 60*30*1000;
-    private CountDownTimer mCountDownTimer;
-    private boolean mTimerRunning;
-    private long mTimeLeftInMillis;
-    private long mEndTime;
+    private static final long ITEM_DURATION = 60*30*1000;
+    private CountDownTimer countDownTimerItem2, countDownTimerItem1;
+    private boolean timerRunningItem2, timerRunningItem1;
+    private long timeLeftItem2, timeLeftItem1;
+    private long endTimeItem2, endTimeItem1;
 
 
     @Override
@@ -39,10 +39,10 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         btnItem2 = findViewById(R.id.button2);
         btnItem3 = findViewById(R.id.button3);
         btnItem4 = findViewById(R.id.button4);
-        btnItem1.setText("100");
-        btnItem2.setText("200");
-        btnItem3.setText("250");
-        btnItem4.setText("400");
+        btnItem1.setText("1000");
+        btnItem2.setText("2000");
+        btnItem3.setText("2500");
+        btnItem4.setText("4000");
         btnHome = findViewById(R.id.imageButton2);
         btnItem1.setOnClickListener(this);
         btnItem2.setOnClickListener(this);
@@ -68,6 +68,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
             case R.id.button:
+                if (inventoryFile.getInt("TOKENS", 0)>= Integer.parseInt(btnItem1.getText().toString())&&btnItem1.isClickable()){
+                    editor.putInt("RANGE", 1)
+                            .apply();
+                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
+                            .apply();
+                    btnItem1.setClickable(false);
+                    startTimerItem1();
+                }
                 break;
 
             case R.id.button2:
@@ -77,7 +85,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
                             .apply();
                     btnItem2.setClickable(false);
-                    startTimer();
+                    startTimerItem2();
                 }
                 break;
 
@@ -102,59 +110,101 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void startTimer() {
-        mTimerRunning = true;
-        mEndTime = System.currentTimeMillis() + mTimeLeftInMillis;
-        mCountDownTimer = new CountDownTimer(mTimeLeftInMillis, 1000) {
+    private void startTimerItem1() {
+        timerRunningItem1 = true;
+        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
+        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                mTimeLeftInMillis = millisUntilFinished;
-                updateTime();
+                timeLeftItem1 = millisUntilFinished;
+                updateTimeButton(btnItem1, timeLeftItem1);
             }
             @Override
             public void onFinish() {
-                mTimerRunning = false;
+                timerRunningItem1 = false;
+            }
+        }.start();
+    }
+
+    private void startTimerItem2() {
+        timerRunningItem2 = true;
+        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
+        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftItem2 = millisUntilFinished;
+                updateTimeButton(btnItem2, timeLeftItem2);
+            }
+            @Override
+            public void onFinish() {
+                timerRunningItem2 = false;
             }
         }.start();
     }
 
     protected void onStop() {
         super.onStop();
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences("Timers", MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putLong("millisLeft", mTimeLeftInMillis);
-        editor.putBoolean("timerRunning", mTimerRunning);
-        editor.putLong("endTime", mEndTime);
+        editor.putLong("millisLeftItem1", timeLeftItem1);
+        editor.putBoolean("timerRunningItem1", timerRunningItem1);
+        editor.putLong("endTimeItem1", endTimeItem1);
+        editor.putLong("millisLeftItem2", timeLeftItem2);
+        editor.putBoolean("timerRunningItem2", timerRunningItem2);
+        editor.putLong("endTimeItem2", endTimeItem2);
         editor.apply();
-        if (mCountDownTimer != null) {
-            mCountDownTimer.cancel();
+        if (countDownTimerItem2 != null) {
+            countDownTimerItem2.cancel();
+        }
+        if (countDownTimerItem1 != null) {
+            countDownTimerItem1.cancel();
         }
     }
+
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences prefs = getSharedPreferences("prefs", MODE_PRIVATE);
-        mTimeLeftInMillis = prefs.getLong("millisLeft", START_TIME_IN_MILLIS);
-        mTimerRunning = prefs.getBoolean("timerRunning", false);
-        if (mTimerRunning) {
-            updateTime();
-            mEndTime = prefs.getLong("endTime", 0);
-            mTimeLeftInMillis = mEndTime - System.currentTimeMillis();
-            if (mTimeLeftInMillis < 0) {
-                mTimeLeftInMillis = 0;
-                mTimerRunning = false;
-                updateTime();
+        SharedPreferences prefs = getSharedPreferences("Timers", MODE_PRIVATE);
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
+        timeLeftItem2 = prefs.getLong("millisLeftItem2", ITEM_DURATION);
+        timerRunningItem2 = prefs.getBoolean("timerRunningItem2", false);
+        timeLeftItem1 = prefs.getLong("millisLeftItem1", ITEM_DURATION);
+        timerRunningItem1 = prefs.getBoolean("timerRunningItem1", false);
+        if (timerRunningItem2) {
+            updateTimeButton(btnItem2, timeLeftItem2);
+            endTimeItem2 = prefs.getLong("endTimeItem2", 0);
+            timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
+            if (timeLeftItem2 < 0) {
+                timeLeftItem2 = 0;
+                timerRunningItem2 = false;
+                editor.putInt("MULTIPLIER", 1)
+                        .apply();
+
             } else {
-                startTimer();
+                startTimerItem2();
+            }
+        }
+        if (timerRunningItem1) {
+            updateTimeButton(btnItem1, timeLeftItem1);
+            endTimeItem1 = prefs.getLong("endTimeItem2", 0);
+            timeLeftItem1 = endTimeItem1 - System.currentTimeMillis();
+            if (timeLeftItem1 < 0) {
+                timeLeftItem1 = 0;
+                timerRunningItem1 = false;
+                editor.putInt("RANGE", 0)
+                        .apply();
+
+            } else {
+                startTimerItem1();
             }
         }
     }
 
-
-    private void updateTime() {
-        int minutes = (int) (mTimeLeftInMillis / 1000) / 60;
-        int seconds = (int) (mTimeLeftInMillis / 1000) % 60;
+    private void updateTimeButton(Button button, Long time) {
+        int minutes = (int) (time / 1000) / 60;
+        int seconds = (int) (time / 1000) % 60;
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        btnItem2.setText(timeFormat);
+        button.setText(timeFormat);
     }
 }
