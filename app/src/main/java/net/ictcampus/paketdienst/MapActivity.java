@@ -460,14 +460,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mInterstitialAd.isLoaded()) {
-
                     mInterstitialAd.show();
-
                 } else {
                     Log.d(TAG, "The interstitial wasn't loaded yet.");
                     startArMarker(marker);
                 }
-
             }
         });
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {

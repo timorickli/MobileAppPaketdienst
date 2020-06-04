@@ -95,6 +95,15 @@ public class SettingActivity extends AppCompatActivity {
         else {
             whiteMode();
         }
+        //Clickable TextView
+        TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
+        impressum.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent1 = new Intent(getApplicationContext(), ImpressumActivity.class);
+                startActivity(intent1);
+            }
+        });
     }
 
     private void whiteMode() {
@@ -107,6 +116,7 @@ public class SettingActivity extends AppCompatActivity {
         TextView text4= (TextView) findViewById(R.id.textView8);
         TextView text5= (TextView) findViewById(R.id.textView9);
         TextView text6= (TextView) findViewById(R.id.textView4);
+        TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
         Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
         ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
@@ -116,6 +126,7 @@ public class SettingActivity extends AppCompatActivity {
         text5.setTextColor(Color.BLACK);
         text6.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
+        impressum.setTextColor(Color.BLACK);
         spinner.setBackgroundColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
@@ -130,6 +141,7 @@ public class SettingActivity extends AppCompatActivity {
         TextView text4= (TextView) findViewById(R.id.textView8);
         TextView text5= (TextView) findViewById(R.id.textView9);
         TextView text6= (TextView) findViewById(R.id.textView4);
+        TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
         Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
         ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
@@ -139,6 +151,7 @@ public class SettingActivity extends AppCompatActivity {
         text5.setTextColor(Color.WHITE);
         text6.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);
+        impressum.setTextColor(Color.WHITE);
         spinner.setBackgroundColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }

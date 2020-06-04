@@ -16,19 +16,20 @@
         android:required="true" />
 
     <application
-        android:largeHeap="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".InstructionActivity"></activity>
+        <activity android:name=".ImpressumActivity"></activity>
+        <activity android:name=".InstructionActivity" />
         <activity android:name=".ShopActivity" />
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1335902313142868~8236062257"/>
+            android:value="ca-app-pub-1335902313142868~8236062257" />
         <meta-data
             android:name="com.google.ar.core"
             android:value="required" />

@@ -85,3 +85,8 @@ sceneform.asset('src/main/java/net/ictcampus/paketdienst/models/package_multi_ne
         'default',
         'src/main/java/net/ictcampus/paketdienst/models/package_multi_new.sfa',
         'src/main/res/raw/package_multi_new')
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:+'
+    implementation 'androidx.constraintlayout:constraintlayout:+'
+}

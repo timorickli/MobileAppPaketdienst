@@ -66,6 +66,16 @@
         app:layout_constraintTop_toBottomOf="@+id/settingMusicEffects" />
 
     <TextView
+        android:id="@+id/textViewImpressum"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/impressumTitleUnder"
+        android:textColor="@android:color/black"
+        app:layout_constraintStart_toStartOf="@+id/textView4"
+        app:layout_constraintTop_toBottomOf="@+id/settingSpinner" />
+
+    <TextView
         android:textColor="@android:color/black"
         android:id="@+id/textView9"
         android:layout_width="wrap_content"

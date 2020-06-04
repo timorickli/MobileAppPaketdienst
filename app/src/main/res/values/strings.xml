@@ -27,4 +27,10 @@
     <string name="back">Back</string>
     <string name="inventoryTokens">Tokens:</string>
     <string name="adid">ca-app-pub-1335902313142868/8700178254</string>
+    <string name="impressumTitleUnder"><u>Impressum</u></string>
+    <string name="impressumTitle">Impressum</string>
+    <string name="impressumKontakt">Contact:</string>
+    <string name="impressumUrheber">Creator:</string>
+    <string name="urheber">Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
+    <string name="urheber1">Icons erstellt von <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
 </resources>
