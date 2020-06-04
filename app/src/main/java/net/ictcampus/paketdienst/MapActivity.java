@@ -9,16 +9,15 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 
+import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.TextView;
 
 
 import com.google.android.gms.ads.AdListener;
@@ -55,17 +54,24 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     private static ArrayList<Marker> markersMailBox= new ArrayList<Marker>();
     private final int height= 100;
     private final int width= 100;
+    boolean timerRunning;
+    long endTime, timeLeft;
+    CountDownTimer countDownTimer;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
+
         //Create Map
         MapFragment mapFragment = (MapFragment) getFragmentManager()
                 .findFragmentById(R.id.google_map);
         mapFragment.getMapAsync(this);
+
         //Catch SharedPreferences
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
@@ -91,8 +97,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onInitializationComplete(InitializationStatus initializationStatus) {}
         });
+
         //Prepare the AD
         prepareAD();
+
         //Dark Mode
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if(settingFile.getBoolean("DARK",false)){
@@ -197,6 +205,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         Location location = null;
         try {
             LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+
             //schauen, welcher service verfügbar ist GPS/Netzwerk
             boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean net = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
@@ -364,21 +373,24 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        int tag;
+        double range;
+        if (inventoryFile.getInt("RANGE", 0) > 0){
+            range = 0.0007;
+        }
+        else {
+            range = 0.0004;
+        }
         Location locationPerson= getLocation();
         LatLng locatinMarker= marker.getPosition();
         Log.d("Marker", "Marker geklickt");
-        if(locationPerson.getLatitude()-locatinMarker.latitude <= 0.0004 && locationPerson.getLongitude()-locatinMarker.longitude<= 0.0004) {
-            if (locationPerson.getLatitude() - locatinMarker.latitude >= -0.0004 && locationPerson.getLongitude() - locatinMarker.longitude >= -0.0004) {
+        if(locationPerson.getLatitude()-locatinMarker.latitude <= range && locationPerson.getLongitude()-locatinMarker.longitude<= range) {
+            if (locationPerson.getLatitude() - locatinMarker.latitude >= -range && locationPerson.getLongitude() - locatinMarker.longitude >= -range) {
                 startArMarker(marker);
-
-
             }
             else {
                 Log.d("Marker", "Marker ist nicht in der nähe 1");
                 showDialog(marker);
             }
-
         }
         else {
             Log.d("Marker", "Marker ist nicht in der nähe");
@@ -386,6 +398,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
         return true;
     }
+
     private void showDialog(Marker marker) {
         mInterstitialAd.setAdListener(new AdListener(){
             @Override
@@ -424,6 +437,20 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
     }
 
+    private void startDeliveryTimer() {
+        timerRunning = true;
+        endTime = System.currentTimeMillis() + timeLeft;
+        countDownTimer= new CountDownTimer(timeLeft, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeft = millisUntilFinished;
+            }
+            @Override
+            public void onFinish() {
+                timerRunning = false;
+            }
+        }.start();
+    }
 
 }
 

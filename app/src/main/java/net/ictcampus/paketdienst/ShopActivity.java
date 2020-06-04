@@ -144,8 +144,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
     protected void onStop() {
         super.onStop();
-        SharedPreferences prefs = getSharedPreferences("Timers", MODE_PRIVATE);
-        SharedPreferences.Editor editor = prefs.edit();
+        SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
+        SharedPreferences.Editor editor = timers.edit();
         editor.putLong("millisLeftItem1", timeLeftItem1);
         editor.putBoolean("timerRunningItem1", timerRunningItem1);
         editor.putLong("endTimeItem1", endTimeItem1);
@@ -164,16 +164,16 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-        SharedPreferences prefs = getSharedPreferences("Timers", MODE_PRIVATE);
+        SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
-        timeLeftItem2 = prefs.getLong("millisLeftItem2", ITEM_DURATION);
-        timerRunningItem2 = prefs.getBoolean("timerRunningItem2", false);
-        timeLeftItem1 = prefs.getLong("millisLeftItem1", ITEM_DURATION);
-        timerRunningItem1 = prefs.getBoolean("timerRunningItem1", false);
+        timeLeftItem2 = timers.getLong("millisLeftItem2", ITEM_DURATION);
+        timerRunningItem2 = timers.getBoolean("timerRunningItem2", false);
+        timeLeftItem1 = timers.getLong("millisLeftItem1", ITEM_DURATION);
+        timerRunningItem1 = timers.getBoolean("timerRunningItem1", false);
         if (timerRunningItem2) {
             updateTimeButton(btnItem2, timeLeftItem2);
-            endTimeItem2 = prefs.getLong("endTimeItem2", 0);
+            endTimeItem2 = timers.getLong("endTimeItem2", 0);
             timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
             if (timeLeftItem2 < 0) {
                 timeLeftItem2 = 0;
@@ -188,7 +188,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
         if (timerRunningItem1) {
             updateTimeButton(btnItem1, timeLeftItem1);
-            endTimeItem1 = prefs.getLong("endTimeItem2", 0);
+            endTimeItem1 = timers.getLong("endTimeItem2", 0);
             timeLeftItem1 = endTimeItem1 - System.currentTimeMillis();
             if (timeLeftItem1 < 0) {
                 timeLeftItem1 = 0;
