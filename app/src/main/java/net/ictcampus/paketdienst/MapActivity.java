@@ -164,6 +164,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
     }
 
+
     /**
      * Changes selectable map-styles
      */

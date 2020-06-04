@@ -176,6 +176,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         }
     }
 
+
     /**
      * Loads Model into the View
      *

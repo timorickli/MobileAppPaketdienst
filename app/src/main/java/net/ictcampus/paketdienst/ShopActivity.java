@@ -270,6 +270,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 startTimerItem2();
             }
         }
+
         if (timerRunningItem1) {
             updateTimeButton(btnItem1, timeLeftItem1);
             endTimeItem1 = timers.getLong("endTimeItem2", 0);

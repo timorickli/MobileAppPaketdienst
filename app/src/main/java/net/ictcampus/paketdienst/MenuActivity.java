@@ -39,6 +39,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         settings.setOnClickListener(this);
     }
 
+
     /**
      * ClickListener to decide which TextView got clicked
      *
