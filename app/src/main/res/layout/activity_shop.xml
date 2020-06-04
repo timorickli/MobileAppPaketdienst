@@ -8,8 +8,8 @@
 
     <ImageView
         android:id="@+id/itemPic3"
-        android:layout_width="122dp"
-        android:layout_height="124dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="20dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_einzeln"
@@ -46,13 +46,13 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView4"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.95" />
 
     <ImageView
         android:id="@+id/itemPic1"
-        android:layout_width="122dp"
-        android:layout_height="124dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_marginTop="8dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_einzeln"
@@ -63,8 +63,8 @@
 
     <ImageView
         android:id="@+id/itemPic2"
-        android:layout_width="122dp"
-        android:layout_height="124dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_einzeln"
         app:layout_constraintEnd_toEndOf="parent"
@@ -74,8 +74,8 @@
 
     <ImageView
         android:id="@+id/itemPic4"
-        android:layout_width="122dp"
-        android:layout_height="124dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_einzeln"
         app:layout_constraintEnd_toEndOf="parent"
@@ -116,7 +116,6 @@
         app:layout_constraintTop_toBottomOf="@+id/itemPic2" />
 
     <Button
-        android:background="@drawable/btn_round"
         android:id="@+id/button"
         android:layout_width="122dp"
         android:layout_height="44dp"
@@ -127,7 +126,6 @@
         android:id="@+id/button3"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:background="@drawable/btn_round"
         app:layout_constraintStart_toStartOf="@+id/itemText3"
         app:layout_constraintTop_toBottomOf="@+id/itemText3" />
 
@@ -135,12 +133,11 @@
         android:id="@+id/button2"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:background="@drawable/btn_round"
         app:layout_constraintStart_toStartOf="@+id/itemText2"
         app:layout_constraintTop_toBottomOf="@+id/itemText2" />
 
     <Button
-        android:background="@drawable/btn_round"
+
         android:id="@+id/button4"
         android:layout_width="122dp"
         android:layout_height="44dp"

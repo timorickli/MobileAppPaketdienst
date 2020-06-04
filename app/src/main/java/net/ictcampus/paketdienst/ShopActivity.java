@@ -84,10 +84,10 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         text3.setTextColor(Color.BLACK);
         text4.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
-        btn1.setTextColor(Color.BLACK);btn1.setBackgroundColor(Color.GRAY);btn1.setBackground(R.drawable.btn_round);
-        btn2.setTextColor(Color.BLACK);btn2.setBackgroundColor(Color.GRAY);btn2.setBackground(R.drawable.btn_round);
-        btn3.setTextColor(Color.BLACK);btn3.setBackgroundColor(Color.GRAY);btn3.setBackground(R.drawable.btn_round);
-        btn4.setTextColor(Color.BLACK);btn4.setBackgroundColor(Color.GRAY);btn4.setBackground(R.drawable.btn_round);
+        btn1.setTextColor(Color.BLACK);btn1.setBackgroundColor(Color.GRAY);
+        btn2.setTextColor(Color.BLACK);btn2.setBackgroundColor(Color.GRAY);
+        btn3.setTextColor(Color.BLACK);btn3.setBackgroundColor(Color.GRAY);
+        btn4.setTextColor(Color.BLACK);btn4.setBackgroundColor(Color.GRAY);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
     private void darkMode() {
