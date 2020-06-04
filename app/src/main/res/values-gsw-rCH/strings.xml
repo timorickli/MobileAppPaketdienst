@@ -27,5 +27,11 @@
     <string name="menuShop">Lädeli</string>
     <string name="inventoryTokens">Batzeli:</string>
     <string name="back">Zrügg</string>
-    <string name="adid">ca-app-pub-1335902313142868/8700178254</string>
+    <string name="adid">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="impressumTitleUnder"><u>Impressum</u></string>
+    <string name="impressumTitle">Impressum</string>
+    <string name="impressumKontakt">Kontakt:</string>
+    <string name="impressumUrheber">Icon Designer:</string>
+    <string name="urheber">Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
+    <string name="urheber1">Icons erstellt von <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
 </resources>
