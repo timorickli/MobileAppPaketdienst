@@ -60,6 +60,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     boolean timerRunning;
     long endTime, timeLeft;
     CountDownTimer countDownTimer;
+    SharedPreferences timers;
     private static final long DELIVERY_TIME = 60 * 30 * 1000;
 
     @Override
@@ -75,6 +76,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         //Catch SharedPreferences
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -379,21 +381,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             }
             startDeliveryTimer();
             markerOptions.clear();
-
-            SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = timers.edit();
-            if (markersMailBox.isEmpty()) {
-                editor.remove("millisLeftDelivery");
-                editor.remove("timerRunningDelivery");
-                editor.remove("endTimeDelivery");
-                editor.apply();
-            } else {
-                editor.putLong("millisLeftDelivery", timeLeft);
-                editor.putBoolean("timerRunningDelivery", timerRunning);
-                editor.putLong("endTimeDelivery", endTime);
-                editor.apply();
-            }
-
             intent.putExtra("location", markerOptions);
             startActivity(intent);
         } else if (markersMailBox.contains(marker)) {
@@ -407,19 +394,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     mailBoxSend.add(markerOpt);
                 }
             }
-            SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-            SharedPreferences.Editor editor = timers.edit();
-            if (markersMailBox.isEmpty()) {
-                editor.remove("millisLeftDelivery");
-                editor.remove("timerRunningDelivery");
-                editor.remove("endTimeDelivery");
-                editor.apply();
-            } else {
-                editor.putLong("millisLeftDelivery", timeLeft);
-                editor.putBoolean("timerRunningDelivery", timerRunning);
-                editor.putLong("endTimeDelivery", endTime);
-                editor.apply();
-            }
+            resetTimer();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
             startActivity(intent);
@@ -505,18 +480,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onFinish() {
                 timerRunning = false;
-
-                //Overwrites Timers File
-                SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = timers.edit();
-                editor.putLong("millisLeftDelivery", timeLeft);
-                editor.putBoolean("timerRunningDelivery", timerRunning);
-                editor.putLong("endTimeDelivery", endTime);
-                editor.apply();
-
-                //Activity reload
-                finish();
-                startActivity(getIntent());
             }
         }.start();
     }
@@ -524,6 +487,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     @Override
     protected void onStop() {
         super.onStop();
+        timers.edit().putLong("millisLeftDelivery", timeLeft).apply();
+        timers.edit().putBoolean("timerRunningDelivery", timerRunning).apply();
+        timers.edit().putLong("endTimeDelivery", endTime).apply();
+
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -534,23 +501,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
         timeLeft = timers.getLong("millisLeftDelivery", DELIVERY_TIME);
-        timerRunning = timers.getBoolean("timerRunningDelivery", false);
+        timerRunning = timers.getBoolean("timerRunningDelivery", true);
 
         //Checks timer state
-        if (timerRunning && inventoryFile.getInt("PACKAGES", 0) != 0) {
+        if (timerRunning) {
             endTime = timers.getLong("endTimeDelivery", 0);
             timeLeft = endTime - System.currentTimeMillis();
             if (timeLeft < 0) {
                 timeLeft = 0;
                 timerRunning = false;
-                editor.putInt("PACKAGES", 0)
-                        .apply();
             } else {
-                updateTime();
                 startDeliveryTimer();
             }
         }
@@ -568,6 +529,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         //String formatter
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         textView.setText("Time remaining: " + timeFormat);
+    }
+
+    private void resetTimer() {
+        countDownTimer.cancel();
+        timeLeft = DELIVERY_TIME;
+        timerRunning = false;
+        endTime = 0;
     }
 }
 
