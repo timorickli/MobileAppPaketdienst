@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
@@ -54,6 +55,64 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         txtItem2.setText("Zollgebühren:\nDoppeltes Einokommen");
         txtItem3.setText("Pakete:\n10 zusätzliche Pakete");
         txtItem4.setText("B-Post:\nErhöht Zeit vorübergehend");
+
+        //Dark Mode
+        SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if(settingFile.getBoolean("DARK",false)){
+            darkMode();
+        }
+        else {
+            whiteMode();
+        }
+    }
+
+    private void whiteMode() {
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(Color.WHITE);
+        TextView title= (TextView) findViewById(R.id.textView4);
+        TextView text1= (TextView) findViewById(R.id.itemText1);
+        TextView text2= (TextView) findViewById(R.id.itemText3);
+        TextView text3= (TextView) findViewById(R.id.itemText4);
+        TextView text4= (TextView) findViewById(R.id.itemText2);
+        Button btn1= (Button) findViewById(R.id.button);
+        Button btn2= (Button) findViewById(R.id.button2);
+        Button btn3= (Button) findViewById(R.id.button3);
+        Button btn4= (Button) findViewById(R.id.button4);
+        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton2);
+        text1.setTextColor(Color.BLACK);
+        text2.setTextColor(Color.BLACK);
+        text3.setTextColor(Color.BLACK);
+        text4.setTextColor(Color.BLACK);
+        title.setTextColor(Color.BLACK);
+        btn1.setTextColor(Color.BLACK);btn1.setBackgroundColor(Color.GRAY);btn1.setBackground(R.drawable.btn_round);
+        btn2.setTextColor(Color.BLACK);btn2.setBackgroundColor(Color.GRAY);btn2.setBackground(R.drawable.btn_round);
+        btn3.setTextColor(Color.BLACK);btn3.setBackgroundColor(Color.GRAY);btn3.setBackground(R.drawable.btn_round);
+        btn4.setTextColor(Color.BLACK);btn4.setBackgroundColor(Color.GRAY);btn4.setBackground(R.drawable.btn_round);
+        imageButton.setImageResource(R.drawable.settingbtn_black);
+    }
+    private void darkMode() {
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(Color.BLACK);
+        TextView title= (TextView) findViewById(R.id.textView4);
+        TextView text1= (TextView) findViewById(R.id.itemText1);
+        TextView text2= (TextView) findViewById(R.id.itemText3);
+        TextView text3= (TextView) findViewById(R.id.itemText4);
+        TextView text4= (TextView) findViewById(R.id.itemText2);
+        Button btn1= (Button) findViewById(R.id.button);
+        Button btn2= (Button) findViewById(R.id.button2);
+        Button btn3= (Button) findViewById(R.id.button3);
+        Button btn4= (Button) findViewById(R.id.button4);
+        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton2);
+        text1.setTextColor(Color.WHITE);
+        text2.setTextColor(Color.WHITE);
+        text3.setTextColor(Color.WHITE);
+        text4.setTextColor(Color.WHITE);
+        title.setTextColor(Color.WHITE);
+        btn1.setTextColor(Color.WHITE);btn1.setBackgroundColor(Color.DKGRAY);
+        btn2.setTextColor(Color.WHITE);btn2.setBackgroundColor(Color.DKGRAY);
+        btn3.setTextColor(Color.WHITE);btn3.setBackgroundColor(Color.DKGRAY);
+        btn4.setTextColor(Color.WHITE);btn4.setBackgroundColor(Color.DKGRAY);
+        imageButton.setImageResource(R.drawable.settingbtn_white);
     }
 
     @Override

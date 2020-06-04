@@ -19,15 +19,15 @@
         app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <TextView
-        android:textColor="#000"
-        android:textIsSelectable="false"
-        android:textStyle="bold"
         android:id="@+id/textView4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="44dp"
         android:text="@string/shopTitle"
+        android:textColor="@android:color/black"
+        android:textIsSelectable="false"
         android:textSize="36sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -53,7 +53,7 @@
         android:id="@+id/itemPic1"
         android:layout_width="122dp"
         android:layout_height="124dp"
-        android:layout_marginTop="28dp"
+        android:layout_marginTop="8dp"
         android:contentDescription="@string/shopImage"
         android:src="@drawable/paket_einzeln"
         app:layout_constraintEnd_toStartOf="@+id/itemPic2"
@@ -116,10 +116,10 @@
         app:layout_constraintTop_toBottomOf="@+id/itemPic2" />
 
     <Button
+        android:background="@drawable/btn_round"
         android:id="@+id/button"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:text="Button"
         app:layout_constraintStart_toStartOf="@+id/itemText1"
         app:layout_constraintTop_toBottomOf="@+id/itemText1" />
 
@@ -127,7 +127,7 @@
         android:id="@+id/button3"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:text="Button"
+        android:background="@drawable/btn_round"
         app:layout_constraintStart_toStartOf="@+id/itemText3"
         app:layout_constraintTop_toBottomOf="@+id/itemText3" />
 
@@ -135,16 +135,17 @@
         android:id="@+id/button2"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:text="Button"
+        android:background="@drawable/btn_round"
         app:layout_constraintStart_toStartOf="@+id/itemText2"
         app:layout_constraintTop_toBottomOf="@+id/itemText2" />
 
     <Button
+        android:background="@drawable/btn_round"
         android:id="@+id/button4"
         android:layout_width="122dp"
         android:layout_height="44dp"
-        android:text="Button"
         app:layout_constraintStart_toStartOf="@+id/itemText4"
-        app:layout_constraintTop_toBottomOf="@+id/itemText4" />
+        app:layout_constraintTop_toBottomOf="@+id/itemText4"
+        android:radius="50dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
