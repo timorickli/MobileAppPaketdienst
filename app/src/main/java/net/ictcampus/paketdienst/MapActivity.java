@@ -123,7 +123,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             whiteMode();
         }
     }
-
     /**
      * After onCreate, timer gets initialized/prepared
      */
@@ -150,7 +149,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             }
         }
     }
-
     /**
      * When maps ready, prepares marker and style...
      *
@@ -163,7 +161,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         map.setBuildingsEnabled(false);
         map.getUiSettings().setIndoorLevelPickerEnabled(false);
         map.getUiSettings().setMapToolbarEnabled(false);
-        map.setOnMarkerClickListener(this);
+
 
         //Sets camera on Person and zooms in
         if (map != null) {
@@ -185,8 +183,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             addMarkers();
         }
         loadMapStyle();
+        map.setOnMarkerClickListener(this);
     }
-
     /**
      * Gets Location via GPS or Network
      *
@@ -217,7 +215,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         }
         return location;
     }
-
     /**
      * Clickevent handler for marker on map
      *
@@ -227,7 +224,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     @Override
     public boolean onMarkerClick(Marker marker) {
         double range;
-
+        if(markers.contains(marker)){
+            Log.d("Marker", "Marker contains");
+        }
         //Changes range, if you have item active
         if (inventoryFile.getInt("RANGE", 0) == 1) {
             range = 0.0007;
@@ -252,9 +251,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             Log.d("Marker", "Marker ist nicht in der nähe");
             showDialog(marker);
         }
-        return true;
+        return false;
     }
-
     /**
      * Changes map-styles
      */
@@ -407,6 +405,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         for (int y = 0; y < markerOptionsMailBox.size(); y++) {
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(y)));
         }
+        setTagMailBox();
     }
 
     /**
@@ -419,6 +418,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             marker.setTag(tag);
         }
     }
+    /**
+     * Sets tag for different package types
+     */
+    private void setTagMailBox() {
+        int tag = 1;
+        for (Marker marker : markersMailBox) {
+            marker.setTag(tag);
+        }
+    }
+
+
 
     /**
      * Creation of Mailbox-Markers
@@ -426,7 +436,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     public void createMailBox() {
 
         //Logo for marker
-        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
+       BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
 
@@ -442,6 +452,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
+     *
+     */
+    public void createMailBoxTest() {
+        //For each package in inventory, display one on map
+        for (int i = 0; i < 3; i++) {
+            markerOptionsMailBox.add(new MarkerOptions()
+                            .position(new LatLng(12.2, 123.2))
+            );
+        }
+    }
+    /**
      * Starts activity depending on marker clicked
      *
      * @param marker clicked marker
@@ -452,9 +473,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         MarkerOptions markerOpt;
         Log.d("Marker", "Marker ist in der nähe");
         Intent intent = new Intent(getApplicationContext(), ArActivity.class);
-
         //Depending on markers tag, tag is given to the next Activity
-        if (markers.contains(marker)) {
+        if (!marker.getTag().equals(1)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
                     intent.putExtra("id", 2);
@@ -465,19 +485,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 case 9:
                     intent.putExtra("id", 4);
                     break;
-                default:
-                    intent.putExtra("id", 1);
-                    break;
             }
 
             markerOptions.clear();
+            markers.clear();
             beforeChange();
             intent.putExtra("location", markerOptions);
             startActivity(intent);
         }
 
         //Checks if its a mailbox
-        else if (markersMailBox.contains(marker)) {
+        if(marker.getTag().equals(1)) {
             markerOptSize = markerOptionsMailBox.size();
             ArrayList<MarkerOptions> mailBoxSend = new ArrayList<MarkerOptions>();
 
@@ -496,6 +514,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 resetTimer();
             }
             beforeChange();
+            markerOptionsMailBox.clear();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
             startActivity(intent);
@@ -518,7 +537,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 startArMarker(marker);
             }
         });
-
         //Dialog loading
         AlertDialog.Builder showWarning = new AlertDialog.Builder(MapActivity.this);
         showWarning.setTitle(R.string.alert_dialogTitle);
@@ -529,13 +547,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mInterstitialAd.isLoaded()) {
-
                     mInterstitialAd.show();
 
                 } else {
                     Log.d(TAG, "The interstitial wasn't loaded yet.");
                     startArMarker(marker);
                 }
+
             }
         });
 
@@ -641,6 +659,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId("");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+    public static ArrayList<MarkerOptions> getMarkerOptionsMailBox() {
+        return markerOptionsMailBox;
+    }
+    public static ArrayList<Marker> getMarkers() {
+        return markers;
     }
 }
 

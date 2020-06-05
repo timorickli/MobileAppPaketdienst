@@ -13,7 +13,7 @@
     <string name="settingSoundEffects">SoundEffects Aus/An</string>
     <string name="settingMusic">Musik Aus/An</string>
     <string-array name="settingMapBack">
-        <item>Standart</item>
+        <item>Standard</item>
         <item>Dunkel</item>
         <item>Retro</item>
         <item>Speziell</item>
