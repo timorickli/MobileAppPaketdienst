@@ -180,7 +180,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             addMarkersMailBox();
         } else if (inventoryFile.getInt("PACKAGES", 0) == 0) {
             if (markerOptions.size() == 0) {
-                createIconPakets();
+                createIconPackages();
             }
             addMarkers();
         }
@@ -340,7 +340,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     /**
      * Creates three different packages
      */
-    public void createIconPakets() {
+    public void createIconPackages() {
         for (int x = 0; x < 3; x++) {
             switch (x) {
                 case 0:
@@ -538,6 +538,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
             }
         });
+
         //Clicklistener to cancel
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
             @Override
@@ -597,6 +598,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     /**
      * Updates the displayed time on TextView
      */
+    @SuppressLint("SetTextI18n")
     private void updateTime() {
         TextView textView = findViewById(R.id.timeRemaining);
 
