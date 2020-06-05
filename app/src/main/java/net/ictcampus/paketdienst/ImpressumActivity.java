@@ -15,19 +15,34 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 public class ImpressumActivity extends AppCompatActivity {
+    private TextView title, text1, text2, text3, text4, text5;
+    private ImageButton imageButton;
+    private View view;
 
     /**
      * OnCreate Method
+     *
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_impressum);
+
+        view = this.getWindow().getDecorView();
+        title = (TextView) findViewById(R.id.textView);
+        text1 = (TextView) findViewById(R.id.kontakt);
+        text2 = (TextView) findViewById(R.id.credits);
+        text3 = (TextView) findViewById(R.id.email);
+        text4 = (TextView) findViewById(R.id.textView1);
+        text5 = (TextView) findViewById(R.id.textView2);
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
+
         //Set a clickable e-mail link in the TextView
-        TextView email= (TextView) findViewById(R.id.email);
+        TextView email = (TextView) findViewById(R.id.email);
         email.setText(Html.fromHtml("<a href=\"mailto:timo.rickli@ict-campus.net\">Email: timo.rickli@ict-campus.net</a>"));
         email.setMovementMethod(LinkMovementMethod.getInstance());
+
         //ImageButton with onClick event for back to settings
         ImageButton ib = findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
@@ -38,12 +53,12 @@ public class ImpressumActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if(settingFile.getBoolean("DARK",false)){
+        if (settingFile.getBoolean("DARK", false)) {
             darkMode();
-        }
-        else {
+        } else {
             whiteMode();
         }
     }
@@ -52,15 +67,7 @@ public class ImpressumActivity extends AppCompatActivity {
      * Method for the normal Mode Theme
      */
     private void whiteMode() {
-        View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.kontakt);
-        TextView text2= (TextView) findViewById(R.id.credits);
-        TextView text3= (TextView) findViewById(R.id.email);
-        TextView text4= (TextView) findViewById(R.id.textView1);
-        TextView text5= (TextView) findViewById(R.id.textView2);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
@@ -74,15 +81,7 @@ public class ImpressumActivity extends AppCompatActivity {
      * Method for the Darkmode color Theme
      */
     private void darkMode() {
-        View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.kontakt);
-        TextView text2= (TextView) findViewById(R.id.credits);
-        TextView text3= (TextView) findViewById(R.id.email);
-        TextView text4= (TextView) findViewById(R.id.textView1);
-        TextView text5= (TextView) findViewById(R.id.textView2);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);

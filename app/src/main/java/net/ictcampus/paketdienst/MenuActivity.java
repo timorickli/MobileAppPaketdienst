@@ -18,24 +18,27 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
         //Get different TextView and Buttons
-        ImageButton ib = findViewById(R.id.imageButton);
         TextView spielanleitung = findViewById(R.id.spielanleitung);
-        TextView shop = findViewById(R.id.shop);
         TextView inventory = findViewById(R.id.inventory);
         TextView settings = findViewById(R.id.settings);
+        ImageButton ib = findViewById(R.id.imageButton);
+        TextView shop = findViewById(R.id.shop);
+
+
         //ClickListeners for all subs
-        ib.setOnClickListener(this);
         spielanleitung.setOnClickListener(this);
         inventory.setOnClickListener(this);
-        shop.setOnClickListener(this);
         settings.setOnClickListener(this);
+        shop.setOnClickListener(this);
+        ib.setOnClickListener(this);
+
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if(settingFile.getBoolean("DARK",false)){
+        if (settingFile.getBoolean("DARK", false)) {
             darkMode();
-        }
-        else {
+        } else {
             whiteMode();
         }
     }
@@ -49,6 +52,7 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Intent intent;
+
         //Switch case to decide, which TextView was clicked
         switch (v.getId()) {
             case R.id.spielanleitung:
@@ -66,14 +70,15 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.settings:
                 intent = new Intent(getApplicationContext(), SettingActivity.class);
                 break;
+
             default:
                 intent = new Intent(getApplicationContext(), MapActivity.class);
                 break;
-
         }
+
+        //Starts activity without transition
         startActivity(intent);
         overridePendingTransition(0, 0);
-
     }
 
     /**
@@ -82,12 +87,12 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.inventory);
-        TextView text2= (TextView) findViewById(R.id.settings);
-        TextView text3= (TextView) findViewById(R.id.shop);
-        TextView text4= (TextView) findViewById(R.id.spielanleitung);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        TextView title = (TextView) findViewById(R.id.textView);
+        TextView text1 = (TextView) findViewById(R.id.inventory);
+        TextView text2 = (TextView) findViewById(R.id.settings);
+        TextView text3 = (TextView) findViewById(R.id.shop);
+        TextView text4 = (TextView) findViewById(R.id.spielanleitung);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
@@ -102,12 +107,12 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.inventory);
-        TextView text2= (TextView) findViewById(R.id.settings);
-        TextView text3= (TextView) findViewById(R.id.shop);
-        TextView text4= (TextView) findViewById(R.id.spielanleitung);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
+        TextView title = (TextView) findViewById(R.id.textView);
+        TextView text1 = (TextView) findViewById(R.id.inventory);
+        TextView text2 = (TextView) findViewById(R.id.settings);
+        TextView text3 = (TextView) findViewById(R.id.shop);
+        TextView text4 = (TextView) findViewById(R.id.spielanleitung);
+        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);

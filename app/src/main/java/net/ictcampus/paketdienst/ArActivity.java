@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -26,26 +27,34 @@ import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
-    private ArFragment arFragment;
     private ModelRenderable mailboxRenderable, singlePackageRenderable, multiPackageRenderable, wagonPackageRenderable, activeRenderable;
+    private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
+    private static final long DELIVERY_TIME = 60 * 30 * 1000;
+    private CountDownTimer countDownTimer;
+    private long endTime, timeLeft;
     private boolean placed = false;
-    private Node mailbox, singlePackage, multiPackage, wagonPackage;
-    private Node activeNode;
-    private int id;
+    private ArFragment arFragment;
+    private boolean timerRunning;
     private Intent intent;
+    private int id;
 
+    /**
+     * Prepares everything for ARView, when activity is started
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ar);
 
         //Initialization of all important variables
-        intent = new Intent(getApplicationContext(), MapActivity.class);
-        Button btnBack = findViewById(R.id.back);
-        id = getIntent().getIntExtra("id", 0);
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_ux_fragment);
-        setupModel();
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+        intent = new Intent(getApplicationContext(), MapActivity.class);
+        id = getIntent().getIntExtra("id", 0);
+        Button btnBack = findViewById(R.id.back);
+        setupModel();
 
         //ClickListener for Back button
         btnBack.setOnClickListener(new View.OnClickListener() {
@@ -65,13 +74,39 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     }
 
     /**
-     * On Camera Move, Frame Updates and Methode gets executed
+     * After onCreate, timer gets initialized/prepared
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Gets previous timer values
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        timeLeft = timers.getLong("millisLeft", DELIVERY_TIME);
+        timerRunning = timers.getBoolean("timerRunning", false);
+
+        //Checks timer state
+        if (timerRunning) {
+            endTime = timers.getLong("endTime", 0);
+            timeLeft = endTime - System.currentTimeMillis();
+            if (timeLeft < 0) {
+                timeLeft = 0;
+                timerRunning = false;
+            } else {
+                startDeliveryTimer();
+            }
+        }
+    }
+
+    /**
+     * On Camera Move, Frame Updates and methode gets executed
      *
      * @param frameTime
      */
     private void onUpdateFrame(FrameTime frameTime) {
         Frame frame = arFragment.getArSceneView().getArFrame();
 
+        //In case there's no frame
         if (frame == null) {
             return;
         }
@@ -105,7 +140,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     }
 
     /**
-     * Sets-up model for rendering
+     * Sets up model for rendering
      */
     private void setupModel() {
         //Chooses which model gets prepared
@@ -177,7 +212,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     }
 
     /**
-     * Loads Model into the View
+     * Loads model into the view
      *
      * @param anchorNode Point, where its fixed
      * @param node       Model
@@ -195,8 +230,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             node.setParent(anchorNode);
             node.setRenderable(renderable);
             node.setOnTapListener(this);
-        }
-        else{
+        } else {
 
             //Rotate and grow model
             node.setLocalScale(new Vector3(10f, 10f, 10f));
@@ -237,10 +271,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 hitNode = null;
 
                 //Edit Inventory
-                editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10*inventoryFile.getInt("MULTIPLIER", 1))
-                        .apply();
-                editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1)
-                        .apply();
+                editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
+                editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             }
@@ -259,10 +291,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1)
-                    .apply();
+            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
+            startDeliveryTimer();
         } else if (hitNode.getRenderable() == multiPackageRenderable) {
             Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
@@ -272,10 +304,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3)
-                    .apply();
+            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
+            startDeliveryTimer();
         } else if (hitNode.getRenderable() == wagonPackageRenderable) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
@@ -285,14 +317,56 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7)
-                    .apply();
+            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
+            startDeliveryTimer();
         }
+        beforeChange();
 
         //New activity without transition
         startActivity(intent);
         overridePendingTransition(0, 0);
+    }
+
+    /**
+     * Creates and starts a timespan to deliver the package
+     */
+    private void startDeliveryTimer() {
+
+        //Evaluates end time, so timer can run in background
+        endTime = System.currentTimeMillis() + timeLeft;
+
+        //Starts new timer
+        countDownTimer = new CountDownTimer(timeLeft, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeft = millisUntilFinished;
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunning = false;
+            }
+        }.start();
+        timerRunning = true;
+    }
+
+    /**
+     * Saves timer values before new Activity
+     */
+    private void beforeChange() {
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = timers.edit();
+
+        //Edits values, that timer basically runs in background
+        editor.putLong("millisLeft", timeLeft);
+        editor.putBoolean("timerRunning", timerRunning);
+        editor.putLong("endTime", endTime);
+        editor.apply();
+
+        if (countDownTimer != null) {
+            countDownTimer.cancel();
+        }
     }
 }

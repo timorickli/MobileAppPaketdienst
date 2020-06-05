@@ -45,37 +45,42 @@ import java.util.Random;
 
 import static com.google.ar.sceneform.rendering.HeadlessEngineWrapper.TAG;
 
-public class MapActivity extends Activity implements OnMapReadyCallback, GoogleMap.OnMarkerClickListener, Serializable {
-    private SharedPreferences inventoryFile, settingFile;
-    private Bundle extra = new Bundle();
-    private GoogleMap map;
-    private InterstitialAd mInterstitialAd;
-    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
+public class MapActivity extends Activity implements OnMapReadyCallback, Serializable, GoogleMap.OnMarkerClickListener {
     private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
-    private static ArrayList<Marker> markers = new ArrayList<Marker>();
+    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
+    private static ArrayList<Marker> markers = new ArrayList<Marker>();
+    private static final long DELIVERY_TIME = 60 * 30 * 1000;
+    private SharedPreferences inventoryFile, settingFile;
+    private InterstitialAd mInterstitialAd;
+    private CountDownTimer countDownTimer;
+    private ImageButton imageButton;
+    private long endTime, timeLeft;
     private final int height = 100;
     private final int width = 100;
-    boolean timerRunning;
-    long endTime, timeLeft;
-    CountDownTimer countDownTimer;
-    SharedPreferences timers;
-    private static final long DELIVERY_TIME = 60 * 30 * 1000;
+    private boolean timerRunning;
 
+    private GoogleMap map;
+
+    /**
+     * Prepares everything, when activity is created
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
+
         //Create Map
-        MapFragment mapFragment = (MapFragment) getFragmentManager()
-                .findFragmentById(R.id.google_map);
+        MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.google_map);
         mapFragment.getMapAsync(this);
 
         //Catch SharedPreferences
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -89,9 +94,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 if (markerOptionsMailBox != null) {
                     intent.putExtra("locationMailBox", markerOptionsMailBox);
                 }
+                beforeChange();
                 startActivity(intent);
             }
         });
+
+        //Information from intent
         if (getIntent().getParcelableArrayListExtra("location") != null) {
             markerOptions = getIntent().getParcelableArrayListExtra("location");
         }
@@ -104,7 +112,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             }
         });
 
-        //Prepare the AD
+        //Prepares the AD
         prepareAD();
 
         //Dark Mode
@@ -116,23 +124,38 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         }
     }
 
-    private void whiteMode() {
-        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
-        imageButton.setImageResource(R.drawable.settingbtn_black);
+    /**
+     * After onCreate, timer gets initialized/prepared
+     */
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        //Gets previous timer values
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        timeLeft = timers.getLong("millisLeft", DELIVERY_TIME);
+        timerRunning = timers.getBoolean("timerRunning", false);
+
+        //Checks timer state and starts it if needed
+        if (timerRunning) {
+            updateTime();
+            endTime = timers.getLong("endTime", 0);
+            timeLeft = endTime - System.currentTimeMillis();
+            if (timeLeft < 0) {
+                timeLeft = 0;
+                timerRunning = false;
+            } else {
+                updateTime();
+                startDeliveryTimer();
+            }
+        }
     }
 
-    private void darkMode() {
-        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
-        imageButton.setImageResource(R.drawable.settingbtn_white);
-    }
-
-
-    public void prepareAD() {
-        mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("");
-        mInterstitialAd.loadAd(new AdRequest.Builder().build());
-    }
-
+    /**
+     * When maps ready, prepares marker and style...
+     *
+     * @param googleMap current map
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         map = googleMap;
@@ -141,75 +164,41 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         map.getUiSettings().setIndoorLevelPickerEnabled(false);
         map.getUiSettings().setMapToolbarEnabled(false);
         map.setOnMarkerClickListener(this);
+
+        //Sets camera on Person and zooms in
         if (map != null) {
             map.moveCamera(CameraUpdateFactory
                     .newCameraPosition(new CameraPosition.Builder()
                             .target(new LatLng(getLocation().getLatitude(), getLocation().getLongitude())).zoom(17.0f).build()));
         }
 
+        //Creates markers with logos depending on inventory
         if (inventoryFile.getInt("PACKAGES", 0) > 0) {
             if (markerOptionsMailBox.size() == 0) {
                 createMailBox();
             }
             addMarkersMailBox();
-
         } else if (inventoryFile.getInt("PACKAGES", 0) == 0) {
             if (markerOptions.size() == 0) {
                 createIconPakets();
             }
             addMarkers();
-
         }
         loadMapStyle();
-
     }
-
 
     /**
-     * Changes selectable map-styles
+     * Gets Location via GPS or Network
+     *
+     * @return current location
      */
-    private void loadMapStyle() {
-        switch (settingFile.getInt("MAPSTYLE", 0)) {
-            case 1:
-                try {
-                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.dark_style));
-                } catch (Resources.NotFoundException e) {
-                    Log.e("Map", "Map style DARK not found");
-                }
-                break;
-            case 2:
-                try {
-                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro_style));
-                } catch (Resources.NotFoundException e) {
-                    Log.e("Map", "Map style RETRO not found");
-                }
-                break;
-            case 3:
-                try {
-                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.fancy_style));
-                } catch (Resources.NotFoundException e) {
-                    Log.e("Map", "Map style FANCY not found");
-                }
-                break;
-            default:
-                try {
-                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.normal_style));
-                } catch (Resources.NotFoundException e) {
-                    Log.e("Map", "Map style DEFAULT not found");
-                }
-                break;
-        }
-
-
-    }
-
     @SuppressLint("MissingPermission")
     public Location getLocation() {
         Location location = null;
         try {
             LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
-            //schauen, welcher service verfügbar ist GPS/Netzwerk
+            //looks, which service is currently available
             boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
             boolean net = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
             if (!gps && !net) {
@@ -217,7 +206,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             } else {
                 if (gps) {
                     location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-
                     Log.d("GPS Provider", "GPS Provider");
                 } else if (net) {
                     location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
@@ -228,6 +216,82 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             e.printStackTrace();
         }
         return location;
+    }
+
+    /**
+     * Clickevent handler for marker on map
+     *
+     * @param marker clicked marker
+     * @return true/false
+     */
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        double range;
+
+        //Changes range, if you have item active
+        if (inventoryFile.getInt("RANGE", 0) == 1) {
+            range = 0.0007;
+        } else {
+            range = 0.0004;
+        }
+
+        //Gets location of person and marker
+        Location locationPerson = getLocation();
+        LatLng locatinMarker = marker.getPosition();
+        Log.d("Marker", "Marker geklickt");
+
+        //Compares locations with range
+        if (locationPerson.getLatitude() - locatinMarker.latitude <= range && locationPerson.getLongitude() - locatinMarker.longitude <= range) {
+            if (locationPerson.getLatitude() - locatinMarker.latitude >= -range && locationPerson.getLongitude() - locatinMarker.longitude >= -range) {
+                startArMarker(marker);
+            } else {
+                Log.d("Marker", "Marker ist nicht in der nähe 1");
+                showDialog(marker);
+            }
+        } else {
+            Log.d("Marker", "Marker ist nicht in der nähe");
+            showDialog(marker);
+        }
+        return true;
+    }
+
+    /**
+     * Changes map-styles
+     */
+    private void loadMapStyle() {
+        switch (settingFile.getInt("MAPSTYLE", 0)) {
+            case 1:
+                try {
+                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.dark_style));
+                } catch (Resources.NotFoundException e) {
+                    Log.e("Map", "Map style DARK not found");
+                }
+                break;
+
+            case 2:
+                try {
+                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.retro_style));
+                } catch (Resources.NotFoundException e) {
+                    Log.e("Map", "Map style RETRO not found");
+                }
+                break;
+
+            case 3:
+                try {
+                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.fancy_style));
+                } catch (Resources.NotFoundException e) {
+                    Log.e("Map", "Map style FANCY not found");
+                }
+                break;
+
+            default:
+                try {
+                    boolean success = map.setMapStyle(MapStyleOptions.loadRawResourceStyle(this, R.raw.normal_style));
+                } catch (Resources.NotFoundException e) {
+                    Log.e("Map", "Map style DEFAULT not found");
+                }
+                break;
+        }
     }
 
     /**
@@ -243,22 +307,32 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         Random random = new Random();
         int operatorLong = random.nextInt((2 - 1) + 1) + 1;
         int operatorLati = random.nextInt((2 - 1) + 1) + 1;
+
+        //Switch for negative or positive value for one part of the coordinate
         switch (operatorLong) {
             case 1:
+                //Random coordinate within range
                 randomLong = getLocation().getLongitude() + (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
             default:
+                //Random coordinate within range
                 randomLong = getLocation().getLongitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
         }
+
+        //Switch for negative or positive value for the other part of the coordinate
         switch (operatorLati) {
             case 1:
+                //Random coordinate within range
                 randomLati = getLocation().getLatitude() + (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
             default:
+                //Random coordinate within range
                 randomLati = getLocation().getLatitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
         }
+
+        //returns random coordinates
         latLng = new LatLng(randomLati, randomLong);
         return latLng;
     }
@@ -270,29 +344,40 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         for (int x = 0; x < 3; x++) {
             switch (x) {
                 case 0:
+                    //Logo for marker
                     BitmapDrawable bitmapdraw = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_einzeln);
                     Bitmap b = bitmapdraw.getBitmap();
                     Bitmap marker = Bitmap.createScaledBitmap(b, width, height, false);
+
+                    //Creates marker
                     markerOptions.add(new MarkerOptions()
                             .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker)
                             ));
                     markers.add(map.addMarker(markerOptions.get(0)));
                     break;
+
                 case 1:
+                    //Logo for marker
                     BitmapDrawable bitmapdraw1 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_stapel);
                     Bitmap b1 = bitmapdraw1.getBitmap();
                     Bitmap marker1 = Bitmap.createScaledBitmap(b1, width, height, false);
+
+                    //Creates marker
                     markerOptions.add(new MarkerOptions()
                             .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker1))
                     );
                     markers.add(map.addMarker(markerOptions.get(1)));
                     break;
+
                 case 2:
+                    //Logo for marker
                     BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.paket_laster);
                     Bitmap b2 = bitmapdraw2.getBitmap();
                     Bitmap marker2 = Bitmap.createScaledBitmap(b2, width, height, false);
+
+                    //Creates marker
                     markerOptions.add(new MarkerOptions()
                             .position(createLocation())
                             .icon(BitmapDescriptorFactory.fromBitmap(marker2))
@@ -302,7 +387,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             }
         }
         setTag();
-
     }
 
     /**
@@ -330,8 +414,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
      */
     private void setTag() {
         int tag = 0;
-        for (Marker marker : markers
-        ) {
+        for (Marker marker : markers) {
             tag = tag + 3;
             marker.setTag(tag);
         }
@@ -341,9 +424,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
      * Creation of Mailbox-Markers
      */
     public void createMailBox() {
+
+        //Logo for marker
         BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
+
+        //For each package in inventory, display one on map
         for (int i = 0; i < inventoryFile.getInt("PACKAGES", 0); i++) {
             markerOptionsMailBox.add(new MarkerOptions()
                     .position(createLocation())
@@ -354,13 +441,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         Log.d("MailBox", "Creating");
     }
 
-
+    /**
+     * Starts activity depending on marker clicked
+     *
+     * @param marker clicked marker
+     */
     private void startArMarker(Marker marker) {
         LatLng pos, posMarker;
         int markerOptSize;
         MarkerOptions markerOpt;
         Log.d("Marker", "Marker ist in der nähe");
         Intent intent = new Intent(getApplicationContext(), ArActivity.class);
+
+        //Depending on markers tag, tag is given to the next Activity
         if (markers.contains(marker)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
@@ -376,13 +469,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     intent.putExtra("id", 1);
                     break;
             }
-            startDeliveryTimer();
+
             markerOptions.clear();
+            beforeChange();
             intent.putExtra("location", markerOptions);
             startActivity(intent);
-        } else if (markersMailBox.contains(marker)) {
+        }
+
+        //Checks if its a mailbox
+        else if (markersMailBox.contains(marker)) {
             markerOptSize = markerOptionsMailBox.size();
             ArrayList<MarkerOptions> mailBoxSend = new ArrayList<MarkerOptions>();
+
+            //Iterates through all markers in Mailbox, to decide which one to remove/send
             for (int i = 0; i < markerOptSize; i++) {
                 markerOpt = markerOptionsMailBox.get(i);
                 pos = markerOpt.getPosition();
@@ -391,39 +490,27 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     mailBoxSend.add(markerOpt);
                 }
             }
-            resetTimer();
+
+            //resets timer, when last Mailbox is clicked
+            if (markerOptSize == 1) {
+                resetTimer();
+            }
+            beforeChange();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
             startActivity(intent);
         }
     }
 
-    @Override
-    public boolean onMarkerClick(Marker marker) {
-        double range;
-        if (inventoryFile.getInt("RANGE", 0) == 1) {
-            range = 0.0007;
-        } else {
-            range = 0.0004;
-        }
-        Location locationPerson = getLocation();
-        LatLng locatinMarker = marker.getPosition();
-        Log.d("Marker", "Marker geklickt");
-        if (locationPerson.getLatitude() - locatinMarker.latitude <= range && locationPerson.getLongitude() - locatinMarker.longitude <= range) {
-            if (locationPerson.getLatitude() - locatinMarker.latitude >= -range && locationPerson.getLongitude() - locatinMarker.longitude >= -range) {
-                startArMarker(marker);
-            } else {
-                Log.d("Marker", "Marker ist nicht in der nähe 1");
-                showDialog(marker);
-            }
-        } else {
-            Log.d("Marker", "Marker ist nicht in der nähe");
-            showDialog(marker);
-        }
-        return true;
-    }
 
+    /**
+     * Show Dialog if not within range
+     *
+     * @param marker clicked marker
+     */
     private void showDialog(Marker marker) {
+
+        //Detects if ad is closed
         mInterstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdClosed() {
@@ -431,10 +518,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                 startArMarker(marker);
             }
         });
+
+        //Dialog loading
         AlertDialog.Builder showWarning = new AlertDialog.Builder(MapActivity.this);
         showWarning.setTitle(R.string.alert_dialogTitle);
         showWarning.setMessage(R.string.alert_dialogMessage);
 
+        //Clicklistener to skip
         showWarning.setPositiveButton(R.string.alert_dialogUeberspringen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -446,9 +536,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
                     Log.d(TAG, "The interstitial wasn't loaded yet.");
                     startArMarker(marker);
                 }
-
             }
         });
+        //Clicklistener to cancel
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -463,10 +553,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
      * Creates and starts a timespan to deliver the package
      */
     private void startDeliveryTimer() {
-        timerRunning = true;
+        SharedPreferences.Editor editor = inventoryFile.edit();
+
+        //Evaluates end time, so timer can run in background
         endTime = System.currentTimeMillis() + timeLeft;
 
-        //Countdown Timer initialization
+        //Starts new timer
         countDownTimer = new CountDownTimer(timeLeft, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -477,40 +569,28 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onFinish() {
                 timerRunning = false;
+                editor.putInt("PACKAGES", 0);
             }
         }.start();
+        timerRunning = true;
+        updateTime();
     }
 
-    @Override
-    protected void onStop() {
-        super.onStop();
-        timers.edit().putLong("millisLeftDelivery", timeLeft).apply();
-        timers.edit().putBoolean("timerRunning", timerRunning).apply();
-        timers.edit().putLong("endTimeDelivery", endTime).apply();
+    /**
+     * Saves timer values before new Activity
+     */
+    private void beforeChange() {
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = timers.edit();
 
+        //Edits values, that timer basically runs in background
+        editor.putLong("millisLeft", timeLeft);
+        editor.putBoolean("timerRunning", timerRunning);
+        editor.putLong("endTime", endTime);
+        editor.apply();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
-        }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        timeLeft = timers.getLong("millisLeftDelivery", DELIVERY_TIME);
-        timerRunning = timers.getBoolean("timerRunning", false);
-
-        //Checks timer state
-        if (timerRunning) {
-            endTime = timers.getLong("endTimeDelivery", 0);
-            timeLeft = endTime - System.currentTimeMillis();
-            if (timeLeft < 0) {
-                timeLeft = 0;
-                timerRunning = false;
-            } else {
-                startDeliveryTimer();
-            }
         }
     }
 
@@ -528,12 +608,37 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         textView.setText("Time remaining: " + timeFormat);
     }
 
+    /**
+     * Resets timer
+     */
     private void resetTimer() {
         countDownTimer.cancel();
-        countDownTimer = null;
-        timeLeft = DELIVERY_TIME;
         timerRunning = false;
+        timeLeft = DELIVERY_TIME;
         endTime = 0;
+    }
+
+    /**
+     * Button, depending on style
+     */
+    private void whiteMode() {
+        imageButton.setImageResource(R.drawable.settingbtn_black);
+    }
+
+    /**
+     * Button, depending on style
+     */
+    private void darkMode() {
+        imageButton.setImageResource(R.drawable.settingbtn_white);
+    }
+
+    /**
+     * Button, depending on style
+     */
+    public void prepareAD() {
+        mInterstitialAd = new InterstitialAd(this);
+        mInterstitialAd.setAdUnitId("");
+        mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 }
 

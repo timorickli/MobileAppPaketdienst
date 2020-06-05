@@ -225,6 +225,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void startTimerItem2() {
         timerRunningItem2 = true;
         endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
+
         countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -244,7 +245,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = timers.edit();
         editor.putLong("millisLeftItem1", timeLeftItem1);
         editor.putBoolean("timerRunningItem1", timerRunningItem1);
@@ -268,7 +269,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences timers = getSharedPreferences("Timers", MODE_PRIVATE);
+        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
         timeLeftItem2 = timers.getLong("millisLeftItem2", ITEM_DURATION);

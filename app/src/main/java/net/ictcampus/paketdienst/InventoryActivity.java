@@ -9,22 +9,32 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.Spinner;
 import android.widget.TextView;
 
 public class InventoryActivity extends AppCompatActivity {
-    private int tokens;
     private int packages;
+    private int tokens;
+    private View view;
+    private TextView title, text2, text3;
+    private ImageButton imageButton;
 
     /**
-     * OnCreate Method
+     * Prepares everything when acitvity is created
+     *
      * @param savedInstanceState
      */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
+
+        //Initialization of all variables
+        view = this.getWindow().getDecorView();
+        title = (TextView) findViewById(R.id.textView2);
+        text2 = (TextView) findViewById(R.id.packages);
+        text3 = (TextView) findViewById(R.id.tokens);
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
+
         //Get Values out of File and set them in TextView
         SharedPreferences inventoryFile = this.getSharedPreferences("inventory", Context.MODE_PRIVATE);
         TextView packagesView = findViewById(R.id.packages);
@@ -33,6 +43,7 @@ public class InventoryActivity extends AppCompatActivity {
         packages = inventoryFile.getInt("PACKAGES", 0);
         tokensView.setText(String.valueOf(tokens));
         packagesView.setText(String.valueOf(packages));
+
         //ImageButton with onClick event for back to menu
         ImageButton ib = findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
@@ -43,6 +54,7 @@ public class InventoryActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
+
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
@@ -52,17 +64,11 @@ public class InventoryActivity extends AppCompatActivity {
         }
     }
 
-
     /**
      * Method for the normal Mode Theme
      */
     private void whiteMode() {
-        View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title = (TextView) findViewById(R.id.textView2);
-        TextView text2 = (TextView) findViewById(R.id.packages);
-        TextView text3 = (TextView) findViewById(R.id.tokens);
-        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
@@ -73,12 +79,7 @@ public class InventoryActivity extends AppCompatActivity {
      * Method for the dark Mode Theme
      */
     private void darkMode() {
-        View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
-        TextView title = (TextView) findViewById(R.id.textView2);
-        TextView text2 = (TextView) findViewById(R.id.packages);
-        TextView text3 = (TextView) findViewById(R.id.tokens);
-        ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);

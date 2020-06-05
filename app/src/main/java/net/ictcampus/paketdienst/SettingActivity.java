@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -17,26 +16,44 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 public class SettingActivity extends AppCompatActivity {
-    private boolean settingDarkCheck;
-    private boolean settingMusicCheck;
-    private boolean settingMusicEffectsCheck;
+    private TextView title, text1, text2, text3, text4, text5, text6, impressum;
     private SharedPreferences settingFile;
-    private int selectPosition;
+    private ImageButton imageButton;
+    private Spinner spinner;
+    private View view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+
+        //Initialization of all variables
+        view = this.getWindow().getDecorView();
+        title = (TextView) findViewById(R.id.textView);
+        text1 = (TextView) findViewById(R.id.textView10);
+        text2 = (TextView) findViewById(R.id.textView12);
+        text3 = (TextView) findViewById(R.id.textView11);
+        text4 = (TextView) findViewById(R.id.textView8);
+        text5 = (TextView) findViewById(R.id.textView9);
+        text6 = (TextView) findViewById(R.id.textView4);
+        impressum = (TextView) findViewById(R.id.textViewImpressum);
+        spinner = (Spinner) findViewById(R.id.settingSpinner);
+        imageButton = (ImageButton) findViewById(R.id.imageButton);
+
         //Get the Settings File
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settingFile.edit();
+
         //Get Spinner selection and fill it with data
         Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.settingMapBack, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+
         //Sets the default selection on the data in the file
-        int selection= settingFile.getInt("MAPSTYLE",0);
+        int selection = settingFile.getInt("MAPSTYLE", 0);
         spinner.setSelection(selection);
+
         //ImageButton with onClick event for back to menu
         ImageButton ib = findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
@@ -49,8 +66,8 @@ public class SettingActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-        //Switch Button Listeners
-        //Music
+
+        //Switch Button Listeners for music
         Switch settingMusic = (Switch) findViewById(R.id.settingMusic);
         if (settingMusic.isChecked()) {
             editor.putBoolean("MUSIC", true);
@@ -59,6 +76,7 @@ public class SettingActivity extends AppCompatActivity {
             editor.putBoolean("MUSIC", false);
             editor.commit();
         }
+
         //SoundEffects
         Switch settingMusicEffects = (Switch) findViewById(R.id.settingMusicEffects);
         if (settingMusicEffects.isChecked()) {
@@ -68,23 +86,24 @@ public class SettingActivity extends AppCompatActivity {
             editor.putBoolean("MUSICEFFECTS", false);
             editor.commit();
         }
+
         //DarkMode
         Switch settingDark = (Switch) findViewById(R.id.settingDark);
-        Boolean dark= settingFile.getBoolean("DARK",false);
+        Boolean dark = settingFile.getBoolean("DARK", false);
         settingDark.setChecked(dark);
         settingDark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 editor.putBoolean("DARK", isChecked);
                 editor.commit();
-                if(isChecked){
+                if (isChecked) {
                     darkMode();
-                }
-                else {
+                } else {
                     whiteMode();
                 }
             }
         });
+
         //Clickable TextView to get to the Impressum
         TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
         impressum.setOnClickListener(new View.OnClickListener() {
@@ -94,30 +113,20 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
+
         //Dark Mode check
-        if(settingFile.getBoolean("DARK",false)){
+        if (settingFile.getBoolean("DARK", false)) {
             darkMode();
-        }
-        else {
+        } else {
             whiteMode();
         }
     }
+
     /**
-     * Method for the normal Mode Theme
+     * Method to load normal Mode Theme
      */
     private void whiteMode() {
-        View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.textView10);
-        TextView text2= (TextView) findViewById(R.id.textView12);
-        TextView text3= (TextView) findViewById(R.id.textView11);
-        TextView text4= (TextView) findViewById(R.id.textView8);
-        TextView text5= (TextView) findViewById(R.id.textView9);
-        TextView text6= (TextView) findViewById(R.id.textView4);
-        TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
-        Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
@@ -129,22 +138,12 @@ public class SettingActivity extends AppCompatActivity {
         spinner.setBackgroundColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
+
     /**
-     * Method for the dark Mode Theme
+     * Method to load dark Mode Theme
      */
-    private void darkMode(){
-        View view = this.getWindow().getDecorView();
+    private void darkMode() {
         view.setBackgroundColor(Color.BLACK);
-        TextView title= (TextView) findViewById(R.id.textView);
-        TextView text1= (TextView) findViewById(R.id.textView10);
-        TextView text2= (TextView) findViewById(R.id.textView12);
-        TextView text3= (TextView) findViewById(R.id.textView11);
-        TextView text4= (TextView) findViewById(R.id.textView8);
-        TextView text5= (TextView) findViewById(R.id.textView9);
-        TextView text6= (TextView) findViewById(R.id.textView4);
-        TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
-        Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
-        ImageButton imageButton= (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
@@ -156,5 +155,4 @@ public class SettingActivity extends AppCompatActivity {
         spinner.setBackgroundColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
-
 }
