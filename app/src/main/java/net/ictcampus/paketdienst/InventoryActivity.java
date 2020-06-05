@@ -60,11 +60,9 @@ public class InventoryActivity extends AppCompatActivity {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
         TextView title = (TextView) findViewById(R.id.textView2);
-        TextView text1 = (TextView) findViewById(R.id.textView3);
         TextView text2 = (TextView) findViewById(R.id.packages);
         TextView text3 = (TextView) findViewById(R.id.tokens);
         ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
-        text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
@@ -78,11 +76,9 @@ public class InventoryActivity extends AppCompatActivity {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
         TextView title = (TextView) findViewById(R.id.textView2);
-        TextView text1 = (TextView) findViewById(R.id.textView3);
         TextView text2 = (TextView) findViewById(R.id.packages);
         TextView text3 = (TextView) findViewById(R.id.tokens);
         ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
-        text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);
