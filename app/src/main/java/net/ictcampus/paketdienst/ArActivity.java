@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.ar.core.Anchor;
 import com.google.ar.core.Frame;
 import com.google.ar.core.Pose;
@@ -26,8 +27,11 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
+import java.util.ArrayList;
+
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
-    private ModelRenderable mailboxRenderable, singlePackageRenderable, multiPackageRenderable, wagonPackageRenderable, activeRenderable;
+    private ModelRenderable activeRenderable;
+    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
     private static final long DELIVERY_TIME = 60 * 30 * 1000;
     private CountDownTimer countDownTimer;
@@ -54,6 +58,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
         Button btnBack = findViewById(R.id.back);
+
+        //Chooses which model gets loaded
         setupModel();
 
         //ClickListener for Back button
@@ -120,20 +126,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             AnchorNode anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-            //Chooses which model gets loaded
-            switch (id) {
-                case 2:
-                    activeRenderable = singlePackageRenderable;
-                    break;
-                case 3:
-                    activeRenderable = multiPackageRenderable;
-                    break;
-                case 4:
-                    activeRenderable = wagonPackageRenderable;
-                default:
-                    activeRenderable = mailboxRenderable;
-                    break;
-            }
             placed = true;
             createModel(anchorNode, activeNode, activeRenderable);
         }
@@ -152,7 +144,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Builder for model
                 ModelRenderable.builder()
                         .setSource(ArActivity.this, R.raw.package_solo)
-                        .build().thenAccept(renderable -> singlePackageRenderable = renderable)
+                        .build().thenAccept(renderable -> activeRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
                                     Toast.makeText(this, "Unable to show ", Toast.LENGTH_SHORT).show();
@@ -168,7 +160,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Builder for model
                 ModelRenderable.builder()
                         .setSource(ArActivity.this, R.raw.package_multi_new)
-                        .build().thenAccept(renderable -> multiPackageRenderable = renderable)
+                        .build().thenAccept(renderable -> activeRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
                                     Toast.makeText(this, "Unable to show ", Toast.LENGTH_SHORT).show();
@@ -184,7 +176,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Builder for model
                 ModelRenderable.builder()
                         .setSource(ArActivity.this, R.raw.package_car_new)
-                        .build().thenAccept(renderable -> wagonPackageRenderable = renderable)
+                        .build().thenAccept(a -> activeRenderable = a)
                         .exceptionally(
                                 throwable -> {
                                     Toast.makeText(this, "Unable to show ", Toast.LENGTH_SHORT).show();
@@ -200,7 +192,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Builder for model
                 ModelRenderable.builder()
                         .setSource(ArActivity.this, R.raw.mailbox)
-                        .build().thenAccept(renderable -> mailboxRenderable = renderable)
+                        .build().thenAccept(renderable -> activeRenderable = renderable)
                         .exceptionally(
                                 throwable -> {
                                     Toast.makeText(this, "Unable to show ", Toast.LENGTH_SHORT).show();
@@ -259,7 +251,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         SharedPreferences.Editor editor = inventoryFile.edit();
 
         //Statements to decide, which model got hit (Switch was not possible)
-        if (hitNode.getRenderable() == mailboxRenderable) {
+        if (hitNode == mailbox) {
 
             //Looks, if there are any Packages collected
             if (inventoryFile.getInt("PACKAGES", 0) != 0) {
@@ -275,6 +267,9 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
+                markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
+                markerOptions.clear();
+                intent.putExtra("location", markerOptions);
             }
 
             //In case a bug happened
@@ -282,7 +277,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
             }
-        } else if (hitNode.getRenderable() == singlePackageRenderable) {
+        } else if (hitNode == singlePackage) {
             Toast.makeText(ArActivity.this, "Du hast ein einzelnes Paket aufgesammelt", Toast.LENGTH_SHORT).show();
 
             //Deletes model from view and deletes Anchor
@@ -295,7 +290,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             startDeliveryTimer();
-        } else if (hitNode.getRenderable() == multiPackageRenderable) {
+        } else if (hitNode == multiPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
             //Deletes model from view and deletes Anchor
@@ -308,7 +303,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             startDeliveryTimer();
-        } else if (hitNode.getRenderable() == wagonPackageRenderable) {
+        } else if (hitNode == wagonPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
             //Deletes model from view and deletes Anchor

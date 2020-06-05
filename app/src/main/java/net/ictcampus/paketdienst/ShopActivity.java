@@ -205,6 +205,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void startTimerItem1() {
         timerRunningItem1 = true;
         endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
         countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -215,6 +217,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 timerRunningItem1 = false;
+                editor.putInt("MULTIPLIER", 1).apply();
             }
         }.start();
     }
@@ -225,7 +228,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void startTimerItem2() {
         timerRunningItem2 = true;
         endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
-
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
         countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -236,6 +240,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 timerRunningItem2 = false;
+                editor.putInt("RANGE", 0).apply();
             }
         }.start();
     }
@@ -250,9 +255,11 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         editor.putLong("millisLeftItem1", timeLeftItem1);
         editor.putBoolean("timerRunningItem1", timerRunningItem1);
         editor.putLong("endTimeItem1", endTimeItem1);
+
         editor.putLong("millisLeftItem2", timeLeftItem2);
         editor.putBoolean("timerRunningItem2", timerRunningItem2);
         editor.putLong("endTimeItem2", endTimeItem2);
+
         editor.apply();
         if (countDownTimerItem2 != null) {
             countDownTimerItem2.cancel();
@@ -274,11 +281,11 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = inventoryFile.edit();
         timeLeftItem2 = timers.getLong("millisLeftItem2", ITEM_DURATION);
         timerRunningItem2 = timers.getBoolean("timerRunningItem2", false);
+
         timeLeftItem1 = timers.getLong("millisLeftItem1", ITEM_DURATION);
         timerRunningItem1 = timers.getBoolean("timerRunningItem1", false);
 
         if (timerRunningItem2) {
-            updateTimeButton(btnItem2, timeLeftItem2);
             endTimeItem2 = timers.getLong("endTimeItem2", 0);
             timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
             if (timeLeftItem2 < 0) {
@@ -293,8 +300,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (timerRunningItem1) {
-            updateTimeButton(btnItem1, timeLeftItem1);
-            endTimeItem1 = timers.getLong("endTimeItem2", 0);
+            endTimeItem1 = timers.getLong("endTimeItem1", 0);
             timeLeftItem1 = endTimeItem1 - System.currentTimeMillis();
             if (timeLeftItem1 < 0) {
                 timeLeftItem1 = 0;

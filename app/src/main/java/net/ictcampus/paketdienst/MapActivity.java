@@ -487,7 +487,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                     break;
             }
 
-            markerOptions.clear();
             markers.clear();
             beforeChange();
             intent.putExtra("location", markerOptions);
