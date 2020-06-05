@@ -237,12 +237,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
         //Gets location of person and marker
         Location locationPerson = getLocation();
-        LatLng locatinMarker = marker.getPosition();
+        LatLng locationMarker = marker.getPosition();
         Log.d("Marker", "Marker geklickt");
 
         //Compares locations with range
-        if (locationPerson.getLatitude() - locatinMarker.latitude <= range && locationPerson.getLongitude() - locatinMarker.longitude <= range) {
-            if (locationPerson.getLatitude() - locatinMarker.latitude >= -range && locationPerson.getLongitude() - locatinMarker.longitude >= -range) {
+        if (locationPerson.getLatitude() - locationMarker.latitude <= range && locationPerson.getLongitude() - locationMarker.longitude <= range) {
+            if (locationPerson.getLatitude() - locationMarker.latitude >= -range && locationPerson.getLongitude() - locationMarker.longitude >= -range) {
                 startArMarker(marker);
             } else {
                 Log.d("Marker", "Marker ist nicht in der nähe 1");
