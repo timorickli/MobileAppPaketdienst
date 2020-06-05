@@ -17,7 +17,6 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
@@ -127,9 +126,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
 
+
     public void prepareAD() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.adid));
+        mInterstitialAd.setAdUnitId("");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
@@ -151,16 +151,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             if (markerOptionsMailBox.size() == 0) {
                 createMailBox();
             }
-            if (markerOptionsMailBox.size() > 0) {
-                addMarkersMailBox();
-            }
+            addMarkersMailBox();
+
         } else if (inventoryFile.getInt("PACKAGES", 0) == 0) {
             if (markerOptions.size() == 0) {
                 createIconPakets();
             }
-            if (markerOptions.size() > 0) {
-                addMarkers();
-            }
+            addMarkers();
+
         }
         loadMapStyle();
 
@@ -260,7 +258,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             default:
                 randomLati = getLocation().getLatitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
                 break;
-
         }
         latLng = new LatLng(randomLati, randomLong);
         return latLng;
@@ -357,13 +354,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         Log.d("MailBox", "Creating");
     }
 
+
     private void startArMarker(Marker marker) {
         LatLng pos, posMarker;
         int markerOptSize;
         MarkerOptions markerOpt;
         Log.d("Marker", "Marker ist in der nähe");
         Intent intent = new Intent(getApplicationContext(), ArActivity.class);
-
         if (markers.contains(marker)) {
             switch (Integer.parseInt(marker.getTag().toString())) {
                 case 3:
@@ -442,11 +439,14 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (mInterstitialAd.isLoaded()) {
+
                     mInterstitialAd.show();
+
                 } else {
                     Log.d(TAG, "The interstitial wasn't loaded yet.");
                     startArMarker(marker);
                 }
+
             }
         });
         showWarning.setNegativeButton(R.string.alert_dialogAbbrechen, new DialogInterface.OnClickListener() {
@@ -485,7 +485,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
     protected void onStop() {
         super.onStop();
         timers.edit().putLong("millisLeftDelivery", timeLeft).apply();
-        timers.edit().putBoolean("timerRunningDelivery", timerRunning).apply();
+        timers.edit().putBoolean("timerRunning", timerRunning).apply();
         timers.edit().putLong("endTimeDelivery", endTime).apply();
 
 
@@ -499,7 +499,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
         super.onStart();
 
         timeLeft = timers.getLong("millisLeftDelivery", DELIVERY_TIME);
-        timerRunning = timers.getBoolean("timerRunningDelivery", true);
+        timerRunning = timers.getBoolean("timerRunning", false);
 
         //Checks timer state
         if (timerRunning) {
@@ -530,6 +530,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, GoogleM
 
     private void resetTimer() {
         countDownTimer.cancel();
+        countDownTimer = null;
         timeLeft = DELIVERY_TIME;
         timerRunning = false;
         endTime = 0;
