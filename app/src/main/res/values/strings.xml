@@ -33,4 +33,8 @@
     <string name="impressumUrheber">Icons Creator:</string>
     <string name="urheber">Icons created by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
     <string name="urheber1">Icons created by <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
+    <string name="shopMail">Stamp: \n Increases range</string>
+    <string name="shopZoll">Customs duties: \n Double income</string>
+    <string name="shopPakete">Packages: \n 10 additional packages </string>
+    <string name="shopZeit">Delay: \n Temporarily increases time</string>
 </resources>

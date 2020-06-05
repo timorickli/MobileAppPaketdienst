@@ -26,17 +26,18 @@ public class SettingActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setting);
+        //Get the Settings File
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = settingFile.edit();
-        //Spinner selection
+        //Get Spinner selection and fill it with data
         Spinner spinner = (Spinner) findViewById(R.id.settingSpinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.settingMapBack, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
+        //Sets the default selection on the data in the file
         int selection= settingFile.getInt("MAPSTYLE",0);
         spinner.setSelection(selection);
-
-        //ImageButton with ClickListener
+        //ImageButton with onClick event for back to menu
         ImageButton ib = findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -48,11 +49,9 @@ public class SettingActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-
-        //Switch Button Listener
-        Switch settingMusic = (Switch) findViewById(R.id.settingMusic);
-
+        //Switch Button Listeners
         //Music
+        Switch settingMusic = (Switch) findViewById(R.id.settingMusic);
         if (settingMusic.isChecked()) {
             editor.putBoolean("MUSIC", true);
             editor.commit();
@@ -60,7 +59,6 @@ public class SettingActivity extends AppCompatActivity {
             editor.putBoolean("MUSIC", false);
             editor.commit();
         }
-
         //SoundEffects
         Switch settingMusicEffects = (Switch) findViewById(R.id.settingMusicEffects);
         if (settingMusicEffects.isChecked()) {
@@ -70,7 +68,6 @@ public class SettingActivity extends AppCompatActivity {
             editor.putBoolean("MUSICEFFECTS", false);
             editor.commit();
         }
-
         //DarkMode
         Switch settingDark = (Switch) findViewById(R.id.settingDark);
         Boolean dark= settingFile.getBoolean("DARK",false);
@@ -88,14 +85,7 @@ public class SettingActivity extends AppCompatActivity {
                 }
             }
         });
-        //Dark Mode
-        if(settingFile.getBoolean("DARK",false)){
-            darkMode();
-        }
-        else {
-            whiteMode();
-        }
-        //Clickable TextView
+        //Clickable TextView to get to the Impressum
         TextView impressum = (TextView) findViewById(R.id.textViewImpressum);
         impressum.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -104,8 +94,17 @@ public class SettingActivity extends AppCompatActivity {
                 startActivity(intent1);
             }
         });
+        //Dark Mode check
+        if(settingFile.getBoolean("DARK",false)){
+            darkMode();
+        }
+        else {
+            whiteMode();
+        }
     }
-
+    /**
+     * Method for the normal Mode Theme
+     */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
@@ -130,7 +129,9 @@ public class SettingActivity extends AppCompatActivity {
         spinner.setBackgroundColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
-
+    /**
+     * Method for the dark Mode Theme
+     */
     private void darkMode(){
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);

@@ -34,4 +34,8 @@
     <string name="impressumUrheber">Icon Designer:</string>
     <string name="urheber">Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
     <string name="urheber1">Icons erstellt von <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
+    <string name="shopMail">Briefmarke: \n Erhöht Riechwiti</string>
+    <string name="shopZoll">Zougebühre: \n Verdoppelts Ikomme</string>
+    <string name="shopPakete">Päkli: \n 10 zuesätzlichi Päkli</string>
+    <string name="shopZeit">B-Post: \n Erhöht Zit vorübergehend</string>
 </resources>

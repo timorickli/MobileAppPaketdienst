@@ -18,13 +18,19 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+        //Get different TextView and Buttons
         ImageButton ib = findViewById(R.id.imageButton);
         TextView spielanleitung = findViewById(R.id.spielanleitung);
         TextView shop = findViewById(R.id.shop);
         TextView inventory = findViewById(R.id.inventory);
         TextView settings = findViewById(R.id.settings);
-
-        //Dark Mode
+        //ClickListeners for all subs
+        ib.setOnClickListener(this);
+        spielanleitung.setOnClickListener(this);
+        inventory.setOnClickListener(this);
+        shop.setOnClickListener(this);
+        settings.setOnClickListener(this);
+        //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if(settingFile.getBoolean("DARK",false)){
             darkMode();
@@ -32,13 +38,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         else {
             whiteMode();
         }
-
-        //ClickListeners for all subs
-        ib.setOnClickListener(this);
-        spielanleitung.setOnClickListener(this);
-        inventory.setOnClickListener(this);
-        shop.setOnClickListener(this);
-        settings.setOnClickListener(this);
     }
 
 
@@ -50,7 +49,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Intent intent;
-
         //Switch case to decide, which TextView was clicked
         switch (v.getId()) {
             case R.id.spielanleitung:
@@ -78,6 +76,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
     }
 
+    /**
+     * Method for the normal Mode Theme
+     */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
@@ -95,6 +96,9 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
 
+    /**
+     * Method for the dark Mode Theme
+     */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);

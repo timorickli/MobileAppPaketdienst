@@ -13,10 +13,15 @@ import android.widget.TextView;
 
 public class InstructionActivity extends AppCompatActivity {
 
+    /**
+     * OnCreate Method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_instruction);
+        //ImageButton with onClick event for back to menu
         ImageButton ib = findViewById(R.id.imageButton2);
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -26,7 +31,7 @@ public class InstructionActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-        //Dark Mode
+        //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if(settingFile.getBoolean("DARK",false)){
             darkMode();
@@ -36,6 +41,9 @@ public class InstructionActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Method for the normal Mode Theme
+     */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
@@ -47,6 +55,9 @@ public class InstructionActivity extends AppCompatActivity {
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
 
+    /**
+     * Method for the dark Mode Theme
+     */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);

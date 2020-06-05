@@ -31,33 +31,33 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
-
-        txtItem1 = findViewById(R.id.itemText1);
-        txtItem2 = findViewById(R.id.itemText2);
-        txtItem3 = findViewById(R.id.itemText3);
-        txtItem4 = findViewById(R.id.itemText4);
-
-        btnItem1 = findViewById(R.id.button);
-        btnItem2 = findViewById(R.id.button2);
-        btnItem3 = findViewById(R.id.button3);
-        btnItem4 = findViewById(R.id.button4);
+        //Get the Different TextViews and Buttons
+        txtItem1 =  (TextView) findViewById(R.id.itemText1);
+        txtItem2 =  (TextView) findViewById(R.id.itemText2);
+        txtItem3 =  (TextView) findViewById(R.id.itemText3);
+        txtItem4 =  (TextView) findViewById(R.id.itemText4);
+        btnItem1 =  (Button) findViewById(R.id.button);
+        btnItem2 =  (Button)  findViewById(R.id.button2);
+        btnItem3 =  (Button) findViewById(R.id.button3);
+        btnItem4 =  (Button) findViewById(R.id.button4);
+        btnHome = findViewById(R.id.imageButton2);
+        //Set the Text of the different Buttons
         btnItem1.setText("1000");
         btnItem2.setText("2000");
         btnItem3.setText("2500");
         btnItem4.setText("4000");
-        btnHome = findViewById(R.id.imageButton2);
+        //Set Click Listener on Buttons
         btnItem1.setOnClickListener(this);
         btnItem2.setOnClickListener(this);
         btnItem3.setOnClickListener(this);
         btnItem4.setOnClickListener(this);
         btnHome.setOnClickListener(this);
-
-        txtItem1.setText("Briefmarke:\nErhöht Reichweite");
-        txtItem2.setText("Zollgebühren:\nDoppeltes Einokommen");
-        txtItem3.setText("Pakete:\n10 zusätzliche Pakete");
-        txtItem4.setText("B-Post:\nErhöht Zeit vorübergehend");
-
-        //Dark Mode
+        //Set the Text on TextView
+        txtItem1.setText(R.string.shopMail);
+        txtItem2.setText(R.string.shopZoll);
+        txtItem3.setText(R.string.shopPakete);
+        txtItem4.setText(R.string.shopZeit);
+        //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
             darkMode();
@@ -65,7 +65,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             whiteMode();
         }
     }
-
+    /**
+     * Method for the normal Mode Theme
+     */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.WHITE);
@@ -95,6 +97,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
 
+    /**
+     *  Method for the dark Mode Theme
+     */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(Color.BLACK);
@@ -124,6 +129,10 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
 
+    /**
+     * OnClick Event for the Buttons
+     * @param v
+     */
     @Override
     public void onClick(View v) {
         Intent intent;
@@ -190,6 +199,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     * Method to start the Timer
+     */
     private void startTimerItem1() {
         timerRunningItem1 = true;
         endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
@@ -207,6 +219,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }.start();
     }
 
+    /**
+     * To start an Other timer
+     */
     private void startTimerItem2() {
         timerRunningItem2 = true;
         endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
@@ -223,7 +238,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             }
         }.start();
     }
-
+    /**
+     * Method on Stop action
+     */
     @Override
     protected void onStop() {
         super.onStop();
@@ -244,6 +261,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    /**
+     *Method on Start Action
+     */
     @Override
     protected void onStart() {
         super.onStart();

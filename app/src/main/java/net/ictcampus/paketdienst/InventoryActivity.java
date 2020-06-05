@@ -17,22 +17,24 @@ public class InventoryActivity extends AppCompatActivity {
     private int tokens;
     private int packages;
 
+    /**
+     * OnCreate Method
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory);
-        ImageButton ib = findViewById(R.id.imageButton);
-
+        //Get Values out of File and set them in TextView
         SharedPreferences inventoryFile = this.getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        tokens = inventoryFile.getInt("TOKENS", 0);
-        packages = inventoryFile.getInt("PACKAGES", 0);
-
         TextView packagesView = findViewById(R.id.packages);
         TextView tokensView = findViewById(R.id.tokens);
+        tokens = inventoryFile.getInt("TOKENS", 0);
+        packages = inventoryFile.getInt("PACKAGES", 0);
         tokensView.setText(String.valueOf(tokens));
         packagesView.setText(String.valueOf(packages));
-
-        //Clicklistener homebutton
+        //ImageButton with onClick event for back to menu
+        ImageButton ib = findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,8 +43,7 @@ public class InventoryActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-
-        //Dark Mode
+        //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
             darkMode();
@@ -53,7 +54,7 @@ public class InventoryActivity extends AppCompatActivity {
 
 
     /**
-     * Style to white
+     * Method for the normal Mode Theme
      */
     private void whiteMode() {
         View view = this.getWindow().getDecorView();
@@ -71,7 +72,7 @@ public class InventoryActivity extends AppCompatActivity {
     }
 
     /**
-     * Style to Darkmode
+     * Method for the dark Mode Theme
      */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
@@ -87,5 +88,4 @@ public class InventoryActivity extends AppCompatActivity {
         title.setTextColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
-
 }
