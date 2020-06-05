@@ -38,4 +38,5 @@
     <string name="shopZoll">Zollgebühren: \n Doppeltes Einokommen</string>
     <string name="shopPakete">Pakete: \n 10 zusätzliche Pakete</string>
     <string name="shopZeit">B-Post: \n Erhöht Zeit vorübergehend</string>
+    <string name="shopKeineMünzen">Du hast momentan nicht genügend Münzen</string>
 </resources>

@@ -153,7 +153,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     btnItem1.setClickable(false);
                     startTimerItem1();
                 } else {
-                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -166,7 +166,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     btnItem2.setClickable(false);
                     startTimerItem2();
                 } else {
-                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -175,7 +175,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
                             .apply();
                 } else {
-                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -187,7 +187,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                             .apply();
                     increaseTime();
                 } else {
-                    Toast.makeText(ShopActivity.this, "Du hast momentan nicht genügend Tokens", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
