@@ -214,28 +214,26 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
      * @param renderable Renderable part of the model
      */
     private void createModel(AnchorNode anchorNode, Node node, Renderable renderable) {
-
         if (activeNode == mailbox) {
-
-            //Rotate and shrink model
-            node.setLocalScale(new Vector3(0.6f, 0.6f, 0.6f));
-            node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
-
-            //Set Anchor, Renderable, TapListener
-            node.setParent(anchorNode);
-            node.setRenderable(renderable);
-            node.setOnTapListener(this);
+            //Resize
+            node.setLocalScale(new Vector3(0.7f, 0.7f, 0.7f));
+        } else if (activeNode == wagonPackage) {
+            //Resize
+            node.setLocalScale(new Vector3(60f, 60f, 60f));
+        } else if (activeNode == multiPackage) {
+            //Resize
+            node.setLocalScale(new Vector3(40f, 40f, 40f));
         } else {
-
-            //Rotate and grow model
-            node.setLocalScale(new Vector3(12f, 12f, 12f));
-            node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
-
-            //Set Anchor, Renderable, TapListener
-            node.setParent(anchorNode);
-            node.setRenderable(renderable);
-            node.setOnTapListener(this);
+            //Resize
+            node.setLocalScale(new Vector3(15f, 15f, 15f));
         }
+        //Rotate
+        node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0.3f, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(0, 1f, 0), 180f)));
+
+        //Set Anchor, Renderable, TapListener
+        node.setParent(anchorNode);
+        node.setRenderable(renderable);
+        node.setOnTapListener(this);
         placed = true;
     }
 
