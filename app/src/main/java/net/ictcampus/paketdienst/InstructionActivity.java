@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * Class for the manual of the game
+ */
 public class InstructionActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private TextView text1, title;
@@ -42,7 +45,7 @@ public class InstructionActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-
+        text1.setText(getString(R.string.spielAnleitung));
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {

@@ -14,6 +14,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+/**
+ * Class to contact the creators and the copyright owner of the icons
+ */
 public class ImpressumActivity extends AppCompatActivity {
     private TextView title, text1, text2, text3, text4, text5;
     private ImageButton imageButton;

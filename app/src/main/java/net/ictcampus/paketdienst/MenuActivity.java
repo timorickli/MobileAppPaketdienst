@@ -12,6 +12,9 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 
+/**
+ * Class for the navigation
+ */
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
 
     @Override

@@ -39,4 +39,6 @@
     <string name="shopZeit">B-Post: \n Erhöht Zit vorübergehend</string>
     <string name="shopKeineMünzen">Du hesch im Moment ke Batzeli</string>
     <string name="zeitVerbleib">Zit verblibend: </string>
+    <string name="shopBuy">Ichouf abgschlosse</string>
+    <string name="spielAnleitung">Das Ziel des Spieles ist ein Paket bei einem Briefkasten abzugeben. Dafür muss aber zuerst ein Paket geholt werden. Je nach Art des Paketes hat man verschiedene Schwierigkeitsstufen also mehr Pakete. Im Shop können verschiedene PowerUps gekauft werden, welche einem im Spiel helfen können. Im Inventar kann man die Aktuelle Token Anzahl sowie Pakete einsehen. </string>
 </resources>

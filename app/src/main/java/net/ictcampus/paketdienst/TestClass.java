@@ -6,6 +6,9 @@ import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 
+/**
+ * Class to make Junit TestCases
+ */
 public class TestClass{
     @Test
     public void markerSizeTest(){

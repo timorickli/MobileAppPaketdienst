@@ -37,6 +37,8 @@
     <string name="shopPakete">Packages: \n 10 additional packages </string>
     <string name="shopZeit">Delay: \n Temporarily increases time</string>
     <string name="shopKeineMünzen">You do not have enough coins at the moment</string>
+    <string name="shopBuy">purchase done</string>
     <string name="adid" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="zeitVerbleib">Time remaining: </string>
+    <string name="spielAnleitung">The goal of the game is to deliver a package to a mailbox. For this, however, a package must first be obtained. Depending on the type of package, there are different levels of difficulty, so more packages. Various PowerUps can be bought in the shop, which can help you in the game. In the inventory you can see the current token number and packages. </string>
 </resources>
