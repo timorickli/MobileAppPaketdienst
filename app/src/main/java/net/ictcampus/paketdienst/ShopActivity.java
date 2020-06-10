@@ -36,7 +36,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         txtItem2 =  (TextView) findViewById(R.id.itemText2);
         txtItem3 =  (TextView) findViewById(R.id.itemText3);
         txtItem4 =  (TextView) findViewById(R.id.itemText4);
-        btnItem1 =  (Button) findViewById(R.id.button);
+        btnItem1 =  (Button) findViewById(R.id.button1);
         btnItem2 =  (Button)  findViewById(R.id.button2);
         btnItem3 =  (Button) findViewById(R.id.button3);
         btnItem4 =  (Button) findViewById(R.id.button4);
@@ -76,7 +76,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
-        Button btn1 = (Button) findViewById(R.id.button);
+        Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
         Button btn4 = (Button) findViewById(R.id.button4);
@@ -108,7 +108,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
-        Button btn1 = (Button) findViewById(R.id.button);
+        Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
         Button btn4 = (Button) findViewById(R.id.button4);
@@ -144,7 +144,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
-            case R.id.button:
+            case R.id.button1:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem1.getText().toString()) && btnItem1.isClickable()) {
                     editor.putInt("RANGE", 1)
                             .apply();
