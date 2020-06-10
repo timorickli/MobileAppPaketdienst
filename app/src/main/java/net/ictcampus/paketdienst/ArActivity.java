@@ -33,10 +33,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private ModelRenderable activeRenderable;
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
-    private static final long DELIVERY_TIME = 60 * 30 * 1000;
+    private static final long DELIVERY_TIME = 60 * 20 * 1000;
     private CountDownTimer countDownTimer;
     private long endTime, timeLeft;
-    private boolean placed = false;
+    private boolean placed;
     private ArFragment arFragment;
     private boolean timerRunning;
     private Intent intent;
@@ -58,6 +58,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
         Button btnBack = findViewById(R.id.back);
+        placed = false;
 
         //Chooses which model gets loaded
         setupModel();
@@ -119,14 +120,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
         //Used to Create Model at a certain Point on the Floor automatically
         if (frame.getCamera().getTrackingState() == TrackingState.TRACKING && !placed) {
-            Pose pos = frame.getCamera().getPose().compose(Pose.makeTranslation(1f, 0, -2.5f));
+            Pose pos = frame.getCamera().getPose().compose(Pose.makeTranslation(1f, 0f, -2.5f));
 
             //Anchor Node to fix the Model in place
             Anchor anchor = arFragment.getArSceneView().getSession().createAnchor(pos);
             AnchorNode anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arFragment.getArSceneView().getScene());
 
-            placed = true;
             createModel(anchorNode, activeNode, activeRenderable);
         }
     }
@@ -215,7 +215,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         if (activeNode == mailbox) {
 
             //Rotate and shrink model
-            node.setLocalScale(new Vector3(0.4f, 0.4f, 0.4f));
+            node.setLocalScale(new Vector3(0.6f, 0.6f, 0.6f));
             node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
 
             //Set Anchor, Renderable, TapListener
@@ -225,7 +225,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         } else {
 
             //Rotate and grow model
-            node.setLocalScale(new Vector3(10f, 10f, 10f));
+            node.setLocalScale(new Vector3(12f, 12f, 12f));
             node.setLocalRotation(Quaternion.multiply(Quaternion.axisAngle(new Vector3(0, 0, 1f), 90f), Quaternion.axisAngle(new Vector3(1f, 0, 0), 30f)));
 
             //Set Anchor, Renderable, TapListener
@@ -233,7 +233,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             node.setRenderable(renderable);
             node.setOnTapListener(this);
         }
-
+        placed = true;
     }
 
     /**
@@ -276,6 +276,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             else {
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
+                startDeliveryTimer();
             }
         } else if (hitNode == singlePackage) {
             Toast.makeText(ArActivity.this, "Du hast ein einzelnes Paket aufgesammelt", Toast.LENGTH_SHORT).show();
