@@ -1,6 +1,8 @@
 package net.ictcampus.paketdienst;
 
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -46,7 +48,7 @@ public class MainActivityTest4 {
                     "android.permission.ACCESS_FINE_LOCATION");
 
     @Test
-    public void mainActivityTest4() {
+    public void mainActivityTest4() throws InterruptedException {
         ViewInteraction imageButton = onView(
                 allOf(withId(R.id.imageButton), withContentDescription("Paketdienst"),
                         childAtPosition(
@@ -65,7 +67,12 @@ public class MainActivityTest4 {
                                         0),
                                 4),
                         isDisplayed()));
+
+        Thread.sleep(2000);
+
         appCompatTextView.perform(click());
+
+        onView(withId(R.id.button2)).check(matches(withText("2000")));
 
         ViewInteraction appCompatButton = onView(
                 allOf(withId(R.id.button2), withText("2000"),
@@ -75,9 +82,12 @@ public class MainActivityTest4 {
                                         0),
                                 12),
                         isDisplayed()));
+
+        Thread.sleep(2000);
+
         appCompatButton.perform(click());
 
-        waitFor(2000);
+        Thread.sleep(2000);
 
         onView(withId(R.id.button2)).check(matches(not(withText("2000"))));
         onView(withId(R.id.button2)).check(matches(not(isClickable())));
@@ -98,24 +108,6 @@ public class MainActivityTest4 {
                 ViewParent parent = view.getParent();
                 return parent instanceof ViewGroup && parentMatcher.matches(parent)
                         && view.equals(((ViewGroup) parent).getChildAt(position));
-            }
-        };
-    }
-    public static ViewAction waitFor(final long millis) {
-        return new ViewAction() {
-            @Override
-            public Matcher<View> getConstraints() {
-                return isRoot();
-            }
-
-            @Override
-            public String getDescription() {
-                return "Wait for " + millis + " milliseconds.";
-            }
-
-            @Override
-            public void perform(UiController uiController, final View view) {
-                uiController.loopMainThreadForAtLeast(millis);
             }
         };
     }

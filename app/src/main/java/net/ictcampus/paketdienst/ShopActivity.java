@@ -150,6 +150,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
 
+        editor.putInt("TOKENS", 5000);
+        editor.apply();
+
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
             case R.id.button1:
@@ -209,52 +212,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 overridePendingTransition(0, 0);
                 break;
         }
-    }
-
-    /**
-     * Method to start the Timer
-     */
-    private void startTimerItem1() {
-        timerRunningItem1 = true;
-        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem1 = millisUntilFinished;
-                updateTimeButton(btnItem1, timeLeftItem1);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem1 = false;
-                editor.putInt("MULTIPLIER", 1).apply();
-            }
-        }.start();
-    }
-
-    /**
-     * To start another timer
-     */
-    private void startTimerItem2() {
-        timerRunningItem2 = true;
-        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem2 = millisUntilFinished;
-                updateTimeButton(btnItem2, timeLeftItem2);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem2 = false;
-                editor.putInt("RANGE", 0).apply();
-            }
-        }.start();
     }
 
     /**
@@ -327,6 +284,52 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 startTimerItem1();
             }
         }
+    }
+
+    /**
+     * Method to start the Timer
+     */
+    private void startTimerItem1() {
+        timerRunningItem1 = true;
+        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
+        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftItem1 = millisUntilFinished;
+                updateTimeButton(btnItem1, timeLeftItem1);
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunningItem1 = false;
+                editor.putInt("MULTIPLIER", 1).apply();
+            }
+        }.start();
+    }
+
+    /**
+     * To start another timer
+     */
+    private void startTimerItem2() {
+        timerRunningItem2 = true;
+        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
+        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftItem2 = millisUntilFinished;
+                updateTimeButton(btnItem2, timeLeftItem2);
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunningItem2 = false;
+                editor.putInt("RANGE", 0).apply();
+            }
+        }.start();
     }
 
     /**
