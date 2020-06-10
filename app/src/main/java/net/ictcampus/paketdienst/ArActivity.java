@@ -29,6 +29,9 @@ import com.google.ar.sceneform.ux.ArFragment;
 
 import java.util.ArrayList;
 
+/**
+ * Class to show 3d Modells in a AR View
+ */
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
     private ModelRenderable activeRenderable;
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();

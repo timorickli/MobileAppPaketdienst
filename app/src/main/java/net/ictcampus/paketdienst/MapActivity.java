@@ -45,6 +45,9 @@ import java.util.Random;
 
 import static com.google.ar.sceneform.rendering.HeadlessEngineWrapper.TAG;
 
+/**
+ * Class to show the Map and to process the logical Parts of the Game
+ */
 public class MapActivity extends Activity implements OnMapReadyCallback, Serializable, GoogleMap.OnMarkerClickListener {
     private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();

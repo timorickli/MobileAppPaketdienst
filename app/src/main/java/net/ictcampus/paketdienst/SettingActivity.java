@@ -15,6 +15,9 @@ import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
 
+/**
+ * Class for the Settings Activity to set the darkmode or change the map style
+ */
 public class SettingActivity extends AppCompatActivity {
     private TextView title, text1, text2, text3, text4, text5, text6, impressum;
     private SharedPreferences settingFile;

@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
+/**
+ * Class for the manual of the game
+ */
 public class InstructionActivity extends AppCompatActivity {
     private ImageButton imageButton;
     private TextView text1, title;

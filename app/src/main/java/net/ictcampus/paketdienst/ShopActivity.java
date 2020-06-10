@@ -16,6 +16,10 @@ import android.widget.Toast;
 
 import java.util.Locale;
 
+/**
+ * Class for the shop activity
+ * to buy PowerUps or Upgrades
+ */
 public class ShopActivity extends AppCompatActivity implements View.OnClickListener {
     TextView txtItem1, txtItem2, txtItem3, txtItem4;
     Button btnItem1, btnItem2, btnItem3, btnItem4;
