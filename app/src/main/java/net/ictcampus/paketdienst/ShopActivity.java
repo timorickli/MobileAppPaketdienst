@@ -150,8 +150,13 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
 
+        /*
+          !
+         !!!        Used to run the Instrumental Test
+        !!!!!
         editor.putInt("TOKENS", 5000);
         editor.apply();
+        */
 
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
