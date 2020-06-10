@@ -42,7 +42,7 @@ public class InstructionActivity extends AppCompatActivity {
                 overridePendingTransition(0, 0);
             }
         });
-
+        text1.setText(getString(R.string.spielAnleitung));
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
