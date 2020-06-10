@@ -6,23 +6,6 @@
     android:layout_height="match_parent"
     tools:context=".SettingActivity">
 
-    <Switch
-        android:id="@+id/settingMusic"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/textView10"
-        />
-
-    <Switch
-        android:id="@+id/settingMusicEffects"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/settingMusic" />
-
     <TextView
         android:textColor="#000"
         android:textIsSelectable="false"
@@ -53,8 +36,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="36dp"
         android:text="@string/settingDarkmode"
-        app:layout_constraintStart_toStartOf="@+id/textView10"
-        app:layout_constraintTop_toBottomOf="@+id/settingMusicEffects" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/textView4"
@@ -86,41 +72,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.27"
         app:layout_constraintStart_toEndOf="@+id/settingDark" />
-
-    <TextView
-        android:textColor="@android:color/black"
-        android:id="@+id/textView10"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="@string/settingSound"
-        app:layout_constraintBottom_toTopOf="@+id/settingMusic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.175"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:textColor="@android:color/black"
-        android:id="@+id/textView11"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settingSoundEffects"
-        app:layout_constraintBottom_toBottomOf="@+id/settingMusicEffects"
-        app:layout_constraintStart_toStartOf="@+id/textView12" />
-
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/settingMusic"
-        android:textColor="@android:color/black"
-        app:layout_constraintBottom_toBottomOf="@+id/settingMusic"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.27"
-        app:layout_constraintStart_toEndOf="@+id/settingMusic" />
-
     <Spinner
         android:id="@+id/settingSpinner"
         android:layout_width="150dp"
@@ -145,5 +96,56 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.95" />
+    <!-- Code to Add later Music on/off switches
+    <TextView
+        android:textColor="@android:color/black"
+        android:id="@+id/textView10"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:text="@string/settingSound"
+        app:layout_constraintBottom_toTopOf="@+id/settingMusic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.175"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
+     <TextView
+         android:textColor="@android:color/black"
+         android:id="@+id/textView11"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:text="@string/settingSoundEffects"
+         app:layout_constraintBottom_toBottomOf="@+id/settingMusicEffects"
+         app:layout_constraintStart_toStartOf="@+id/textView12" />
+
+      <TextView
+          android:id="@+id/textView12"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/settingMusic"
+          android:textColor="@android:color/black"
+          app:layout_constraintBottom_toBottomOf="@+id/settingMusic"
+          app:layout_constraintEnd_toEndOf="parent"
+          app:layout_constraintHorizontal_bias="0.27"
+          app:layout_constraintStart_toEndOf="@+id/settingMusic" />
+
+      <Switch
+         android:id="@+id/settingMusic"
+         android:layout_width="wrap_content"
+         android:layout_height="wrap_content"
+         android:layout_marginTop="16dp"
+         app:layout_constraintStart_toStartOf="@+id/textView10"
+         app:layout_constraintTop_toBottomOf="@+id/textView10"
+        />
+    <Switch
+        android:id="@+id/settingMusicEffects"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="@+id/textView10"
+        app:layout_constraintTop_toBottomOf="@+id/settingMusic" />
+        -->
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
