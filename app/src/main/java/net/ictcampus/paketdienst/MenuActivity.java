@@ -78,7 +78,6 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
 
         //Starts activity without transition
         startActivity(intent);
-        overridePendingTransition(0, 0);
     }
 
     /**

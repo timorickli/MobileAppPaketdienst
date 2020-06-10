@@ -26,8 +26,7 @@
     <string name="menuShop">Shop</string>
     <string name="back">Back</string>
     <string name="inventoryTokens">Tokens:</string>
-    <string name="adid">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="impressumTitleUnder"><u>Impressum</u></string>
+    <string name="impressumTitleUnder" translatable="false"><u>Impressum</u></string>
     <string name="impressumTitle">Impressum</string>
     <string name="impressumKontakt">Contact:</string>
     <string name="impressumUrheber">Icons Creator:</string>
@@ -38,4 +37,6 @@
     <string name="shopPakete">Packages: \n 10 additional packages </string>
     <string name="shopZeit">Delay: \n Temporarily increases time</string>
     <string name="shopKeineMünzen">You do not have enough coins at the moment</string>
+    <string name="adid" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
+    <string name="zeitVerbleib">Time remaining: </string>
 </resources>

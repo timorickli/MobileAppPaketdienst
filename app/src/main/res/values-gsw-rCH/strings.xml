@@ -28,7 +28,6 @@
     <string name="inventoryTokens">Batzeli:</string>
     <string name="back">Zrügg</string>
     <string name="adid">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="impressumTitleUnder"><u>Impressum</u></string>
     <string name="impressumTitle">Impressum</string>
     <string name="impressumKontakt">Kontakt:</string>
     <string name="impressumUrheber">Icon Designer:</string>
@@ -39,4 +38,5 @@
     <string name="shopPakete">Päkli: \n 10 zuesätzlichi Päkli</string>
     <string name="shopZeit">B-Post: \n Erhöht Zit vorübergehend</string>
     <string name="shopKeineMünzen">Du hesch im Moment ke Batzeli</string>
+    <string name="zeitVerbleib">Zit verblibend: </string>
 </resources>

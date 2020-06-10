@@ -96,6 +96,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
                 beforeChange();
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_up,R.anim.slide_non);
             }
         });
 
@@ -624,7 +625,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
         //String formatter
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        textView.setText("Time remaining: " + timeFormat);
+        textView.setText(getString(R.string.zeitVerbleib) + timeFormat);
     }
 
     /**
@@ -656,7 +657,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     public void prepareAD() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("");
+        mInterstitialAd.setAdUnitId(getString(R.string.adid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
     public static ArrayList<MarkerOptions> getMarkerOptionsMailBox() {
