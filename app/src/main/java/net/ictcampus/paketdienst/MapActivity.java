@@ -659,7 +659,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     public void prepareAD() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId("");
+        mInterstitialAd.setAdUnitId(getString(R.string.adid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
     public static ArrayList<MarkerOptions> getMarkerOptionsMailBox() {
