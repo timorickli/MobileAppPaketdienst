@@ -244,6 +244,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             }
         }.start();
     }
+
     /**
      * Method on Stop action
      */
