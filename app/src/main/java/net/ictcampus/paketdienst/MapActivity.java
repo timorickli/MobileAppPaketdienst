@@ -50,7 +50,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
-    private static final long DELIVERY_TIME = 60 * 30 * 1000;
+    private static final long DELIVERY_TIME = 60 * 20 * 1000;
     private SharedPreferences inventoryFile, settingFile;
     private InterstitialAd mInterstitialAd;
     private CountDownTimer countDownTimer;
@@ -96,7 +96,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
                 beforeChange();
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_up,R.anim.slide_non);
             }
         });
 
@@ -437,7 +436,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     public void createMailBox() {
 
         //Logo for marker
-       BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
+        BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
         Bitmap marker = Bitmap.createScaledBitmap(b2, width, height, false);
 
@@ -459,7 +458,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         //For each package in inventory, display one on map
         for (int i = 0; i < 3; i++) {
             markerOptionsMailBox.add(new MarkerOptions()
-                            .position(new LatLng(12.2, 123.2))
+                    .position(new LatLng(12.2, 123.2))
             );
         }
     }
@@ -625,7 +624,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
         //String formatter
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        textView.setText(getString(R.string.zeitVerbleib) + timeFormat);
+        textView.setText("Time remaining: " + timeFormat);
     }
 
     /**
@@ -657,7 +656,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     public void prepareAD() {
         mInterstitialAd = new InterstitialAd(this);
-        mInterstitialAd.setAdUnitId(getString(R.string.adid));
+        mInterstitialAd.setAdUnitId("");
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
     public static ArrayList<MarkerOptions> getMarkerOptionsMailBox() {
