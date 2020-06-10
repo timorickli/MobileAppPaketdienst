@@ -139,8 +139,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
-        editor.putInt("TOKENS", 5000)
-                .apply();
 
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
@@ -152,6 +150,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                             .apply();
                     btnItem1.setClickable(false);
                     startTimerItem1();
+                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -165,6 +164,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                             .apply();
                     btnItem2.setClickable(false);
                     startTimerItem2();
+                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -174,6 +174,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
                             .apply();
+                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -186,6 +187,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString()))
                             .apply();
                     increaseTime();
+                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
