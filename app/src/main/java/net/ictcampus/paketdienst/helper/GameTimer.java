@@ -77,6 +77,7 @@ public class GameTimer {
             if (timeLeft < 0) {
                 timeLeft = 0;
                 timerRunning = false;
+                button.setClickable(true);
                 return false;
             } else {
                 updateTime(button);
@@ -157,6 +158,7 @@ public class GameTimer {
 
         //Starts new timer
         countDownTimer = new CountDownTimer(timeLeft, 1000) {
+
             @Override
             public void onTick(long millisUntilFinished) {
                 timeLeft = millisUntilFinished;
@@ -166,10 +168,13 @@ public class GameTimer {
             @Override
             public void onFinish() {
                 timerRunning = false;
+                button.setClickable(true);
             }
         }.start();
         timerRunning = true;
+        button.setClickable(false);
         updateTime(button);
+
     }
 
     /**
@@ -206,10 +211,9 @@ public class GameTimer {
     public void beforeChange(SharedPreferences.Editor editorTimers, String keyTimeLeft, String keyTimerRunning, String keyEndTime) {
 
         //Edits values, that timer basically runs in background
-        editorTimers.putLong(keyTimeLeft, timeLeft);
-        editorTimers.putBoolean(keyTimerRunning, timerRunning);
-        editorTimers.putLong(keyEndTime, endTime);
-        editorTimers.apply();
+        editorTimers.putLong(keyTimeLeft, timeLeft).apply();
+        editorTimers.putBoolean(keyTimerRunning, timerRunning).apply();
+        editorTimers.putLong(keyEndTime, endTime).apply();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();

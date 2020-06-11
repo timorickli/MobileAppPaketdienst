@@ -40,14 +40,15 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_shop);
 
         //New helper
-        dt1 = new GameTimer(20);
-        dt2 = new GameTimer(20);
+        dt1 = new GameTimer(1);
+        dt2 = new GameTimer(1);
 
         //Shared Prefrences
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
+        editorInventory.putInt("TOKENS",200).apply();
 
         //Get the Different TextViews and Buttons
         txtItem1 = (TextView) findViewById(R.id.itemText1);
@@ -105,18 +106,12 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         if (!dt1.checkState(timersFile, btnItem1, "millisLeftItem1", "timerRunningItem1", "endTimeItem1")) {
             editorInventory.putInt("RANGE", 0).apply();
             btnItem1.setText("400");
-            btnItem1.setClickable(false);
-        } else {
-            btnItem1.setClickable(true);
         }
 
         //Checks, if time is over for Item
         if (!dt2.checkState(timersFile, btnItem2, "millisLeftItem2", "timerRunningItem2", "endTimeItem2")) {
             editorInventory.putInt("MULTIPLIER", 1).apply();
             btnItem2.setText("125");
-            btnItem2.setClickable(false);
-        } else {
-            btnItem2.setClickable(true);
         }
     }
 
@@ -158,7 +153,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
                     //Updates current token balance
                     tokens = inventoryFile.getInt("TOKENS", 0);
-                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + tokens);
 
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
@@ -180,7 +175,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
                     //Updates current token balance
                     tokens = inventoryFile.getInt("TOKENS", 0);
-                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + tokens);
 
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
@@ -204,7 +199,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
                     //Updates current token balance
                     tokens = inventoryFile.getInt("TOKENS", 0);
-                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + tokens);
 
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
@@ -214,7 +209,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.button4:
 
                 //Checks, if you have enough tokens and that there's a active timer
-                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString()) && timersFile.getBoolean("timerRunning", false) == true) {
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString()) && timersFile.getBoolean("TimerRunning", false)) {
                     //Commits the buy and gives information for the user
                     increaseTime();
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString())).apply();
@@ -222,9 +217,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
                     //Updates current token balance
                     tokens = inventoryFile.getInt("TOKENS", 0);
-                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + tokens);
 
-                } else if (!timersFile.getBoolean("timerRunning", false)) {
+                } else if (!timersFile.getBoolean("TimerRunning", false)) {
                     //If theres no active timer
                     Toast.makeText(ShopActivity.this, R.string.noTimer, Toast.LENGTH_SHORT).show();
 
@@ -311,7 +306,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
      * Increases time to deliver a package
      */
     private void increaseTime() {
-        editorInventory.putLong("endTimeDelivery", timersFile.getLong("endTimeDelivery", 0) + 60 * 20 * 1000);
-        editorInventory.apply();
+        editorTimers.putLong("EndTime", timersFile.getLong("EndTime", 0) + 60 * 20 * 1000);
+        editorTimers.apply();
     }
 }

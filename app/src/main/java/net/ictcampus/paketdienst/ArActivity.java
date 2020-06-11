@@ -36,6 +36,7 @@ import java.util.ArrayList;
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
     private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
+    private static ArrayList<MarkerOptions> markerOptionsClicked = new ArrayList<MarkerOptions>();
     private SharedPreferences.Editor editorInventory, editorTimers;
     private SharedPreferences inventoryFile, timersFile;
     private ModelRenderable activeRenderable;
@@ -68,6 +69,11 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         editorTimers = timersFile.edit();
         placed = false;
 
+        if (getIntent().getParcelableArrayListExtra("mailboxClicked")!=null){
+            markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
+            markerOptionsClicked = getIntent().getParcelableArrayListExtra("mailboxClicked");
+            markerOptions.add(markerOptionsClicked.get(0));
+        }
         //Chooses which model gets loaded
         setupModel();
 
@@ -77,12 +83,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             public void onClick(View v) {
 
                 //Return previous PackageMark spots
-                if (getIntent().getParcelableArrayListExtra("location") != null) {
-                    intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
-                }
-                if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
-                    intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-                }
+                intent.putExtra("locationMailBox", markerOptions);
+                intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
 
                 //Save timer values
                 dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
@@ -261,22 +263,19 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 if (timersFile.getBoolean("TimerRunning",true)){
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
                 }else{
-
+                    Toast.makeText(ArActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
                 }
                 editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
-
-                intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-                markerOptions = getIntent().getParcelableArrayListExtra("location");
-                markerOptions.clear();
                 dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
-                intent.putExtra("location", markerOptions);
             }
 
             //In case a bug happened
             else {
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
+                intent.putExtra("location", markerOptions);
             }
+
 
         } else if (hitNode == singlePackage) {
             Toast.makeText(ArActivity.this, "Du hast ein einzelnes Paket aufgesammelt", Toast.LENGTH_SHORT).show();
@@ -289,7 +288,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             //Edit Inventory
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1).apply();
 
-            intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             dt.startGameTimer();
 
         } else if (hitNode == multiPackage) {
@@ -303,7 +301,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             //Edit Inventory
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3).apply();
 
-            intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             dt.startGameTimer();
 
         } else if (hitNode == wagonPackage) {
@@ -317,12 +314,11 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             //Edit Inventory
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7).apply();
 
-            intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             dt.startGameTimer();
         }
+
         //Saves timer values
         dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
-
         //New activity without transition
         startActivity(intent);
         overridePendingTransition(0, 0);

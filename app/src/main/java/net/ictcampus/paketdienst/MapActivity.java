@@ -90,6 +90,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         dt = new GameTimer(1);
         rdmLoca = new RandomLocation();
 
+        //Information from intent
+        if (getIntent().getParcelableArrayListExtra("location") != null) {
+            markerOptions = getIntent().getParcelableArrayListExtra("location");
+        }
+        if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
+            markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
+        }
+        MobileAds.initialize(this, new OnInitializationCompleteListener() {
+            @Override
+            public void onInitializationComplete(InitializationStatus initializationStatus) {
+            }
+        });
+
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
         ib.setOnClickListener(new View.OnClickListener() {
@@ -102,19 +115,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_up, R.anim.slide_non);
-            }
-        });
-
-        //Information from intent
-        if (getIntent().getParcelableArrayListExtra("location") != null) {
-            markerOptions = getIntent().getParcelableArrayListExtra("location");
-        }
-        if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
-            markerOptionsMailBox = getIntent().getParcelableArrayListExtra("locationMailBox");
-        }
-        MobileAds.initialize(this, new OnInitializationCompleteListener() {
-            @Override
-            public void onInitializationComplete(InitializationStatus initializationStatus) {
             }
         });
 
@@ -186,9 +186,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!timersFile.getBoolean("TimerRunning", true)&&marker.getTag().equals(1)) {
-            Toast.makeText(MapActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
-        }
         double range;
         if (markers.contains(marker)) {
             Log.d("Marker", "Marker contains");
@@ -414,7 +411,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                     intent.putExtra("id", 4);
                     break;
             }
-
             markers.clear();
             dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             intent.putExtra("location", markerOptions);
@@ -425,6 +421,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         if (marker.getTag().equals(1)) {
             markerOptSize = markerOptionsMailBox.size();
             ArrayList<MarkerOptions> mailBoxSend = new ArrayList<MarkerOptions>();
+            ArrayList<MarkerOptions> mailboxClicked = new ArrayList<MarkerOptions>();
 
             //Iterates through all markers in Mailbox, to decide which one to remove/send
             for (int i = 0; i < markerOptSize; i++) {
@@ -433,6 +430,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 posMarker = marker.getPosition();
                 if (!posMarker.equals(pos)) {
                     mailBoxSend.add(markerOpt);
+                }else{
+                    mailboxClicked.add(markerOpt);
                 }
             }
 
@@ -440,6 +439,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             markerOptionsMailBox.clear();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
+            intent.putExtra("mailboxClicked", mailboxClicked);
             startActivity(intent);
         }
     }
