@@ -100,7 +100,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     protected void onStart() {
         super.onStart();
         if(!dt.checkState(timersFile,"TimeLeft", "TimerRunning", "EndTime")){
-            editorInventory.putInt("PACKAGES", 0);
+            editorInventory.putInt("PACKAGES", 0).apply();
         }
     }
 
