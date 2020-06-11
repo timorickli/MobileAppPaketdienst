@@ -23,13 +23,8 @@ import java.util.Locale;
 public class ShopActivity extends AppCompatActivity implements View.OnClickListener {
     private SharedPreferences inventoryFile, timersFile;
     private SharedPreferences.Editor editorInventory, editorTimers;
-    private CountDownTimer countDownTimerItem2, countDownTimerItem1;
-    private static final long ITEM_DURATION = 60 * 30 * 1000;
     private TextView txtItem1, txtItem2, txtItem3, txtItem4;
     private Button btnItem1, btnItem2, btnItem3, btnItem4;
-    private boolean timerRunningItem2, timerRunningItem1;
-    private long timeLeftItem2, timeLeftItem1;
-    private long endTimeItem2, endTimeItem1;
     private TextView tokensView;
     private ImageButton btnHome;
     private int tokens;

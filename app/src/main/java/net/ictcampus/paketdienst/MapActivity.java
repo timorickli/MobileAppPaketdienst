@@ -53,13 +53,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private SharedPreferences inventoryFile, settingFile, timersFile;
     private InterstitialAd mInterstitialAd;
-    private CountDownTimer countDownTimer;
     private ImageButton imageButton;
-    private long endTime, timeLeft;
     private final int height = 100;
     private final int width = 100;
-    private boolean timerRunning;
-    SharedPreferences.Editor editorInventory, editorTimers;
+    private SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
     private DeliveryTimer dt;
     private TextView timeRemaining;

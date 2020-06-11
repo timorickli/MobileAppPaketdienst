@@ -13,7 +13,7 @@ public class DeliveryTimer {
     private CountDownTimer countDownTimer;
     private long endTime, timeLeft;
     private boolean timerRunning;
-    private static final long DELIVERY_TIME = 60 * 20 * 1000;
+    private static final long DELIVERY_TIME = 60 * 30 * 1000;
 
     public boolean checkState(SharedPreferences timersFile, TextView textView, String keyTimeLeft, String keyTimerRunning, String keyEndTime){
         //Gets previous timer values
