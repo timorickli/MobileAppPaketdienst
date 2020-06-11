@@ -44,8 +44,9 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private boolean timerRunning;
     private Intent intent;
     private int id;
-    private SharedPreferences inventoryFile, timers;
-    private SharedPreferences.Editor editor;
+    private SharedPreferences inventoryFile, timersFile;
+    private SharedPreferences.Editor editorInventory, editorTimers;
+    private DeliveryTimer dt;
 
     /**
      * Prepares everything for ARView, when activity is started
@@ -61,11 +62,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_ux_fragment);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        timers = getSharedPreferences("timers", Context.MODE_PRIVATE);
+        timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
         Button btnBack = findViewById(R.id.back);
-        editor = inventoryFile.edit();
+        editorInventory = inventoryFile.edit();
+        editorTimers = timersFile.edit();
+        dt = new DeliveryTimer();
         placed = false;
 
         //Chooses which model gets loaded
@@ -82,7 +85,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
                 }
 
-                beforeChange();
+                dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
                 //New activity without transition
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -96,21 +99,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     @Override
     protected void onStart() {
         super.onStart();
-
-        //Gets previous timer values
-        timeLeft = timers.getLong("millisLeft", DELIVERY_TIME);
-        timerRunning = timers.getBoolean("timerRunning", false);
-
-        //Checks timer state
-        if (timerRunning) {
-            endTime = timers.getLong("endTime", 0);
-            timeLeft = endTime - System.currentTimeMillis();
-            if (timeLeft < 0) {
-                timeLeft = 0;
-                timerRunning = false;
-            } else {
-                startDeliveryTimer();
-            }
+        if(!dt.checkState(timersFile,"TimeLeft", "TimerRunning", "EndTime")){
+            editorInventory.putInt("PACKAGES", 0);
         }
     }
 
@@ -266,13 +256,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 hitNode = null;
 
                 //Edit Inventory
-                editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
-                editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
+                editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
+                editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
                 markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
                 markerOptions.clear();
-                resetTimer();
+                dt.resetTimer(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
                 intent.putExtra("location", markerOptions);
             }
 
@@ -280,7 +270,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             else {
                 Toast.makeText(ArActivity.this, "Du hast kein passendes Paket zum abgeben, hol dir eins bevor du wieder kommst", Toast.LENGTH_SHORT).show();
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
-                startDeliveryTimer();
             }
 
         } else if (hitNode == singlePackage) {
@@ -292,10 +281,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1).apply();
+            editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            startDeliveryTimer();
+            dt.startDeliveryTimer();
 
         } else if (hitNode == multiPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
@@ -306,10 +295,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3).apply();
+            editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            startDeliveryTimer();
+            dt.startDeliveryTimer();
 
         } else if (hitNode == wagonPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
@@ -320,12 +309,12 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             hitNode = null;
 
             //Edit Inventory
-            editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7).apply();
+            editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            startDeliveryTimer();
+            dt.startDeliveryTimer();
         }
-        beforeChange();
+        dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
 
         //New activity without transition
         startActivity(intent);
@@ -335,47 +324,4 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     /**
      * Creates and starts a timespan to deliver the package
      */
-    private void startDeliveryTimer() {
-
-        //Evaluates end time, so timer can run in background
-        endTime = System.currentTimeMillis() + timeLeft;
-
-        //Starts new timer
-        countDownTimer = new CountDownTimer(timeLeft, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeft = millisUntilFinished;
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunning = false;
-            }
-        }.start();
-        timerRunning = true;
-    }
-
-    /**
-     * Saves timer values before new Activity
-     */
-    private void beforeChange() {
-        SharedPreferences.Editor editor = timers.edit();
-
-        //Edits values, that timer basically runs in background
-        editor.putLong("millisLeft", timeLeft);
-        editor.putBoolean("timerRunning", timerRunning);
-        editor.putLong("endTime", endTime);
-        editor.apply();
-
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-    }
-
-    private void resetTimer() {
-        countDownTimer.cancel();
-        timerRunning = false;
-        timeLeft = DELIVERY_TIME;
-        endTime = 0;
-    }
 }

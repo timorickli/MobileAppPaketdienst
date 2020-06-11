@@ -33,12 +33,15 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private TextView tokensView;
     private ImageButton btnHome;
     private int tokens;
+    private DeliveryTimer dt1, dt2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
+        dt1 = new DeliveryTimer();
+        dt2 = new DeliveryTimer();
 
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
@@ -172,7 +175,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem1.getText().toString()))
                             .apply();
                     btnItem1.setClickable(false);
-                    startTimerItem1();
+                    dt1.startDeliveryTimer(btnItem1);
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                     tokens = inventoryFile.getInt("TOKENS", 0);
                     tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
@@ -186,7 +189,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     editorInventory.putInt("MULTIPLIER", 2).apply();
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString())).apply();
                     btnItem2.setClickable(false);
-                    startTimerItem2();
+                    dt2.startDeliveryTimer(btnItem2);
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                     tokens = inventoryFile.getInt("TOKENS", 0);
                     tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
@@ -199,9 +202,10 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString())).apply();
                     editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10).apply();
-
-                    editorTimers.putBoolean("timerRunning", true).apply();
-
+                    DeliveryTimer dt = new DeliveryTimer();
+                    dt.resetTimer(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+                    dt.startDeliveryTimer();
+                    dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                     tokens = inventoryFile.getInt("TOKENS", 0);
                     tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
@@ -217,7 +221,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                     tokens = inventoryFile.getInt("TOKENS", 0);
                     tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
-                } else if (timersFile.getBoolean("timerRunning", false)==false){
+                } else if (!timersFile.getBoolean("timerRunning", false)){
                     Toast.makeText(ShopActivity.this, R.string.noTimer, Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
@@ -238,22 +242,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        editorTimers.putLong("millisLeftItem1", timeLeftItem1);
-        editorTimers.putBoolean("timerRunningItem1", timerRunningItem1);
-        editorTimers.putLong("endTimeItem1", endTimeItem1);
-
-        editorTimers.putLong("millisLeftItem2", timeLeftItem2);
-        editorTimers.putBoolean("timerRunningItem2", timerRunningItem2);
-        editorTimers.putLong("endTimeItem2", endTimeItem2);
-
-        editorTimers.apply();
-
-        if (countDownTimerItem2 != null) {
-            countDownTimerItem2.cancel();
-        }
-        if (countDownTimerItem1 != null) {
-            countDownTimerItem1.cancel();
-        }
+        dt1.beforeChange(editorTimers,"millisLeftItem1", "timerRunningItem1", "endTimeItem1");
+        dt2.beforeChange(editorTimers, "millisLeftItem2", "timerRunningItem2", "endTimeItem2");
     }
 
     /**
@@ -263,97 +253,16 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStart() {
         super.onStart();
-
-        timeLeftItem2 = timersFile.getLong("millisLeftItem2", ITEM_DURATION);
-        timerRunningItem2 = timersFile.getBoolean("timerRunningItem2", false);
-
-        timeLeftItem1 = timersFile.getLong("millisLeftItem1", ITEM_DURATION);
-        timerRunningItem1 = timersFile.getBoolean("timerRunningItem1", false);
-
-        if (timerRunningItem2) {
-            endTimeItem2 = timersFile.getLong("endTimeItem2", 0);
-            timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
-            if (timeLeftItem2 < 0) {
-                timeLeftItem2 = 0;
-                timerRunningItem2 = false;
-                editorInventory.putInt("MULTIPLIER", 1)
-                        .apply();
-                btnItem2.setText("2000");
-            } else {
-                startTimerItem2();
-            }
+        if (!dt1.checkState(timersFile, btnItem1, "millisLeftItem1", "timerRunningItem1", "endTimeItem1")) {
+            editorInventory.putInt("RANGE", 0)
+                    .apply();
+            btnItem1.setText("400");
         }
-
-        if (timerRunningItem1) {
-            endTimeItem1 = timersFile.getLong("endTimeItem1", 0);
-            timeLeftItem1 = endTimeItem1 - System.currentTimeMillis();
-            if (timeLeftItem1 < 0) {
-                timeLeftItem1 = 0;
-                timerRunningItem1 = false;
-                editorInventory.putInt("RANGE", 0)
-                        .apply();
-                btnItem1.setText("1000");
-            } else {
-                startTimerItem1();
-            }
+        if (!dt2.checkState(timersFile, btnItem2, "millisLeftItem2", "timerRunningItem2", "endTimeItem2")) {
+            editorInventory.putInt("MULTIPLIER", 1)
+                    .apply();
+            btnItem2.setText("125");
         }
-    }
-
-    /**
-     * Method to start the Timer
-     */
-    private void startTimerItem1() {
-        timerRunningItem1 = true;
-        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
-        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem1 = millisUntilFinished;
-                updateTimeButton(btnItem1, timeLeftItem1);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem1 = false;
-                editorInventory.putInt("MULTIPLIER", 1).apply();
-            }
-        }.start();
-    }
-
-    /**
-     * To start another timer
-     */
-    private void startTimerItem2() {
-        timerRunningItem2 = true;
-        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
-        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem2 = millisUntilFinished;
-                updateTimeButton(btnItem2, timeLeftItem2);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem2 = false;
-                editorInventory.putInt("RANGE", 0).apply();
-            }
-        }.start();
-    }
-
-    /**
-     * Updates the timer displayed on button
-     *
-     * @param button
-     * @param time
-     */
-    private void updateTimeButton(Button button, Long time) {
-        int minutes = (int) (time / 1000) / 60;
-        int seconds = (int) (time / 1000) % 60;
-
-        //String formatter
-        String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        button.setText(timeFormat);
     }
 
     /**

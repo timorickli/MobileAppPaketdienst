@@ -52,7 +52,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private SharedPreferences inventoryFile, settingFile, timersFile;
-    private static final long DELIVERY_TIME = 60 * 20 * 1000;
     private InterstitialAd mInterstitialAd;
     private CountDownTimer countDownTimer;
     private ImageButton imageButton;
@@ -62,6 +61,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private boolean timerRunning;
     SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
+    private DeliveryTimer dt;
+    private TextView timeRemaining;
 
     /**
      * Prepares everything, when activity is created
@@ -74,6 +75,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         setContentView(R.layout.activity_map);
 
         imageButton = (ImageButton) findViewById(R.id.imageButton);
+        timeRemaining = findViewById(R.id.timeRemaining);
 
         //Create Map
         MapFragment mapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.google_map);
@@ -85,6 +87,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
+        dt = new DeliveryTimer();
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -98,7 +101,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 if (markerOptionsMailBox != null) {
                     intent.putExtra("locationMailBox", markerOptionsMailBox);
                 }
-                beforeChange();
+                dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
                 startActivity(intent);
                 overridePendingTransition(R.anim.slide_up,R.anim.slide_non);
             }
@@ -133,23 +136,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     @Override
     protected void onStart() {
         super.onStart();
-
-        //Gets previous timer values
-        timeLeft = timersFile.getLong("millisLeft", DELIVERY_TIME);
-        timerRunning = timersFile.getBoolean("timerRunning", false);
-
-        //Checks timer state and starts it if needed
-        if (timerRunning) {
-            updateTime();
-            endTime = timersFile.getLong("endTime", 0);
-            timeLeft = endTime - System.currentTimeMillis();
-            if (timeLeft < 0) {
-                timeLeft = 0;
-                timerRunning = false;
-            } else {
-                updateTime();
-                startDeliveryTimer();
-            }
+            if(!dt.checkState(timersFile, timeRemaining,"TimeLeft", "TimerRunning", "EndTime")){
+                editorInventory.putInt("PACKAGES", 0);
         }
     }
     /**
@@ -491,7 +479,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             }
 
             markers.clear();
-            beforeChange();
+            dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
             intent.putExtra("location", markerOptions);
             startActivity(intent);
         }
@@ -511,7 +499,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
             }
 
-            beforeChange();
+            dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
             markerOptionsMailBox.clear();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
@@ -564,63 +552,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         });
         AlertDialog alert11 = showWarning.create();
         alert11.show();
-    }
-
-    /**
-     * Creates and starts a timespan to deliver the package
-     */
-    private void startDeliveryTimer() {
-
-        //Evaluates end time, so timer can run in background
-        endTime = System.currentTimeMillis() + timeLeft;
-
-        //Starts new timer
-        countDownTimer = new CountDownTimer(timeLeft, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeft = millisUntilFinished;
-                updateTime();
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunning = false;
-                editorInventory.putInt("PACKAGES", 0);
-            }
-        }.start();
-        timerRunning = true;
-        updateTime();
-    }
-
-    /**
-     * Saves timer values before new Activity
-     */
-    private void beforeChange() {
-
-        //Edits values, that timer basically runs in background
-        editorTimers.putLong("millisLeft", timeLeft);
-        editorTimers.putBoolean("timerRunning", timerRunning);
-        editorTimers.putLong("endTime", endTime);
-        editorTimers.apply();
-
-        if (countDownTimer != null) {
-            countDownTimer.cancel();
-        }
-    }
-
-    /**
-     * Updates the displayed time on TextView
-     */
-    @SuppressLint("SetTextI18n")
-    private void updateTime() {
-        TextView textView = findViewById(R.id.timeRemaining);
-
-        int minutes = (int) (timeLeft / 1000) / 60;
-        int seconds = (int) (timeLeft / 1000) % 60;
-
-        //String formatter
-        String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
-        textView.setText("Time remaining: " + timeFormat);
     }
 
     /**
