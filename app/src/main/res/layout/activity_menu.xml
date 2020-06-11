@@ -90,8 +90,8 @@
 
     <TextView
         android:id="@+id/tokens"
-        android:layout_width="61dp"
-        android:layout_height="24dp"
+        android:layout_width="136dp"
+        android:layout_height="26dp"
         android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

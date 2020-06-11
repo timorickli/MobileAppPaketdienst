@@ -61,7 +61,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_ux_fragment);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
+        timers = getSharedPreferences("timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
         Button btnBack = findViewById(R.id.back);
@@ -79,8 +79,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Return previous PackageMark spots
                 if (getIntent().getParcelableArrayListExtra("location") != null) {
                     intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
+
                 }
 
+                beforeChange();
                 //New activity without transition
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -270,6 +272,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
                 markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
                 markerOptions.clear();
+                resetTimer();
                 intent.putExtra("location", markerOptions);
             }
 
@@ -279,6 +282,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
                 startDeliveryTimer();
             }
+
         } else if (hitNode == singlePackage) {
             Toast.makeText(ArActivity.this, "Du hast ein einzelnes Paket aufgesammelt", Toast.LENGTH_SHORT).show();
 
@@ -292,6 +296,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             startDeliveryTimer();
+
         } else if (hitNode == multiPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
@@ -305,6 +310,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
             startDeliveryTimer();
+
         } else if (hitNode == wagonPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
@@ -364,5 +370,12 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         if (countDownTimer != null) {
             countDownTimer.cancel();
         }
+    }
+
+    private void resetTimer() {
+        countDownTimer.cancel();
+        timerRunning = false;
+        timeLeft = DELIVERY_TIME;
+        endTime = 0;
     }
 }

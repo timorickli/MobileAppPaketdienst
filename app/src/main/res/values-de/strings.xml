@@ -32,12 +32,13 @@
     <string name="impressumUrheber">Icon Designer:</string>
     <string name="urheber">Icons erstellt von <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
     <string name="urheber1">Icons erstellt von <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> von <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
-    <string name="shopMail">Briefmarke: \n Erhöht Reichweite</string>
-    <string name="shopZoll">Zollgebühren: \n Doppeltes Einokommen</string>
-    <string name="shopPakete">Pakete: \n 10 zusätzliche Pakete</string>
-    <string name="shopZeit">B-Post: \n Erhöht Zeit vorübergehend</string>
+    <string name="shopMail">Briefmarke: \nErhöht Reichweite</string>
+    <string name="shopZoll">Zollgebühren: \nDoppeltes Einokommen</string>
+    <string name="shopPakete">Pakete: \n10 zusätzliche Pakete</string>
+    <string name="shopZeit">B-Post: \nErhöht Zeit vorübergehend</string>
     <string name="shopKeineMünzen">Du hast momentan nicht genügend Münzen</string>
     <string name="zeitVerbleib">Zeit verbleibend: </string>
     <string name="shopBuy">Kauf abgeschlossen</string>
+    <string name="noTimer">Zurzeit ist kein aktiver timer, welcher erhöht werden könnte vorhanden</string>
     <string name="spielAnleitung">Das Ziel des Spieles ist ein Paket bei einem Briefkasten abzugeben. Dafür muss aber zuerst ein Paket geholt werden. Je nach Art des Paketes hat man verschiedene Schwierigkeitsstufen also mehr Pakete. Im Shop können verschiedene PowerUps gekauft werden, welche einem im Spiel helfen können. Im Inventar kann man die Aktuelle Token Anzahl sowie Pakete einsehen. </string>
 </resources>

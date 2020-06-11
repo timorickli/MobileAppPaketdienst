@@ -51,8 +51,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
+    private SharedPreferences inventoryFile, settingFile, timersFile;
     private static final long DELIVERY_TIME = 60 * 20 * 1000;
-    private SharedPreferences inventoryFile, settingFile;
     private InterstitialAd mInterstitialAd;
     private CountDownTimer countDownTimer;
     private ImageButton imageButton;
@@ -60,7 +60,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private final int height = 100;
     private final int width = 100;
     private boolean timerRunning;
-
+    SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
 
     /**
@@ -82,6 +82,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         //Catch SharedPreferences
         settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
+        editorInventory = inventoryFile.edit();
+        editorTimers = timersFile.edit();
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -118,7 +121,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         prepareAD();
 
         //Dark Mode
-        SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
             darkMode();
         } else {
@@ -133,14 +135,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         super.onStart();
 
         //Gets previous timer values
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        timeLeft = timers.getLong("millisLeft", DELIVERY_TIME);
-        timerRunning = timers.getBoolean("timerRunning", false);
+        timeLeft = timersFile.getLong("millisLeft", DELIVERY_TIME);
+        timerRunning = timersFile.getBoolean("timerRunning", false);
 
         //Checks timer state and starts it if needed
         if (timerRunning) {
             updateTime();
-            endTime = timers.getLong("endTime", 0);
+            endTime = timersFile.getLong("endTime", 0);
             timeLeft = endTime - System.currentTimeMillis();
             if (timeLeft < 0) {
                 timeLeft = 0;
@@ -510,10 +511,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
             }
 
-            //resets timer, when last Mailbox is clicked
-            if (markerOptSize == 1) {
-                resetTimer();
-            }
             beforeChange();
             markerOptionsMailBox.clear();
             intent.putExtra("id", 1);
@@ -573,7 +570,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      * Creates and starts a timespan to deliver the package
      */
     private void startDeliveryTimer() {
-        SharedPreferences.Editor editor = inventoryFile.edit();
 
         //Evaluates end time, so timer can run in background
         endTime = System.currentTimeMillis() + timeLeft;
@@ -589,7 +585,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             @Override
             public void onFinish() {
                 timerRunning = false;
-                editor.putInt("PACKAGES", 0);
+                editorInventory.putInt("PACKAGES", 0);
             }
         }.start();
         timerRunning = true;
@@ -600,14 +596,12 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      * Saves timer values before new Activity
      */
     private void beforeChange() {
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = timers.edit();
 
         //Edits values, that timer basically runs in background
-        editor.putLong("millisLeft", timeLeft);
-        editor.putBoolean("timerRunning", timerRunning);
-        editor.putLong("endTime", endTime);
-        editor.apply();
+        editorTimers.putLong("millisLeft", timeLeft);
+        editorTimers.putBoolean("timerRunning", timerRunning);
+        editorTimers.putLong("endTime", endTime);
+        editorTimers.apply();
 
         if (countDownTimer != null) {
             countDownTimer.cancel();
@@ -627,16 +621,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         //String formatter
         String timeFormat = String.format(Locale.getDefault(), "%02d:%02d", minutes, seconds);
         textView.setText("Time remaining: " + timeFormat);
-    }
-
-    /**
-     * Resets timer
-     */
-    private void resetTimer() {
-        countDownTimer.cancel();
-        timerRunning = false;
-        timeLeft = DELIVERY_TIME;
-        endTime = 0;
     }
 
     /**

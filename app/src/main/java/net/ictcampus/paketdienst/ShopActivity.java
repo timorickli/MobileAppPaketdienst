@@ -30,6 +30,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private boolean timerRunningItem2, timerRunningItem1;
     private long timeLeftItem2, timeLeftItem1;
     private long endTimeItem2, endTimeItem1;
+    private TextView tokensView;
     private ImageButton btnHome;
     private int tokens;
 
@@ -38,10 +39,12 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
+
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
+        editorInventory.putInt("TOKENS", 200).apply();
 
         //Get the Different TextViews and Buttons
         txtItem1 = (TextView) findViewById(R.id.itemText1);
@@ -68,13 +71,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         btnHome.setOnClickListener(this);
 
         //Set the Text on TextView
+        txtItem1.setText(R.string.shopMail);
         txtItem2.setText(R.string.shopZoll);
         txtItem3.setText(R.string.shopPakete);
         txtItem4.setText(R.string.shopZeit);
 
         //Setup current token Value
         tokens = inventoryFile.getInt("TOKENS", 0);
-        TextView tokensView = findViewById(R.id.tokens);
+        tokensView = findViewById(R.id.tokens);
         tokensView.setText(getString(R.string.inventoryTokens) + ' ' + String.valueOf(tokens));
 
         //Dark Mode check
@@ -170,6 +174,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                     btnItem1.setClickable(false);
                     startTimerItem1();
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    tokens = inventoryFile.getInt("TOKENS", 0);
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -177,13 +183,13 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.button2:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem2.getText().toString()) && btnItem2.isClickable()) {
-                    editorInventory.putInt("MULTIPLIER", 2)
-                            .apply();
-                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
-                            .apply();
+                    editorInventory.putInt("MULTIPLIER", 2).apply();
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString())).apply();
                     btnItem2.setClickable(false);
                     startTimerItem2();
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    tokens = inventoryFile.getInt("TOKENS", 0);
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -191,23 +197,29 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.button3:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
-                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
-                            .apply();
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString())).apply();
+                    editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10).apply();
+
+                    editorTimers.putBoolean("timerRunning", true).apply();
+
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    tokens = inventoryFile.getInt("TOKENS", 0);
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button4:
-                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString())) {
-                    editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10)
-                            .apply();
-                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString()))
-                            .apply();
+                if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString())&&timersFile.getBoolean("timerRunning", false)==true) {
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString())).apply();
                     increaseTime();
                     Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
-                } else {
+                    tokens = inventoryFile.getInt("TOKENS", 0);
+                    tokensView.setText(getString(R.string.inventoryTokens) + " " + String.valueOf(tokens));
+                } else if (timersFile.getBoolean("timerRunning", false)==false){
+                    Toast.makeText(ShopActivity.this, R.string.noTimer, Toast.LENGTH_SHORT).show();
+                }else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -226,15 +238,15 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        editorInventory.putLong("millisLeftItem1", timeLeftItem1);
-        editorInventory.putBoolean("timerRunningItem1", timerRunningItem1);
-        editorInventory.putLong("endTimeItem1", endTimeItem1);
+        editorTimers.putLong("millisLeftItem1", timeLeftItem1);
+        editorTimers.putBoolean("timerRunningItem1", timerRunningItem1);
+        editorTimers.putLong("endTimeItem1", endTimeItem1);
 
-        editorInventory.putLong("millisLeftItem2", timeLeftItem2);
-        editorInventory.putBoolean("timerRunningItem2", timerRunningItem2);
-        editorInventory.putLong("endTimeItem2", endTimeItem2);
+        editorTimers.putLong("millisLeftItem2", timeLeftItem2);
+        editorTimers.putBoolean("timerRunningItem2", timerRunningItem2);
+        editorTimers.putLong("endTimeItem2", endTimeItem2);
 
-        editorInventory.apply();
+        editorTimers.apply();
 
         if (countDownTimerItem2 != null) {
             countDownTimerItem2.cancel();
