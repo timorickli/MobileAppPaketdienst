@@ -73,7 +73,7 @@ public class ShopItemTest {
 
         //Clicks on menu button
         ViewInteraction imageButton = onView(
-                allOf(withId(R.id.imageButton), withContentDescription(R.string.project_id),
+                allOf(withId(R.id.imageButton), withContentDescription(R.string.app_name),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
