@@ -109,12 +109,14 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.settings);
         TextView text3 = (TextView) findViewById(R.id.shop);
         TextView text4 = (TextView) findViewById(R.id.spielanleitung);
+        TextView text5 = (TextView) findViewById(R.id.tokens);
         ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         text4.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
+        text5.setTextColor(Color.BLACK);
         imageButton.setImageResource(R.drawable.settingbtn_black);
     }
 
@@ -129,12 +131,14 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.settings);
         TextView text3 = (TextView) findViewById(R.id.shop);
         TextView text4 = (TextView) findViewById(R.id.spielanleitung);
+        TextView text5 = (TextView) findViewById(R.id.tokens);
         ImageButton imageButton = (ImageButton) findViewById(R.id.imageButton);
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
         text4.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);
+        text5.setTextColor(Color.WHITE);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
 }

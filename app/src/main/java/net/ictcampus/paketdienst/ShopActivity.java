@@ -254,6 +254,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
+        TextView text5= (TextView) findViewById(R.id.tokens);
         Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
@@ -263,6 +264,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         text4.setTextColor(Color.BLACK);
+        text5.setTextColor(Color.WHITE);
         title.setTextColor(Color.BLACK);
         btn1.setTextColor(Color.BLACK);
         btn1.setBackgroundColor(Color.GRAY);
@@ -286,6 +288,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
+        TextView text5= (TextView) findViewById(R.id.tokens);
         Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
@@ -295,6 +298,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
         text4.setTextColor(Color.WHITE);
+        text5.setTextColor(Color.WHITE);
         title.setTextColor(Color.WHITE);
         btn1.setTextColor(Color.WHITE);
         btn1.setBackgroundColor(Color.DKGRAY);
