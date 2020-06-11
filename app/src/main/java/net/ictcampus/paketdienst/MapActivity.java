@@ -19,8 +19,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-
-
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -99,6 +97,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
                 beforeChange();
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_up,R.anim.slide_non);
             }
         });
 
@@ -391,7 +390,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     * Converts markeroptions to marker
+     * Creates out of markeroptions different markers
      */
     private void addMarkers() {
         markers.clear();
@@ -402,7 +401,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     * Converts markeroptions to marker
+     * Creates out of markeroptions different markers
      */
     private void addMarkersMailBox() {
         for (int y = 0; y < markerOptionsMailBox.size(); y++) {
@@ -455,7 +454,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     *
+     *Test Method for JUnit test as a exchage of createMailBox()
      */
     public void createMailBoxTest() {
         //For each package in inventory, display one on map

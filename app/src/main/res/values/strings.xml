@@ -32,12 +32,12 @@
     <string name="impressumUrheber">Icons Creator:</string>
     <string name="urheber">Icons created by <a href="https://www.flaticon.com/de/autoren/freepik" title="Freepik">Freepik</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
     <string name="urheber1">Icons created by <a href="https://www.flaticon.com/de/kostenloses-icon/briefkasten_2343756" title="srip">srip</a> from <a href="https://www.flaticon.com/de/" title="Flaticon">www.flaticon.com</a></string>
-    <string name="shopMail">Stamp: \n Increases range</string>
-    <string name="shopZoll">Customs duties: \n Double income</string>
-    <string name="shopPakete">Packages: \n 10 additional packages </string>
-    <string name="shopZeit">Delay: \n Temporarily increases time</string>
+    <string name="shopMail">Stamp: \nIncreases range</string>
+    <string name="shopZoll">Customs duties: \nDouble income</string>
+    <string name="shopPakete">Packages: \n10 additional packages </string>
+    <string name="shopZeit">Delay: \nTemporarily increases time</string>
     <string name="shopKeineMünzen">You do not have enough coins at the moment</string>
-    <string name="shopBuy">purchase done</string>
+    <string name="shopBuy">purchase done</string>l
     <string name="adid" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="zeitVerbleib">Time remaining: </string>
     <string name="spielAnleitung">The goal of the game is to deliver a package to a mailbox. For this, however, a package must first be obtained. Depending on the type of package, there are different levels of difficulty, so more packages. Various PowerUps can be bought in the shop, which can help you in the game. In the inventory you can see the current token number and packages. </string>

@@ -43,9 +43,9 @@
         android:text="@string/menuInventar"
         android:textColor="#000"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/settings"
+        app:layout_constraintBottom_toTopOf="@+id/shop"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.494"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spielanleitung" />
 
@@ -56,11 +56,12 @@
         android:text="@string/menuSettings"
         android:textColor="#000"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/shop"
+
+        app:layout_constraintBottom_toTopOf="@+id/imageButton"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/inventory" />
+        app:layout_constraintTop_toBottomOf="@+id/inventory"/>
 
     <TextView
         android:id="@+id/shop"
@@ -69,11 +70,12 @@
         android:text="@string/menuShop"
         android:textColor="#000"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/imageButton"
+        app:layout_constraintBottom_toTopOf="@+id/settings"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/settings" />
+        app:layout_constraintTop_toBottomOf="@+id/inventory"
+ />
 
     <TextView
         android:id="@+id/spielanleitung"
