@@ -1,6 +1,5 @@
 package net.ictcampus.paketdienst;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -12,10 +11,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
@@ -39,10 +36,11 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import net.ictcampus.paketdienst.helper.GameTimer;
+import net.ictcampus.paketdienst.helper.RandomLocation;
+
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Locale;
-import java.util.Random;
 
 import static com.google.ar.sceneform.rendering.HeadlessEngineWrapper.TAG;
 
@@ -53,17 +51,18 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<MarkerOptions> markerOptionsMailBox = new ArrayList<MarkerOptions>();
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private static ArrayList<Marker> markersMailBox = new ArrayList<Marker>();
-    private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private SharedPreferences inventoryFile, settingFile, timersFile;
+    private SharedPreferences.Editor editorInventory, editorTimers;
+    private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private InterstitialAd mInterstitialAd;
     private ImageButton imageButton;
+    private TextView timeRemaining;
+    private RandomLocation rdmLoca;
     private final int height = 100;
     private final int width = 100;
-    private SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
-    private DeliveryTimer dt;
-    private TextView timeRemaining;
-    private RandomLocation rdmLoca= new RandomLocation();
+    private GameTimer dt;
+
     /**
      * Prepares everything, when activity is created
      *
@@ -86,7 +85,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        dt = new DeliveryTimer(30);
+
+        //New helper classes
+        dt = new GameTimer(30);
+        rdmLoca = new RandomLocation();
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -100,9 +102,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 if (markerOptionsMailBox != null) {
                     intent.putExtra("locationMailBox", markerOptionsMailBox);
                 }
-                dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+                dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
                 startActivity(intent);
-                overridePendingTransition(R.anim.slide_up,R.anim.slide_non);
+                overridePendingTransition(R.anim.slide_up, R.anim.slide_non);
             }
         });
 
@@ -129,12 +131,15 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             whiteMode();
         }
     }
+
     /**
      * After onCreate, timer gets initialized/prepared
      */
     @Override
     protected void onStart() {
         super.onStart();
+
+        //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
         if (!dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime")) {
             editorInventory.putInt("PACKAGES", 0);
         }
@@ -195,7 +200,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             overridePendingTransition(0, 0);
         }
         double range;
-        if(markers.contains(marker)){
+        if (markers.contains(marker)) {
             Log.d("Marker", "Marker contains");
         }
 
@@ -350,6 +355,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             marker.setTag(tag);
         }
     }
+
     /**
      * Sets tag for different package types
      */
@@ -361,11 +367,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
 
-
     /**
      * Creation of Mailbox-Markers
      */
-    public void createMailBox() {
+    private void createMailBox() {
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         //Logo for marker
         BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
@@ -384,7 +389,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     *Test Method for JUnit test as a exchage of createMailBox()
+     * Test Method for JUnit test as a exchage of createMailBox()
      */
     public void createMailBoxTest() {
         //For each package in inventory, display one on map
@@ -394,6 +399,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             );
         }
     }
+
     /**
      * Starts activity depending on marker clicked
      *
@@ -420,13 +426,13 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
             }
 
             markers.clear();
-            dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+            dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             intent.putExtra("location", markerOptions);
             startActivity(intent);
         }
 
         //Checks if its a mailbox
-        if(marker.getTag().equals(1)) {
+        if (marker.getTag().equals(1)) {
             markerOptSize = markerOptionsMailBox.size();
             ArrayList<MarkerOptions> mailBoxSend = new ArrayList<MarkerOptions>();
 
@@ -440,7 +446,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 }
             }
 
-            dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+            dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             markerOptionsMailBox.clear();
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
@@ -512,14 +518,26 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     /**
      * Button, depending on style
      */
-    public void prepareAD() {
+    private void prepareAD() {
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.adid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
     }
+
+    /**
+     * Getter
+     *
+     * @return markerOptionsList
+     */
     public static ArrayList<MarkerOptions> getMarkerOptionsMailBox() {
         return markerOptionsMailBox;
     }
+
+    /**
+     * Getter
+     *
+     * @return markers
+     */
     public static ArrayList<Marker> getMarkers() {
         return markers;
     }

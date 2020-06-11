@@ -17,6 +17,11 @@ import android.widget.Toast;
 public class MainActivity extends AppCompatActivity {
     private Intent intent;
 
+    /**
+     * Initializes the Activity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

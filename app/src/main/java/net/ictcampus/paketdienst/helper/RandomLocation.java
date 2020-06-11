@@ -1,4 +1,4 @@
-package net.ictcampus.paketdienst;
+package net.ictcampus.paketdienst.helper;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.location.LocationManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.model.LatLng;
+
+import net.ictcampus.paketdienst.MapActivity;
 
 import java.util.Random;
 
@@ -23,7 +25,6 @@ public class RandomLocation {
     public Location getLocation(LocationManager locationManager) {
         Location location = null;
         try {
-
 
             //looks, which service is currently available
             boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
@@ -44,6 +45,7 @@ public class RandomLocation {
         }
         return location;
     }
+
     /**
      * Creates random coordinates within a certain range
      *
@@ -57,7 +59,7 @@ public class RandomLocation {
         Random random = new Random();
         int operatorLong = random.nextInt((2 - 1) + 1) + 1;
         int operatorLati = random.nextInt((2 - 1) + 1) + 1;
-        MapActivity map=new MapActivity();
+        MapActivity map = new MapActivity();
 
         //Switch for negative or positive value for one part of the coordinate
         switch (operatorLong) {

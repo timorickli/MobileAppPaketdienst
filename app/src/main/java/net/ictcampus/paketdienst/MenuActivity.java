@@ -19,6 +19,11 @@ public class MenuActivity extends AppCompatActivity implements View.OnClickListe
     private SharedPreferences inventoryFile;
     private int tokens;
 
+    /**
+     * Initialises Activity
+     *
+     * @param savedInstanceState
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

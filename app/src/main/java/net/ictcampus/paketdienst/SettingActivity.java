@@ -19,10 +19,12 @@ import android.widget.TextView;
  * Class for the Settings Activity to set the darkmode or change the map style
  */
 public class SettingActivity extends AppCompatActivity {
-    private TextView title,  text4, text5, text6, impressum;
-    /*To add later music settings
+    private TextView title, text4, text5, text6, impressum;
+
+    /*To later add music settings
     private TextView text1, text2, text3;
      */
+
     private SharedPreferences settingFile;
     private ImageButton imageButton;
     private Spinner spinner;
@@ -36,11 +38,13 @@ public class SettingActivity extends AppCompatActivity {
         //Initialization of all variables
         view = this.getWindow().getDecorView();
         title = (TextView) findViewById(R.id.textView);
-        /*To add later Music controls
+
+        /*To later add Music controls
         text1 = (TextView) findViewById(R.id.textView10);
         text2 = (TextView) findViewById(R.id.textView12);
         text3 = (TextView) findViewById(R.id.textView11);
          */
+
         text4 = (TextView) findViewById(R.id.textView8);
         text5 = (TextView) findViewById(R.id.textView9);
         text6 = (TextView) findViewById(R.id.textView4);
@@ -75,7 +79,6 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
 
-
         //DarkMode
         Switch settingDark = (Switch) findViewById(R.id.settingDark);
         Boolean dark = settingFile.getBoolean("DARK", false);
@@ -109,6 +112,7 @@ public class SettingActivity extends AppCompatActivity {
         } else {
             whiteMode();
         }
+
         /*To add later Music controls
         //Switch Button Listeners for music
         Switch settingMusic = (Switch) findViewById(R.id.settingMusic);
@@ -131,6 +135,7 @@ public class SettingActivity extends AppCompatActivity {
         }
 
          */
+
     }
 
     /**
@@ -157,11 +162,13 @@ public class SettingActivity extends AppCompatActivity {
      */
     private void darkMode() {
         view.setBackgroundColor(Color.BLACK);
+
         /*to add later music settings
         text1.setTextColor(Color.WHITE);
         text2.setTextColor(Color.WHITE);
         text3.setTextColor(Color.WHITE);
          */
+
         text4.setTextColor(Color.WHITE);
         text5.setTextColor(Color.WHITE);
         text6.setTextColor(Color.WHITE);

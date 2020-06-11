@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.CountDownTimer;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -27,26 +26,24 @@ import com.google.ar.sceneform.rendering.ModelRenderable;
 import com.google.ar.sceneform.rendering.Renderable;
 import com.google.ar.sceneform.ux.ArFragment;
 
+import net.ictcampus.paketdienst.helper.GameTimer;
+
 import java.util.ArrayList;
 
 /**
  * Class to show 3d Modells in a AR View
  */
 public class ArActivity extends AppCompatActivity implements Node.OnTapListener {
-    private ModelRenderable activeRenderable;
-    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
-    private static final long DELIVERY_TIME = 60 * 20 * 1000;
-    private CountDownTimer countDownTimer;
-    private long endTime, timeLeft;
-    private boolean placed;
-    private ArFragment arFragment;
-    private boolean timerRunning;
-    private Intent intent;
-    private int id;
-    private SharedPreferences inventoryFile, timersFile;
+    private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private SharedPreferences.Editor editorInventory, editorTimers;
-    private DeliveryTimer dt;
+    private SharedPreferences inventoryFile, timersFile;
+    private ModelRenderable activeRenderable;
+    private ArFragment arFragment;
+    private boolean placed;
+    private Intent intent;
+    private GameTimer dt;
+    private int id;
 
     /**
      * Prepares everything for ARView, when activity is started
@@ -65,10 +62,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
+        dt = new GameTimer(30);
         Button btnBack = findViewById(R.id.back);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        dt = new DeliveryTimer(30);
         placed = false;
 
         //Chooses which model gets loaded
@@ -82,10 +79,11 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Return previous PackageMark spots
                 if (getIntent().getParcelableArrayListExtra("location") != null) {
                     intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
-
                 }
 
-                dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+                //Save timer values
+                dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+
                 //New activity without transition
                 startActivity(intent);
                 overridePendingTransition(0, 0);
@@ -99,7 +97,9 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     @Override
     protected void onStart() {
         super.onStart();
-        if(!dt.checkState(timersFile,"TimeLeft", "TimerRunning", "EndTime")){
+
+        //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
+        if (!dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime")) {
             editorInventory.putInt("PACKAGES", 0).apply();
         }
     }
@@ -121,7 +121,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         if (frame.getCamera().getTrackingState() == TrackingState.TRACKING && !placed) {
             Pose pos = frame.getCamera().getPose().compose(Pose.makeTranslation(1f, 0f, -2.5f));
 
-            //Anchor Node to fix the Model in place
+            //Anchor Node to set the Model in place
             Anchor anchor = arFragment.getArSceneView().getSession().createAnchor(pos);
             AnchorNode anchorNode = new AnchorNode(anchor);
             anchorNode.setParent(arFragment.getArSceneView().getScene());
@@ -262,7 +262,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
                 markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
                 markerOptions.clear();
-                dt.resetTimer(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+                dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
                 intent.putExtra("location", markerOptions);
             }
 
@@ -284,7 +284,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 1).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            dt.startDeliveryTimer();
+            dt.startGameTimer();
 
         } else if (hitNode == multiPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Pakethaufen und somit 3 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
@@ -298,7 +298,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 3).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            dt.startDeliveryTimer();
+            dt.startGameTimer();
 
         } else if (hitNode == wagonPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
@@ -312,16 +312,13 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 7).apply();
 
             intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-            dt.startDeliveryTimer();
+            dt.startGameTimer();
         }
-        dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
+        //Saves timer values
+        dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
 
         //New activity without transition
         startActivity(intent);
         overridePendingTransition(0, 0);
     }
-
-    /**
-     * Creates and starts a timespan to deliver the package
-     */
 }
