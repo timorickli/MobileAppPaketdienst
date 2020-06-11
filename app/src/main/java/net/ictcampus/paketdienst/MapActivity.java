@@ -135,6 +135,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         super.onStart();
             if(!dt.checkState(timersFile, timeRemaining,"TimeLeft", "TimerRunning", "EndTime")){
                 editorInventory.putInt("PACKAGES", 0);
+                finish();
+                startActivity(getIntent());
         }
     }
     /**
