@@ -10,6 +10,9 @@ import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Random;
 
+/**
+ * Class to get the location and create a random Location in range of around 100m
+ */
 public class RandomLocation {
     /**
      * Gets Location via GPS or Network
