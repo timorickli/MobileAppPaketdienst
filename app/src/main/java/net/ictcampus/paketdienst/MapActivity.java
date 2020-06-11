@@ -53,14 +53,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private SharedPreferences inventoryFile, settingFile, timersFile;
     private InterstitialAd mInterstitialAd;
+    private CountDownTimer countDownTimer;
     private ImageButton imageButton;
+    private long endTime, timeLeft;
     private final int height = 100;
     private final int width = 100;
+    private boolean timerRunning;
     private SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
     private DeliveryTimer dt;
     private TextView timeRemaining;
-
+    private RandomLocation rdmLoca= new RandomLocation();
     /**
      * Prepares everything, when activity is created
      *
@@ -70,7 +73,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
-
         imageButton = (ImageButton) findViewById(R.id.imageButton);
         timeRemaining = findViewById(R.id.timeRemaining);
 
@@ -134,7 +136,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     protected void onStart() {
         super.onStart();
             if(!dt.checkState(timersFile, timeRemaining,"TimeLeft", "TimerRunning", "EndTime")){
-                editorInventory.putInt("PACKAGES", 0).apply();
+                editorInventory.putInt("PACKAGES", 0);
         }
     }
     /**
@@ -153,9 +155,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
         //Sets camera on Person and zooms in
         if (map != null) {
+            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
             map.moveCamera(CameraUpdateFactory
                     .newCameraPosition(new CameraPosition.Builder()
-                            .target(new LatLng(getLocation().getLatitude(), getLocation().getLongitude())).zoom(17.0f).build()));
+                            .target(new LatLng(rdmLoca.getLocation(locationManager).getLatitude(), rdmLoca.getLocation(locationManager).getLongitude())).zoom(17.0f).build()));
         }
 
         //Creates markers with logos depending on inventory
@@ -173,36 +176,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         loadMapStyle();
         map.setOnMarkerClickListener(this);
     }
-    /**
-     * Gets Location via GPS or Network
-     *
-     * @return current location
-     */
-    @SuppressLint("MissingPermission")
-    public Location getLocation() {
-        Location location = null;
-        try {
-            LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
 
-            //looks, which service is currently available
-            boolean gps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-            boolean net = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-            if (!gps && !net) {
-
-            } else {
-                if (gps) {
-                    location = locationManager.getLastKnownLocation(locationManager.GPS_PROVIDER);
-                    Log.d("GPS Provider", "GPS Provider");
-                } else if (net) {
-                    location = locationManager.getLastKnownLocation(locationManager.NETWORK_PROVIDER);
-                    Log.d("Network Provider", "Network Provider");
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return location;
-    }
     /**
      * Clickevent handler for marker on map
      *
@@ -223,7 +197,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         }
 
         //Gets location of person and marker
-        Location locationPerson = getLocation();
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
+        Location locationPerson = rdmLoca.getLocation(locationManager);
         LatLng locationMarker = marker.getPosition();
         Log.d("Marker", "Marker geklickt");
 
@@ -281,52 +256,10 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     * Creates random coordinates within a certain range
-     *
-     * @return coordinates
-     */
-    public LatLng createLocation() {
-        LatLng latLng;
-        double randomLong;
-        double randomLati;
-        final double multi = 0.0001;
-        Random random = new Random();
-        int operatorLong = random.nextInt((2 - 1) + 1) + 1;
-        int operatorLati = random.nextInt((2 - 1) + 1) + 1;
-
-        //Switch for negative or positive value for one part of the coordinate
-        switch (operatorLong) {
-            case 1:
-                //Random coordinate within range
-                randomLong = getLocation().getLongitude() + (random.nextInt((10 - 1) + 1) + 1) * multi;
-                break;
-            default:
-                //Random coordinate within range
-                randomLong = getLocation().getLongitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
-                break;
-        }
-
-        //Switch for negative or positive value for the other part of the coordinate
-        switch (operatorLati) {
-            case 1:
-                //Random coordinate within range
-                randomLati = getLocation().getLatitude() + (random.nextInt((10 - 1) + 1) + 1) * multi;
-                break;
-            default:
-                //Random coordinate within range
-                randomLati = getLocation().getLatitude() - (random.nextInt((10 - 1) + 1) + 1) * multi;
-                break;
-        }
-
-        //returns random coordinates
-        latLng = new LatLng(randomLati, randomLong);
-        return latLng;
-    }
-
-    /**
      * Creates three different packages
      */
     public void createIconPackages() {
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         for (int x = 0; x < 3; x++) {
             switch (x) {
                 case 0:
@@ -337,7 +270,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
                     //Creates marker
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocation())
+                            .position(rdmLoca.createLocation(locationManager))
                             .icon(BitmapDescriptorFactory.fromBitmap(marker)
                             ));
                     markers.add(map.addMarker(markerOptions.get(0)));
@@ -351,7 +284,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
                     //Creates marker
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocation())
+                            .position(rdmLoca.createLocation(locationManager))
                             .icon(BitmapDescriptorFactory.fromBitmap(marker1))
                     );
                     markers.add(map.addMarker(markerOptions.get(1)));
@@ -365,7 +298,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
 
                     //Creates marker
                     markerOptions.add(new MarkerOptions()
-                            .position(createLocation())
+                            .position(rdmLoca.createLocation(locationManager))
                             .icon(BitmapDescriptorFactory.fromBitmap(marker2))
                     );
                     markers.add(map.addMarker(markerOptions.get(2)));
@@ -422,7 +355,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      * Creation of Mailbox-Markers
      */
     public void createMailBox() {
-
+        LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         //Logo for marker
         BitmapDrawable bitmapdraw2 = (BitmapDrawable) getResources().getDrawable(R.drawable.mailbox);
         Bitmap b2 = bitmapdraw2.getBitmap();
@@ -431,7 +364,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         //For each package in inventory, display one on map
         for (int i = 0; i < inventoryFile.getInt("PACKAGES", 0); i++) {
             markerOptionsMailBox.add(new MarkerOptions()
-                    .position(createLocation())
+                    .position(rdmLoca.createLocation(locationManager))
                     .icon(BitmapDescriptorFactory.fromBitmap(marker))
             );
             markersMailBox.add(map.addMarker(markerOptionsMailBox.get(i)));
