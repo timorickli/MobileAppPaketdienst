@@ -40,5 +40,6 @@
     <string name="zeitVerbleib">Zeit verbleibend: </string>
     <string name="shopBuy">Kauf abgeschlossen</string>
     <string name="noTimer">Zurzeit ist kein aktiver timer, welcher erhöht werden könnte vorhanden</string>
+    <string name="timePassed">Zeit abgelaufen</string>
     <string name="spielAnleitung">Das Ziel des Spieles ist ein Paket bei einem Briefkasten abzugeben. Dafür muss aber zuerst ein Paket geholt werden. Je nach Art des Paketes hat man verschiedene Schwierigkeitsstufen also mehr Pakete. Im Shop können verschiedene PowerUps gekauft werden, welche einem im Spiel helfen können. Im Inventar kann man die Aktuelle Token Anzahl sowie Pakete einsehen. </string>
 </resources>

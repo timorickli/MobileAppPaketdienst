@@ -35,8 +35,8 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
-        dt1 = new DeliveryTimer();
-        dt2 = new DeliveryTimer();
+        dt1 = new DeliveryTimer(20);
+        dt2 = new DeliveryTimer(20);
 
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
@@ -197,7 +197,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString())).apply();
                     editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10).apply();
-                    DeliveryTimer dt = new DeliveryTimer();
+                    DeliveryTimer dt = new DeliveryTimer(30);
                     dt.resetTimer(editorTimers,"TimeLeft", "TimerRunning", "EndTime");
                     dt.startDeliveryTimer();
                     dt.beforeChange(editorTimers,"TimeLeft", "TimerRunning", "EndTime");

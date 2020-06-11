@@ -3,7 +3,6 @@ package net.ictcampus.paketdienst;
 import android.content.SharedPreferences;
 import android.os.CountDownTimer;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import java.util.Locale;
@@ -13,11 +12,12 @@ public class DeliveryTimer {
     private CountDownTimer countDownTimer;
     private long endTime, timeLeft;
     private boolean timerRunning;
-    private static final long DELIVERY_TIME = 60 * 1 * 1000;
+    private long deliveryTime;
 
     public boolean checkState(SharedPreferences timersFile, TextView textView, String keyTimeLeft, String keyTimerRunning, String keyEndTime){
+
         //Gets previous timer values
-        timeLeft = timersFile.getLong(keyTimeLeft, DELIVERY_TIME);
+        timeLeft = timersFile.getLong(keyTimeLeft, deliveryTime);
         timerRunning = timersFile.getBoolean(keyTimerRunning, false);
 
         //Checks timer state and starts it if needed
@@ -39,7 +39,7 @@ public class DeliveryTimer {
 
     public boolean checkState(SharedPreferences timersFile, Button button, String keyTimeLeft, String keyTimerRunning, String keyEndTime){
         //Gets previous timer values
-        timeLeft = timersFile.getLong(keyTimeLeft, DELIVERY_TIME);
+        timeLeft = timersFile.getLong(keyTimeLeft, deliveryTime);
         timerRunning = timersFile.getBoolean(keyTimerRunning, false);
 
         //Checks timer state and starts it if needed
@@ -62,7 +62,7 @@ public class DeliveryTimer {
 
     public boolean checkState(SharedPreferences timersFile, String keyTimeLeft, String keyTimerRunning, String keyEndTime){
         //Gets previous timer values
-        timeLeft = timersFile.getLong(keyTimeLeft, DELIVERY_TIME);
+        timeLeft = timersFile.getLong(keyTimeLeft, deliveryTime);
         timerRunning = timersFile.getBoolean(keyTimerRunning, false);
 
         //Checks timer state and starts it if needed
@@ -178,8 +178,12 @@ public class DeliveryTimer {
     public void resetTimer(SharedPreferences.Editor editorTimers, String keyTimeLeft, String keyTimerRunning, String keyEndTime) {
         countDownTimer.cancel();
         timerRunning = false;
-        timeLeft = DELIVERY_TIME;
+        timeLeft = deliveryTime;
         endTime = 0;
         beforeChange(editorTimers, keyTimeLeft, keyTimerRunning, keyEndTime);
+    }
+
+    public DeliveryTimer(long deliveryTimeInMinutes) {
+        this.deliveryTime = 60 * deliveryTimeInMinutes * 1000;
     }
 }

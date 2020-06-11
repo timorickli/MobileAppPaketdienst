@@ -68,7 +68,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         Button btnBack = findViewById(R.id.back);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        dt = new DeliveryTimer();
+        dt = new DeliveryTimer(30);
         placed = false;
 
         //Chooses which model gets loaded

@@ -41,5 +41,6 @@
     <string name="adid" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
     <string name="zeitVerbleib">Time remaining: </string>
     <string name="noTimer">There is no running timer at the moment</string>
+    <string name="timePassed">Time is over</string>
     <string name="spielAnleitung">The goal of the game is to deliver a package to a mailbox. For this, however, a package must first be obtained. Depending on the type of package, there are different levels of difficulty, so more packages. Various PowerUps can be bought in the shop, which can help you in the game. In the inventory you can see the current token number and packages. </string>
 </resources>

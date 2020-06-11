@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 
 import android.os.CountDownTimer;
@@ -19,6 +20,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.InterstitialAd;
@@ -53,12 +56,9 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     private static ArrayList<Marker> markers = new ArrayList<Marker>();
     private SharedPreferences inventoryFile, settingFile, timersFile;
     private InterstitialAd mInterstitialAd;
-    private CountDownTimer countDownTimer;
     private ImageButton imageButton;
-    private long endTime, timeLeft;
     private final int height = 100;
     private final int width = 100;
-    private boolean timerRunning;
     private SharedPreferences.Editor editorInventory, editorTimers;
     private GoogleMap map;
     private DeliveryTimer dt;
@@ -86,7 +86,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        dt = new DeliveryTimer();
+        dt = new DeliveryTimer(30);
 
         //Button Click Event
         ImageButton ib = (ImageButton) findViewById(R.id.imageButton);
@@ -135,10 +135,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     @Override
     protected void onStart() {
         super.onStart();
-            if(!dt.checkState(timersFile, timeRemaining,"TimeLeft", "TimerRunning", "EndTime")){
-                editorInventory.putInt("PACKAGES", 0);
+        if (!dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime")) {
+            editorInventory.putInt("PACKAGES", 0);
         }
     }
+
     /**
      * When maps ready, prepares marker and style...
      *
@@ -185,10 +186,19 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
+        if (!timersFile.getBoolean("TimerRunning", true)) {
+            Toast.makeText(MapActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
+            editorInventory.putInt("PACKAGES", 0).apply();
+            dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+            finish();
+            startActivity(getIntent());
+            overridePendingTransition(0, 0);
+        }
         double range;
         if(markers.contains(marker)){
             Log.d("Marker", "Marker contains");
         }
+
         //Changes range, if you have item active
         if (inventoryFile.getInt("RANGE", 0) == 1) {
             range = 0.0007;
@@ -216,6 +226,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         }
         return false;
     }
+
     /**
      * Changes map-styles
      */
