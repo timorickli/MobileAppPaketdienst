@@ -73,7 +73,7 @@ public class ShopItemTest {
 
         //Clicks on menu button
         ViewInteraction imageButton = onView(
-                allOf(withId(R.id.imageButton), withContentDescription("Paketdienst"),
+                allOf(withId(R.id.imageButton), withContentDescription(R.string.project_id),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
@@ -84,7 +84,7 @@ public class ShopItemTest {
 
         //Clicks on Shop
         ViewInteraction appCompatTextView = onView(
-                allOf(withId(R.id.shop), withText("Shop"),
+                allOf(withId(R.id.shop), withText(R.string.menuShop),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),

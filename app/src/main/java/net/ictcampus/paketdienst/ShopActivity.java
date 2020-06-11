@@ -106,18 +106,18 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         if (!dt1.checkState(timersFile, btnItem1, "millisLeftItem1", "timerRunningItem1", "endTimeItem1")) {
             editorInventory.putInt("RANGE", 0).apply();
             btnItem1.setText("400");
-            btnItem1.setClickable(true);
-        } else {
             btnItem1.setClickable(false);
+        } else {
+            btnItem1.setClickable(true);
         }
 
         //Checks, if time is over for Item
         if (!dt2.checkState(timersFile, btnItem2, "millisLeftItem2", "timerRunningItem2", "endTimeItem2")) {
             editorInventory.putInt("MULTIPLIER", 1).apply();
             btnItem2.setText("125");
-            btnItem2.setClickable(true);
-        } else {
             btnItem2.setClickable(false);
+        } else {
+            btnItem2.setClickable(true);
         }
     }
 

@@ -87,7 +87,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         editorTimers = timersFile.edit();
 
         //New helper classes
-        dt = new GameTimer(30);
+        dt = new GameTimer(1);
         rdmLoca = new RandomLocation();
 
         //Button Click Event
@@ -98,9 +98,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 Intent intent = new Intent(MapActivity.this, MenuActivity.class);
                 if (markerOptions != null) {
                     intent.putExtra("location", markerOptions);
-                }
-                if (markerOptionsMailBox != null) {
-                    intent.putExtra("locationMailBox", markerOptionsMailBox);
                 }
                 dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
                 startActivity(intent);
@@ -140,9 +137,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         super.onStart();
 
         //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
-        if (!dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime")) {
-            editorInventory.putInt("PACKAGES", 0);
-        }
+        dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime");
     }
 
     /**
@@ -191,13 +186,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!timersFile.getBoolean("TimerRunning", true)) {
+        if (!timersFile.getBoolean("TimerRunning", inventoryFile.getInt("PACKAGES", 1) != 0)) {
             Toast.makeText(MapActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
-            editorInventory.putInt("PACKAGES", 0).apply();
-            dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
-            finish();
-            startActivity(getIntent());
-            overridePendingTransition(0, 0);
         }
         double range;
         if (markers.contains(marker)) {

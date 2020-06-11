@@ -253,7 +253,6 @@ public class GameTimer {
      * @param keyEndTime      key String of Shared Preferences
      */
     public void resetTimer(SharedPreferences.Editor editorTimers, String keyTimeLeft, String keyTimerRunning, String keyEndTime) {
-        countDownTimer.cancel();
         timerRunning = false;
         timeLeft = deliveryTime;
         endTime = 0;

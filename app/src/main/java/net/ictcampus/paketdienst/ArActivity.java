@@ -62,7 +62,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
-        dt = new GameTimer(30);
+        dt = new GameTimer(1);
         Button btnBack = findViewById(R.id.back);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
@@ -79,6 +79,9 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Return previous PackageMark spots
                 if (getIntent().getParcelableArrayListExtra("location") != null) {
                     intent.putExtra("location", getIntent().getParcelableArrayListExtra("location"));
+                }
+                if (getIntent().getParcelableArrayListExtra("locationMailBox") != null) {
+                    intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
                 }
 
                 //Save timer values
@@ -99,9 +102,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         super.onStart();
 
         //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
-        if (!dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime")) {
-            editorInventory.putInt("PACKAGES", 0).apply();
-        }
+        dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime");
+
     }
 
     /**
@@ -256,14 +258,16 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 hitNode = null;
 
                 //Edit Inventory
-                editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
+                if (timersFile.getBoolean("TimerRunning",true)){
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
+                }
                 editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
                 markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
                 markerOptions.clear();
                 dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
-                intent.putExtra("location", markerOptions);
+                intent.putExtra("locationMailBox", markerOptions);
             }
 
             //In case a bug happened
