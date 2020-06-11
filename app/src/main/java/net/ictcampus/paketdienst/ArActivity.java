@@ -260,14 +260,16 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 //Edit Inventory
                 if (timersFile.getBoolean("TimerRunning",true)){
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
+                }else{
+
                 }
                 editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
 
                 intent.putExtra("locationMailBox", getIntent().getParcelableArrayListExtra("locationMailBox"));
-                markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
+                markerOptions = getIntent().getParcelableArrayListExtra("location");
                 markerOptions.clear();
                 dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
-                intent.putExtra("locationMailBox", markerOptions);
+                intent.putExtra("location", markerOptions);
             }
 
             //In case a bug happened

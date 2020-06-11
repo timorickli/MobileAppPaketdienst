@@ -186,7 +186,7 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      */
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!timersFile.getBoolean("TimerRunning", inventoryFile.getInt("PACKAGES", 1) != 0)) {
+        if (!timersFile.getBoolean("TimerRunning", true)) {
             Toast.makeText(MapActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
         }
         double range;
