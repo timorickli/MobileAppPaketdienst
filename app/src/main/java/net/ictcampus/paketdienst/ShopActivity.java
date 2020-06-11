@@ -35,6 +35,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
+
         //Get the Different TextViews and Buttons
         txtItem1 =  (TextView) findViewById(R.id.itemText1);
         txtItem2 =  (TextView) findViewById(R.id.itemText2);
@@ -45,22 +46,26 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         btnItem3 =  (Button) findViewById(R.id.button3);
         btnItem4 =  (Button) findViewById(R.id.button4);
         btnHome = findViewById(R.id.imageButton2);
+
         //Set the Text of the different Buttons
         btnItem1.setText("1000");
         btnItem2.setText("2000");
         btnItem3.setText("2500");
         btnItem4.setText("4000");
+
         //Set Click Listener on Buttons
         btnItem1.setOnClickListener(this);
         btnItem2.setOnClickListener(this);
         btnItem3.setOnClickListener(this);
         btnItem4.setOnClickListener(this);
         btnHome.setOnClickListener(this);
+
         //Set the Text on TextView
         txtItem1.setText(R.string.shopMail);
         txtItem2.setText(R.string.shopZoll);
         txtItem3.setText(R.string.shopPakete);
         txtItem4.setText(R.string.shopZeit);
+
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
         if (settingFile.getBoolean("DARK", false)) {
@@ -69,6 +74,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             whiteMode();
         }
     }
+
     /**
      * Method for the normal Mode Theme
      */
@@ -144,6 +150,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = inventoryFile.edit();
 
+        /*
+          !
+         !!!        Used to run the Instrumental Test
+        !!!!!
+        editor.putInt("TOKENS", 5000);
+        editor.apply();
+        */
+
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
             case R.id.button1:
@@ -206,52 +220,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     * Method to start the Timer
-     */
-    private void startTimerItem1() {
-        timerRunningItem1 = true;
-        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem1 = millisUntilFinished;
-                updateTimeButton(btnItem1, timeLeftItem1);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem1 = false;
-                editor.putInt("MULTIPLIER", 1).apply();
-            }
-        }.start();
-    }
-
-    /**
-     * To start an Other timer
-     */
-    private void startTimerItem2() {
-        timerRunningItem2 = true;
-        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
-            @Override
-            public void onTick(long millisUntilFinished) {
-                timeLeftItem2 = millisUntilFinished;
-                updateTimeButton(btnItem2, timeLeftItem2);
-            }
-
-            @Override
-            public void onFinish() {
-                timerRunningItem2 = false;
-                editor.putInt("RANGE", 0).apply();
-            }
-        }.start();
-    }
-
-    /**
      * Method on Stop action
      */
     @Override
@@ -278,6 +246,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      *Method on Start Action
+     *Gets Timer, calculates and displays time left
      */
     @Override
     protected void onStart() {
@@ -292,6 +261,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         timeLeftItem1 = timers.getLong("millisLeftItem1", ITEM_DURATION);
         timerRunningItem1 = timers.getBoolean("timerRunningItem1", false);
 
+        checkTimer();
         if (timerRunningItem2) {
             endTimeItem2 = timers.getLong("endTimeItem2", 0);
             timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
@@ -322,6 +292,52 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
+     * Method to start the Timer
+     */
+    private void startTimerItem1() {
+        timerRunningItem1 = true;
+        endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
+        countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftItem1 = millisUntilFinished;
+                updateTimeButton(btnItem1, timeLeftItem1);
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunningItem1 = false;
+                editor.putInt("MULTIPLIER", 1).apply();
+            }
+        }.start();
+    }
+
+    /**
+     * To start another timer
+     */
+    private void startTimerItem2() {
+        timerRunningItem2 = true;
+        endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
+        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = inventoryFile.edit();
+        countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                timeLeftItem2 = millisUntilFinished;
+                updateTimeButton(btnItem2, timeLeftItem2);
+            }
+
+            @Override
+            public void onFinish() {
+                timerRunningItem2 = false;
+                editor.putInt("RANGE", 0).apply();
+            }
+        }.start();
+    }
+
+    /**
      * Updates the timer displayed on button
      *
      * @param button
@@ -344,5 +360,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         SharedPreferences.Editor editor = timers.edit();
         editor.putLong("endTimeDelivery", timers.getLong("endTimeDelivery", 0) + 60 * 20 * 1000);
         editor.apply();
+    }
+
+    private void checkTimer(){
+
     }
 }
