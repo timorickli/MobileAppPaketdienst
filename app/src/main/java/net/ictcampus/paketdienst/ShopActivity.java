@@ -48,7 +48,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        editorInventory.putInt("TOKENS", 200).apply();
 
         //Get the Different TextViews and Buttons
         txtItem1 = (TextView) findViewById(R.id.itemText1);
