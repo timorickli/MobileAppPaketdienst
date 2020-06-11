@@ -12,7 +12,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 /**
- * Class to show the Inventory with the current money 
+ * Class to show the Inventory with the current money
  */
 public class InventoryActivity extends AppCompatActivity {
     private int packages;

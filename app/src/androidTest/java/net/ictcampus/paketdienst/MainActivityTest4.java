@@ -2,7 +2,9 @@ package net.ictcampus.paketdienst;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
@@ -19,6 +21,7 @@ import androidx.test.runner.AndroidJUnit4;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.TypeSafeMatcher;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,6 +35,7 @@ import static androidx.test.espresso.matcher.ViewMatchers.isRoot;
 import static androidx.test.espresso.matcher.ViewMatchers.withContentDescription;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
+import static androidx.test.platform.app.InstrumentationRegistry.getInstrumentation;
 import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 
@@ -39,8 +43,21 @@ import static org.hamcrest.Matchers.not;
 @RunWith(AndroidJUnit4.class)
 public class MainActivityTest4 {
 
+    private SharedPreferences.Editor editor;
+    private Intent intent;
+    SharedPreferences inventoryFile;
+
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true,false);
+
+
+    @Before
+    public void setUp(){
+        //Sets up SharedPreferences
+        Context context = getInstrumentation().getTargetContext();
+        inventoryFile = context.getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        editor = inventoryFile.edit();
+    }
 
     @Rule
     public GrantPermissionRule mGrantPermissionRule =
@@ -49,6 +66,17 @@ public class MainActivityTest4 {
 
     @Test
     public void mainActivityTest4() throws InterruptedException {
+
+        //Gets Tokens and increases balance by 5000
+        int previousTokens;
+        previousTokens = inventoryFile.getInt("TOKENS", 0);
+        editor.putInt("TOKENS", 5000);
+        editor.apply();
+
+        //Starts Activity
+        mActivityTestRule.launchActivity(new Intent());
+
+        //Clicks on menu button
         ViewInteraction imageButton = onView(
                 allOf(withId(R.id.imageButton), withContentDescription("Paketdienst"),
                         childAtPosition(
@@ -59,6 +87,7 @@ public class MainActivityTest4 {
                         isDisplayed()));
         imageButton.perform(click());
 
+        //Clicks on Shop
         ViewInteraction appCompatTextView = onView(
                 allOf(withId(R.id.shop), withText("Shop"),
                         childAtPosition(
@@ -67,30 +96,33 @@ public class MainActivityTest4 {
                                         0),
                                 4),
                         isDisplayed()));
-
         Thread.sleep(2000);
-
         appCompatTextView.perform(click());
 
-        onView(withId(R.id.button2)).check(matches(withText("2000")));
+        //Checks value of button2
+        onView(withId(R.id.button2)).check(matches(withText("125")));
 
         ViewInteraction appCompatButton = onView(
-                allOf(withId(R.id.button2), withText("2000"),
+                allOf(withId(R.id.button2), withText("125"),
                         childAtPosition(
                                 childAtPosition(
                                         withId(android.R.id.content),
                                         0),
                                 12),
                         isDisplayed()));
-
         Thread.sleep(2000);
 
+        //Click button2
         appCompatButton.perform(click());
-
         Thread.sleep(2000);
 
-        onView(withId(R.id.button2)).check(matches(not(withText("2000"))));
+        //Checks, if timer is running and not clickable
+        onView(withId(R.id.button2)).check(matches(not(withText("125"))));
         onView(withId(R.id.button2)).check(matches(not(isClickable())));
+
+        //Sets tokens value back
+        editor.putInt("TOKENS", previousTokens);
+        editor.apply();
     }
 
     private static Matcher<View> childAtPosition(

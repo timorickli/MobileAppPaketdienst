@@ -21,37 +21,44 @@ import java.util.Locale;
  * to buy PowerUps or Upgrades
  */
 public class ShopActivity extends AppCompatActivity implements View.OnClickListener {
-    TextView txtItem1, txtItem2, txtItem3, txtItem4;
-    Button btnItem1, btnItem2, btnItem3, btnItem4;
-    ImageButton btnHome;
-    private static final long ITEM_DURATION = 60 * 30 * 1000;
+    private SharedPreferences inventoryFile, timersFile;
+    private SharedPreferences.Editor editorInventory, editorTimers;
     private CountDownTimer countDownTimerItem2, countDownTimerItem1;
+    private static final long ITEM_DURATION = 60 * 30 * 1000;
+    private TextView txtItem1, txtItem2, txtItem3, txtItem4;
+    private Button btnItem1, btnItem2, btnItem3, btnItem4;
     private boolean timerRunningItem2, timerRunningItem1;
     private long timeLeftItem2, timeLeftItem1;
     private long endTimeItem2, endTimeItem1;
-
+    private ImageButton btnHome;
+    private int tokens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_shop);
 
+        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
+        editorInventory = inventoryFile.edit();
+        editorTimers = timersFile.edit();
+
         //Get the Different TextViews and Buttons
-        txtItem1 =  (TextView) findViewById(R.id.itemText1);
-        txtItem2 =  (TextView) findViewById(R.id.itemText2);
-        txtItem3 =  (TextView) findViewById(R.id.itemText3);
-        txtItem4 =  (TextView) findViewById(R.id.itemText4);
-        btnItem1 =  (Button) findViewById(R.id.button1);
-        btnItem2 =  (Button)  findViewById(R.id.button2);
-        btnItem3 =  (Button) findViewById(R.id.button3);
-        btnItem4 =  (Button) findViewById(R.id.button4);
+        txtItem1 = (TextView) findViewById(R.id.itemText1);
+        txtItem2 = (TextView) findViewById(R.id.itemText2);
+        txtItem3 = (TextView) findViewById(R.id.itemText3);
+        txtItem4 = (TextView) findViewById(R.id.itemText4);
+        btnItem1 = (Button) findViewById(R.id.button1);
+        btnItem2 = (Button) findViewById(R.id.button2);
+        btnItem3 = (Button) findViewById(R.id.button3);
+        btnItem4 = (Button) findViewById(R.id.button4);
         btnHome = findViewById(R.id.imageButton2);
 
         //Set the Text of the different Buttons
-        btnItem1.setText("1000");
-        btnItem2.setText("2000");
-        btnItem3.setText("2500");
-        btnItem4.setText("4000");
+        btnItem1.setText("400");
+        btnItem2.setText("125");
+        btnItem3.setText("75");
+        btnItem4.setText("30");
 
         //Set Click Listener on Buttons
         btnItem1.setOnClickListener(this);
@@ -61,10 +68,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         btnHome.setOnClickListener(this);
 
         //Set the Text on TextView
-        txtItem1.setText(R.string.shopMail);
         txtItem2.setText(R.string.shopZoll);
         txtItem3.setText(R.string.shopPakete);
         txtItem4.setText(R.string.shopZeit);
+
+        //Setup current token Value
+        tokens = inventoryFile.getInt("TOKENS", 0);
+        TextView tokensView = findViewById(R.id.tokens);
+        tokensView.setText(getString(R.string.inventoryTokens) + ' ' + String.valueOf(tokens));
 
         //Dark Mode check
         SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
@@ -108,7 +119,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *  Method for the dark Mode Theme
+     * Method for the dark Mode Theme
      */
     private void darkMode() {
         View view = this.getWindow().getDecorView();
@@ -141,34 +152,24 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
     /**
      * OnClick Event for the Buttons
+     *
      * @param v
      */
     @Override
     public void onClick(View v) {
         Intent intent;
 
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-
-        /*
-          !
-         !!!        Used to run the Instrumental Test
-        !!!!!
-        editor.putInt("TOKENS", 5000);
-        editor.apply();
-        */
-
         //Switch case to decide, which Button was clicked
         switch (v.getId()) {
             case R.id.button1:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem1.getText().toString()) && btnItem1.isClickable()) {
-                    editor.putInt("RANGE", 1)
+                    editorInventory.putInt("RANGE", 1)
                             .apply();
-                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem1.getText().toString()))
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem1.getText().toString()))
                             .apply();
                     btnItem1.setClickable(false);
                     startTimerItem1();
-                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
@@ -176,38 +177,38 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.button2:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem2.getText().toString()) && btnItem2.isClickable()) {
-                    editor.putInt("MULTIPLIER", 2)
+                    editorInventory.putInt("MULTIPLIER", 2)
                             .apply();
-                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem2.getText().toString()))
                             .apply();
                     btnItem2.setClickable(false);
                     startTimerItem2();
-                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button3:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem3.getText().toString())) {
-                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem3.getText().toString()))
                             .apply();
-                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
             case R.id.button4:
                 if (inventoryFile.getInt("TOKENS", 0) >= Integer.parseInt(btnItem4.getText().toString())) {
-                    editor.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10)
+                    editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) + 10)
                             .apply();
-                    editor.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString()))
+                    editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) - Integer.parseInt(btnItem4.getText().toString()))
                             .apply();
                     increaseTime();
-                    Toast.makeText(ShopActivity.this,  R.string.shopBuy, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopBuy, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(ShopActivity.this,  R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(ShopActivity.this, R.string.shopKeineMünzen, Toast.LENGTH_SHORT).show();
                 }
                 break;
 
@@ -225,17 +226,16 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onStop() {
         super.onStop();
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = timers.edit();
-        editor.putLong("millisLeftItem1", timeLeftItem1);
-        editor.putBoolean("timerRunningItem1", timerRunningItem1);
-        editor.putLong("endTimeItem1", endTimeItem1);
+        editorInventory.putLong("millisLeftItem1", timeLeftItem1);
+        editorInventory.putBoolean("timerRunningItem1", timerRunningItem1);
+        editorInventory.putLong("endTimeItem1", endTimeItem1);
 
-        editor.putLong("millisLeftItem2", timeLeftItem2);
-        editor.putBoolean("timerRunningItem2", timerRunningItem2);
-        editor.putLong("endTimeItem2", endTimeItem2);
+        editorInventory.putLong("millisLeftItem2", timeLeftItem2);
+        editorInventory.putBoolean("timerRunningItem2", timerRunningItem2);
+        editorInventory.putLong("endTimeItem2", endTimeItem2);
 
-        editor.apply();
+        editorInventory.apply();
+
         if (countDownTimerItem2 != null) {
             countDownTimerItem2.cancel();
         }
@@ -245,30 +245,26 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     /**
-     *Method on Start Action
-     *Gets Timer, calculates and displays time left
+     * Method on Start Action
+     * Gets Timer, calculates and displays time left
      */
     @Override
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-        timeLeftItem2 = timers.getLong("millisLeftItem2", ITEM_DURATION);
-        timerRunningItem2 = timers.getBoolean("timerRunningItem2", false);
+        timeLeftItem2 = timersFile.getLong("millisLeftItem2", ITEM_DURATION);
+        timerRunningItem2 = timersFile.getBoolean("timerRunningItem2", false);
 
-        timeLeftItem1 = timers.getLong("millisLeftItem1", ITEM_DURATION);
-        timerRunningItem1 = timers.getBoolean("timerRunningItem1", false);
+        timeLeftItem1 = timersFile.getLong("millisLeftItem1", ITEM_DURATION);
+        timerRunningItem1 = timersFile.getBoolean("timerRunningItem1", false);
 
-        checkTimer();
         if (timerRunningItem2) {
-            endTimeItem2 = timers.getLong("endTimeItem2", 0);
+            endTimeItem2 = timersFile.getLong("endTimeItem2", 0);
             timeLeftItem2 = endTimeItem2 - System.currentTimeMillis();
             if (timeLeftItem2 < 0) {
                 timeLeftItem2 = 0;
                 timerRunningItem2 = false;
-                editor.putInt("MULTIPLIER", 1)
+                editorInventory.putInt("MULTIPLIER", 1)
                         .apply();
                 btnItem2.setText("2000");
             } else {
@@ -277,12 +273,12 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         }
 
         if (timerRunningItem1) {
-            endTimeItem1 = timers.getLong("endTimeItem1", 0);
+            endTimeItem1 = timersFile.getLong("endTimeItem1", 0);
             timeLeftItem1 = endTimeItem1 - System.currentTimeMillis();
             if (timeLeftItem1 < 0) {
                 timeLeftItem1 = 0;
                 timerRunningItem1 = false;
-                editor.putInt("RANGE", 0)
+                editorInventory.putInt("RANGE", 0)
                         .apply();
                 btnItem1.setText("1000");
             } else {
@@ -297,8 +293,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void startTimerItem1() {
         timerRunningItem1 = true;
         endTimeItem1 = System.currentTimeMillis() + timeLeftItem1;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
         countDownTimerItem1 = new CountDownTimer(timeLeftItem1, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -309,7 +303,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 timerRunningItem1 = false;
-                editor.putInt("MULTIPLIER", 1).apply();
+                editorInventory.putInt("MULTIPLIER", 1).apply();
             }
         }.start();
     }
@@ -320,8 +314,6 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
     private void startTimerItem2() {
         timerRunningItem2 = true;
         endTimeItem2 = System.currentTimeMillis() + timeLeftItem2;
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
         countDownTimerItem2 = new CountDownTimer(timeLeftItem2, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
@@ -332,7 +324,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onFinish() {
                 timerRunningItem2 = false;
-                editor.putInt("RANGE", 0).apply();
+                editorInventory.putInt("RANGE", 0).apply();
             }
         }.start();
     }
@@ -356,13 +348,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
      * Increases time to deliver a package
      */
     private void increaseTime() {
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = timers.edit();
-        editor.putLong("endTimeDelivery", timers.getLong("endTimeDelivery", 0) + 60 * 20 * 1000);
-        editor.apply();
-    }
-
-    private void checkTimer(){
-
+        editorInventory.putLong("endTimeDelivery", timersFile.getLong("endTimeDelivery", 0) + 60 * 20 * 1000);
+        editorInventory.apply();
     }
 }

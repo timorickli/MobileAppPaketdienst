@@ -44,6 +44,8 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private boolean timerRunning;
     private Intent intent;
     private int id;
+    private SharedPreferences inventoryFile, timers;
+    private SharedPreferences.Editor editor;
 
     /**
      * Prepares everything for ARView, when activity is started
@@ -58,9 +60,12 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         //Initialization of all important variables
         arFragment = (ArFragment) getSupportFragmentManager().findFragmentById(R.id.sceneform_ux_fragment);
         arFragment.getArSceneView().getScene().addOnUpdateListener(this::onUpdateFrame);
+        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
         Button btnBack = findViewById(R.id.back);
+        editor = inventoryFile.edit();
         placed = false;
 
         //Chooses which model gets loaded
@@ -91,7 +96,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         super.onStart();
 
         //Gets previous timer values
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
         timeLeft = timers.getLong("millisLeft", DELIVERY_TIME);
         timerRunning = timers.getBoolean("timerRunning", false);
 
@@ -247,10 +251,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         //Convert hitresult to node
         Node hitNode = hitTestResult.getNode();
 
-        //Get Android File
-        SharedPreferences inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = inventoryFile.edit();
-
         //Statements to decide, which model got hit (Switch was not possible)
         if (hitNode == mailbox) {
 
@@ -353,7 +353,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
      * Saves timer values before new Activity
      */
     private void beforeChange() {
-        SharedPreferences timers = getSharedPreferences("Timers", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = timers.edit();
 
         //Edits values, that timer basically runs in background

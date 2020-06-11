@@ -16,11 +16,20 @@ import android.widget.TextView;
  * Class for the navigation
  */
 public class MenuActivity extends AppCompatActivity implements View.OnClickListener {
+    private SharedPreferences inventoryFile;
+    private int tokens;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
+
+        //Setup current token value
+        inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
+        tokens = inventoryFile.getInt("TOKENS", 0);
+        TextView tokensView = findViewById(R.id.tokens);
+        tokensView.setText(getString(R.string.inventoryTokens) + ' ' + String.valueOf(tokens));
+
 
         //Get different TextView and Buttons
         TextView spielanleitung = findViewById(R.id.spielanleitung);
