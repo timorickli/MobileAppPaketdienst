@@ -62,10 +62,10 @@ public class ShopItemTest {
     @Test
     public void mainActivityTest4() throws InterruptedException {
 
-        //Gets Tokens and increases balance by 5000
+        //Gets Tokens and increases balance by 4000
         int previousTokens;
         previousTokens = inventoryFile.getInt("TOKENS", 0);
-        editor.putInt("TOKENS", 5000);
+        editor.putInt("TOKENS", 4000);
         editor.apply();
 
         //Starts Activity
