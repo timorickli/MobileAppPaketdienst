@@ -75,8 +75,10 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
             markerOptionsClicked = getIntent().getParcelableArrayListExtra("mailboxClicked");
             markerOptions.add(markerOptionsClicked.get(0));
         }
+
         //Starts/Continues timer
         dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime");
+        dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
 
         //Chooses which model gets loaded
         setupModel();
@@ -130,6 +132,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
      * Sets up model for rendering
      */
     private void setupModel() {
+
         //Chooses which model gets prepared
         switch (id) {
             case 2:
@@ -257,8 +260,14 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 } else {
                     Toast.makeText(ArActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
                 }
+                if (getIntent().getParcelableArrayListExtra("mailboxClicked") != null) {
+                    markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
+                    markerOptionsClicked = getIntent().getParcelableArrayListExtra("mailboxClicked");
+                    markerOptions.remove(markerOptionsClicked.get(0));
+                }
                 editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();
-                dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+                intent.putExtra("locationMailBox", markerOptions);
+
             }
 
             //In case a bug happened
@@ -298,7 +307,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         } else if (hitNode == wagonPackage) {
             Toast.makeText(ArActivity.this, "Du hast einen Lieferwagen und somit 7 Pakete eingesammelt", Toast.LENGTH_SHORT).show();
 
-            //Deletes model from view and deletes Anchor
+            //Deletes model from view and deletes Anchordt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             arFragment.getArSceneView().getScene().removeChild(hitNode);
             hitNode.setParent(null);
             hitNode = null;
@@ -311,6 +320,12 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
 
         //Saves timer values
         dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+
+        //Resets Timer if over
+        if (!timersFile.getBoolean("TimerRunning", true)) {
+            dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+        }
+
         //New activity without transition
         startActivity(intent);
         overridePendingTransition(0, 0);

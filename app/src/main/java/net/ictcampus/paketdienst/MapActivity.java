@@ -253,6 +253,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
      * Creates three different packages
      */
     public void createIconPackages() {
+        dt.resetTimer(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
+        timeRemaining.setText("");
         LocationManager locationManager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         for (int x = 0; x < 3; x++) {
             switch (x) {
