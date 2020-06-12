@@ -43,11 +43,11 @@ public class ShopItemTest {
     SharedPreferences inventoryFile;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true,false);
+    public ActivityTestRule<MainActivity> mActivityTestRule = new ActivityTestRule<>(MainActivity.class, true, false);
 
 
     @Before
-    public void setUp(){
+    public void setUp() {
         //Sets up SharedPreferences
         Context context = getInstrumentation().getTargetContext();
         inventoryFile = context.getSharedPreferences("inventory", Context.MODE_PRIVATE);

@@ -143,11 +143,13 @@ public class SettingActivity extends AppCompatActivity {
      */
     private void whiteMode() {
         view.setBackgroundColor(Color.WHITE);
+
         /*to add later music settings
         text1.setTextColor(Color.BLACK);
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
          */
+
         text4.setTextColor(Color.BLACK);
         text5.setTextColor(Color.BLACK);
         text6.setTextColor(Color.BLACK);

@@ -64,17 +64,20 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         intent = new Intent(getApplicationContext(), MapActivity.class);
         id = getIntent().getIntExtra("id", 0);
-        dt = new GameTimer(1);
+        dt = new GameTimer(30);
         Button btnBack = findViewById(R.id.back);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
         placed = false;
 
-        if (getIntent().getParcelableArrayListExtra("mailboxClicked")!=null){
+        if (getIntent().getParcelableArrayListExtra("mailboxClicked") != null) {
             markerOptions = getIntent().getParcelableArrayListExtra("locationMailBox");
             markerOptionsClicked = getIntent().getParcelableArrayListExtra("mailboxClicked");
             markerOptions.add(markerOptionsClicked.get(0));
         }
+        //Starts/Continues timer
+        dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime");
+
         //Chooses which model gets loaded
         setupModel();
 
@@ -95,18 +98,6 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 overridePendingTransition(0, 0);
             }
         });
-    }
-
-    /**
-     * After onCreate, timer gets initialized/prepared
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
-        dt.checkState(timersFile, "TimeLeft", "TimerRunning", "EndTime");
-
     }
 
     /**
@@ -261,9 +252,9 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
                 hitNode = null;
 
                 //Edit Inventory
-                if (timersFile.getBoolean("TimerRunning",true)){
+                if (timersFile.getBoolean("TimerRunning", true)) {
                     editorInventory.putInt("TOKENS", inventoryFile.getInt("TOKENS", 0) + 10 * inventoryFile.getInt("MULTIPLIER", 1)).apply();
-                }else{
+                } else {
                     Toast.makeText(ArActivity.this, R.string.timePassed, Toast.LENGTH_SHORT).show();
                 }
                 editorInventory.putInt("PACKAGES", inventoryFile.getInt("PACKAGES", 0) - 1).apply();

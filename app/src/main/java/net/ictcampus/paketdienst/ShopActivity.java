@@ -40,15 +40,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_shop);
 
         //New helper
-        dt1 = new GameTimer(1);
-        dt2 = new GameTimer(1);
+        dt1 = new GameTimer(20);
+        dt2 = new GameTimer(20);
 
         //Shared Prefrences
         inventoryFile = getSharedPreferences("inventory", Context.MODE_PRIVATE);
         timersFile = getSharedPreferences("timers", Context.MODE_PRIVATE);
         editorInventory = inventoryFile.edit();
         editorTimers = timersFile.edit();
-        editorInventory.putInt("TOKENS",200).apply();
 
         //Get the Different TextViews and Buttons
         txtItem1 = (TextView) findViewById(R.id.itemText1);
@@ -85,24 +84,9 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         tokensView = findViewById(R.id.tokens);
         tokensView.setText(getString(R.string.inventoryTokens) + ' ' + String.valueOf(tokens));
 
-        //Dark Mode check
-        SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
-        if (settingFile.getBoolean("DARK", false)) {
-            darkMode();
-        } else {
-            whiteMode();
-        }
-    }
-
-    /**
-     * Method on Start Action
-     * Gets Timer, calculates and displays time left
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Checks, if time is over for Item
+        /*Checks timer and starts it.
+        Replaces onFinish Method in a way
+         */
         if (!dt1.checkState(timersFile, btnItem1, "millisLeftItem1", "timerRunningItem1", "endTimeItem1")) {
             editorInventory.putInt("RANGE", 0).apply();
             btnItem1.setText("400");
@@ -112,6 +96,14 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         if (!dt2.checkState(timersFile, btnItem2, "millisLeftItem2", "timerRunningItem2", "endTimeItem2")) {
             editorInventory.putInt("MULTIPLIER", 1).apply();
             btnItem2.setText("125");
+        }
+
+        //Dark Mode check
+        SharedPreferences settingFile = getSharedPreferences("settings", Context.MODE_PRIVATE);
+        if (settingFile.getBoolean("DARK", false)) {
+            darkMode();
+        } else {
+            whiteMode();
         }
     }
 
@@ -249,7 +241,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
-        TextView text5= (TextView) findViewById(R.id.tokens);
+        TextView text5 = (TextView) findViewById(R.id.tokens);
         Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
@@ -283,7 +275,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         TextView text2 = (TextView) findViewById(R.id.itemText3);
         TextView text3 = (TextView) findViewById(R.id.itemText4);
         TextView text4 = (TextView) findViewById(R.id.itemText2);
-        TextView text5= (TextView) findViewById(R.id.tokens);
+        TextView text5 = (TextView) findViewById(R.id.tokens);
         Button btn1 = (Button) findViewById(R.id.button1);
         Button btn2 = (Button) findViewById(R.id.button2);
         Button btn3 = (Button) findViewById(R.id.button3);
@@ -305,7 +297,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         btn4.setBackgroundColor(Color.DKGRAY);
         imageButton.setImageResource(R.drawable.settingbtn_white);
     }
-    
+
     /**
      * Increases time to deliver a package
      */

@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -87,8 +86,11 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         editorTimers = timersFile.edit();
 
         //New helper classes
-        dt = new GameTimer(1);
+        dt = new GameTimer(30);
         rdmLoca = new RandomLocation();
+
+        //Starts/Continues timer
+        dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime");
 
         //Information from intent
         if (getIntent().getParcelableArrayListExtra("location") != null) {
@@ -127,17 +129,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         } else {
             whiteMode();
         }
-    }
-
-    /**
-     * After onCreate, timer gets initialized/prepared
-     */
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        //Restarts Timer. If not running, sets Packages to 0 because DeliveryTime ran out
-        dt.checkState(timersFile, timeRemaining, "TimeLeft", "TimerRunning", "EndTime");
     }
 
     /**
@@ -376,18 +367,6 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
     }
 
     /**
-     * Test Method for JUnit test as a exchage of createMailBox()
-     */
-    public void createMailBoxTest() {
-        //For each package in inventory, display one on map
-        for (int i = 0; i < 3; i++) {
-            markerOptionsMailBox.add(new MarkerOptions()
-                    .position(new LatLng(12.2, 123.2))
-            );
-        }
-    }
-
-    /**
      * Starts activity depending on marker clicked
      *
      * @param marker clicked marker
@@ -411,7 +390,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                     intent.putExtra("id", 4);
                     break;
             }
-            markers.clear();
+
+            //Saves timer
             dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             intent.putExtra("location", markerOptions);
             startActivity(intent);
@@ -430,14 +410,17 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                 posMarker = marker.getPosition();
                 if (!posMarker.equals(pos)) {
                     mailBoxSend.add(markerOpt);
-                }else{
+                } else {
                     mailboxClicked.add(markerOpt);
                 }
             }
+            //Clears Markers, so you get new ones
             markers.clear();
             markerOptions.clear();
-            dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             markerOptionsMailBox.clear();
+
+            //Saves Timer
+            dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             intent.putExtra("id", 1);
             intent.putExtra("locationMailBox", mailBoxSend);
             intent.putExtra("mailboxClicked", mailboxClicked);
@@ -513,6 +496,18 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
         mInterstitialAd = new InterstitialAd(this);
         mInterstitialAd.setAdUnitId(getString(R.string.adid));
         mInterstitialAd.loadAd(new AdRequest.Builder().build());
+    }
+
+    /**
+     * Test Method for JUnit test as a exchage of createMailBox()
+     */
+    public void createMailBoxTest() {
+        //For each package in inventory, display one on map
+        for (int i = 0; i < 3; i++) {
+            markerOptionsMailBox.add(new MarkerOptions()
+                    .position(new LatLng(12.2, 123.2))
+            );
+        }
     }
 
     /**
