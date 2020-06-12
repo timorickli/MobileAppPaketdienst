@@ -259,7 +259,7 @@ public class ShopActivity extends AppCompatActivity implements View.OnClickListe
         text2.setTextColor(Color.BLACK);
         text3.setTextColor(Color.BLACK);
         text4.setTextColor(Color.BLACK);
-        text5.setTextColor(Color.WHITE);
+        text5.setTextColor(Color.BLACK);
         title.setTextColor(Color.BLACK);
         btn1.setTextColor(Color.BLACK);
         btn1.setBackgroundColor(Color.GRAY);
