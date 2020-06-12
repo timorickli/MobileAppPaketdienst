@@ -434,7 +434,8 @@ public class MapActivity extends Activity implements OnMapReadyCallback, Seriali
                     mailboxClicked.add(markerOpt);
                 }
             }
-
+            markers.clear();
+            markerOptions.clear();
             dt.beforeChange(editorTimers, "TimeLeft", "TimerRunning", "EndTime");
             markerOptionsMailBox.clear();
             intent.putExtra("id", 1);

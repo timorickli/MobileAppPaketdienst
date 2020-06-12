@@ -37,6 +37,7 @@ public class ArActivity extends AppCompatActivity implements Node.OnTapListener 
     private Node mailbox, singlePackage, multiPackage, wagonPackage, activeNode;
     private static ArrayList<MarkerOptions> markerOptions = new ArrayList<MarkerOptions>();
     private static ArrayList<MarkerOptions> markerOptionsClicked = new ArrayList<MarkerOptions>();
+    private static ArrayList<MarkerOptions> markers = new ArrayList<MarkerOptions>();
     private SharedPreferences.Editor editorInventory, editorTimers;
     private SharedPreferences inventoryFile, timersFile;
     private ModelRenderable activeRenderable;
